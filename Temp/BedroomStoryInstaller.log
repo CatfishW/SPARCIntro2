@@ -1,0 +1,28 @@
+Unity Editor version:    6000.3.6f1 (bbb010bdb8a3)
+Branch:                  6000.3/respin/6000.3.6f1-732c1ec89f18
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 26.3.1 (Build 25D2128)
+Darwin version:          25.3.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Date:                    2026-03-19T08:35:28Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-zladwu" at "2026-03-19T08:35:28.06407Z"
+Launching external process: /Applications/Unity/Hub/Editor/6000.3.6f1/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.3.6f1/Unity.app/Contents/MacOS/Unity
+-batchmode
+-quit
+-nographics
+-projectPath
+/Users/zladwu/My project
+-executeMethod
+Blocks.Gameplay.Core.Story.Editor.BedroomStoryInstaller.Install
+-logFile
+/Users/zladwu/My project/Temp/BedroomStoryInstaller.log
+Successfully changed project path to: /Users/zladwu/My project
+/Users/zladwu/My project
+[Package Manager] Server process was shutdown

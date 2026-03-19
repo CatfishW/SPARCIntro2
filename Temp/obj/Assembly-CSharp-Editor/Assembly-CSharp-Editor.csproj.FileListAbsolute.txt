@@ -1,0 +1,9 @@
+/Users/zladwu/My project/Temp/bin/Debug/Assembly-CSharp-Editor.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/Assembly-CSharp-Editor.dll
+/Users/zladwu/My project/Temp/bin/Debug/Assembly-CSharp-Editor.pdb
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly-CSharp-Editor.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly-CSharp-Editor.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly.1F1299F3.Up2Date
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly-CSharp-Editor.dll
+/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/Assembly-CSharp-Editor.pdb

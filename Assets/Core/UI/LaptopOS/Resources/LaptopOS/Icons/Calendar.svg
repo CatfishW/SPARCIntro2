@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="48" height="48" rx="13" fill="#F8FBFF"/>
+  <rect x="8" y="8" width="48" height="14" rx="13" fill="url(#calendarTop)"/>
+  <path d="M18 6V16" stroke="#D8473A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M46 6V16" stroke="#D8473A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22.5 38.5C23.1 33.9 26.8 31 31.9 31C36.8 31 40.1 33.6 40.1 37.6C40.1 40.4 38.7 42.2 35.3 44.2L32.9 45.6C31.4 46.5 30.8 47.4 30.7 49H40.2" stroke="#1A1E28" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="calendarTop" x1="8" y1="8" x2="56" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF7A6A"/>
+      <stop offset="1" stop-color="#F25245"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,10 @@
+{
+  "name": "com.openai.life-is-strange-item-interaction",
+  "version": "1.0.0",
+  "displayName": "Life Is Strange Style Item Interaction System",
+  "description": "A self-contained Unity interaction system with focus outlines, direct item options, and 3D inspection with blurred background. Built for Unity 6000.3.6f1 and URP-friendly workflows.",
+  "unity": "6000.3",
+  "author": {
+    "name": "OpenAI"
+  }
+}

@@ -1,0 +1,1562 @@
+.laptop-shell {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(4, 8, 16);
+}
+
+.laptop-wallpaper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgb(4, 8, 16);
+}
+
+.wallpaper-orb {
+    position: absolute;
+    border-radius: 999px;
+    opacity: 0.94;
+}
+
+.wallpaper-orb--top-left {
+    left: -140px;
+    top: -120px;
+    width: 420px;
+    height: 420px;
+    background-color: rgba(54, 110, 255, 0.26);
+}
+
+.wallpaper-orb--top-right {
+    right: -100px;
+    top: 70px;
+    width: 340px;
+    height: 340px;
+    background-color: rgba(255, 113, 167, 0.16);
+}
+
+.wallpaper-orb--bottom {
+    left: 22%;
+    bottom: -160px;
+    width: 540px;
+    height: 540px;
+    background-color: rgba(24, 196, 171, 0.12);
+}
+
+.wallpaper-orb--center {
+    right: 24%;
+    top: 26%;
+    width: 240px;
+    height: 240px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.laptop-menu-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 26px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgba(12, 16, 24, 0.60);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-menu-bar__section {
+    flex-direction: row;
+    align-items: center;
+}
+
+.laptop-menu-bar__left {
+    flex-grow: 1;
+}
+
+.laptop-menu-bar__center {
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.laptop-menu-bar__right {
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.laptop-menu-chip {
+    margin-right: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-radius: 8px;
+    font-size: 11px;
+    color: rgb(232, 237, 247);
+    opacity: 0.86;
+    -unity-text-align: middle-left;
+}
+
+.laptop-menu-chip.is-hovered {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-menu-chip.is-pressed,
+.laptop-menu-chip.is-selected {
+    background-color: rgba(255, 255, 255, 0.12);
+    opacity: 1;
+}
+
+.laptop-menu-title {
+    font-size: 12px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.laptop-menu-status {
+    margin-left: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-radius: 8px;
+    font-size: 11px;
+    color: rgb(232, 237, 247);
+    opacity: 0.9;
+    -unity-text-align: middle-center;
+}
+
+.laptop-menu-status.is-hovered {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-menu-status.is-pressed,
+.laptop-menu-status.is-selected {
+    background-color: rgba(255, 255, 255, 0.12);
+    opacity: 1;
+}
+
+.laptop-desktop-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 26px;
+    bottom: 82px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.laptop-window-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.laptop-notification-stack {
+    position: absolute;
+    right: 20px;
+    top: 16px;
+    width: 280px;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.laptop-reminder-card {
+    position: absolute;
+    right: 22px;
+    top: 66px;
+    width: 320px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    background-color: rgba(14, 18, 27, 0.84);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(112, 171, 255, 0.26);
+    border-right-color: rgba(112, 171, 255, 0.10);
+    border-top-color: rgba(112, 171, 255, 0.14);
+    border-bottom-color: rgba(112, 171, 255, 0.14);
+    border-radius: 18px;
+}
+
+.laptop-reminder-card__title {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    margin-bottom: 6px;
+}
+
+.laptop-reminder-card__body {
+    font-size: 13px;
+    color: rgb(226, 233, 247);
+    margin-bottom: 12px;
+}
+
+.laptop-reminder-card__button {
+    height: 32px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    background-color: rgba(74, 130, 255, 0.92);
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    border-radius: 10px;
+}
+
+.laptop-reminder-card.is-hovered {
+    background-color: rgba(18, 23, 34, 0.92);
+}
+
+.laptop-desktop-shortcuts {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 136px;
+    flex-direction: column;
+}
+
+.laptop-shortcut {
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+    margin-bottom: 10px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-radius: 14px;
+}
+
+.laptop-shortcut.is-hovered {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.laptop-shortcut.is-pressed,
+.laptop-shortcut.is-selected {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.laptop-shortcut__icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 6px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.laptop-shortcut__title {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.laptop-shortcut__subtitle {
+    display: none;
+    font-size: 11px;
+    color: rgb(220, 228, 240);
+    opacity: 0.72;
+}
+
+.laptop-dock {
+    position: absolute;
+    left: 44px;
+    right: 44px;
+    bottom: 12px;
+    height: 70px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgba(16, 20, 31, 0.42);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.07);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+    border-radius: 24px;
+}
+
+.laptop-dock-button {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 18px;
+    background-color: rgba(15, 19, 29, 0.76);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-dock-button.is-hovered {
+    background-color: rgba(29, 36, 52, 0.94);
+}
+
+.laptop-dock-button.is-pressed,
+.laptop-dock-button.is-selected {
+    background-color: rgba(41, 50, 73, 0.98);
+    border-left-color: rgba(112, 171, 255, 0.42);
+    border-right-color: rgba(112, 171, 255, 0.42);
+    border-top-color: rgba(112, 171, 255, 0.50);
+    border-bottom-color: rgba(112, 171, 255, 0.50);
+}
+
+.laptop-dock-button__icon {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.laptop-dock-button__badge {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background-color: rgb(255, 92, 92);
+    color: rgba(0, 0, 0, 0);
+}
+
+.laptop-window {
+    position: absolute;
+    overflow: hidden;
+    background-color: rgba(16, 19, 28, 0.96);
+    border-radius: 22px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.10);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.laptop-window__header {
+    height: 40px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: rgba(11, 14, 20, 0.86);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-window__controls {
+    flex-direction: row;
+    align-items: center;
+}
+
+.laptop-window__control {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 999px;
+    color: rgba(0, 0, 0, 0);
+    -unity-text-align: middle-center;
+    font-size: 0;
+}
+
+.laptop-window__control--close {
+    background-color: rgb(255, 92, 92);
+}
+
+.laptop-window__control--minimize {
+    background-color: rgb(255, 184, 64);
+}
+
+.laptop-window__control--zoom {
+    background-color: rgb(96, 214, 96);
+}
+
+.laptop-window__control.is-pressed,
+.laptop-window__control.is-selected {
+    opacity: 1;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.26);
+    border-right-color: rgba(255, 255, 255, 0.26);
+    border-top-color: rgba(255, 255, 255, 0.26);
+    border-bottom-color: rgba(255, 255, 255, 0.26);
+}
+
+.laptop-window__title {
+    flex-grow: 1;
+    -unity-text-align: middle-center;
+    margin-right: 44px;
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.laptop-window__content {
+    flex-grow: 1;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 14px;
+    padding-bottom: 16px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.laptop-window__resize-handle {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 16px;
+    height: 16px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-right-color: rgba(255, 255, 255, 0.20);
+    border-bottom-color: rgba(255, 255, 255, 0.20);
+}
+
+.laptop-panel-root {
+    flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.laptop-scroll-pane {
+    flex-grow: 1;
+    flex-shrink: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.laptop-main-scroll,
+.laptop-card-grid-scroll,
+.laptop-photo-grid-scroll {
+    margin-right: 12px;
+}
+
+.laptop-launchpad-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(5, 9, 18, 0.74);
+}
+
+.laptop-launchpad-panel {
+    width: 90%;
+    max-width: 920px;
+    max-height: 720px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: rgba(14, 18, 27, 0.90);
+    border-radius: 30px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.06);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-launchpad-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.laptop-launchpad-title {
+    flex-grow: 1;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    -unity-font-style: bold;
+}
+
+.laptop-launchpad-search {
+    width: 260px;
+    height: 34px;
+    background-color: rgba(24, 30, 43, 0.88);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: rgb(255, 255, 255);
+}
+
+.laptop-launchpad-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.laptop-launchpad-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+
+.laptop-launchpad-tile {
+    width: 132px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(23, 29, 41, 0.88);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.07);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    align-items: center;
+}
+
+.laptop-launchpad-tile__icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 8px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.laptop-launchpad-tile__title {
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: 4px;
+}
+
+.laptop-launchpad-tile__description {
+    color: rgb(217, 224, 235);
+    font-size: 10px;
+    opacity: 0.82;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.laptop-launchpad-tile.is-hovered {
+    background-color: rgba(32, 40, 58, 0.96);
+}
+
+.laptop-launchpad-tile.is-pressed,
+.laptop-launchpad-tile.is-selected {
+    background-color: rgba(41, 50, 73, 0.98);
+    border-left-color: rgba(112, 171, 255, 0.34);
+    border-right-color: rgba(112, 171, 255, 0.34);
+    border-top-color: rgba(112, 171, 255, 0.42);
+    border-bottom-color: rgba(112, 171, 255, 0.42);
+}
+
+.laptop-section-header {
+    margin-bottom: 18px;
+}
+
+.laptop-section-header__title {
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    -unity-font-style: bold;
+}
+
+.laptop-section-header__subtitle {
+    color: rgb(215, 224, 238);
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+.laptop-split-view {
+    flex-grow: 1;
+    flex-direction: row;
+    min-width: 0;
+    min-height: 0;
+}
+
+.laptop-sidebar {
+    width: 170px;
+    min-width: 170px;
+    margin-right: 16px;
+    padding-top: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(9, 13, 20, 0.50);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-sidebar__title {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
+.laptop-sidebar__item {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-radius: 12px;
+    color: rgb(226, 233, 247);
+    font-size: 11px;
+    margin-bottom: 8px;
+    opacity: 0.86;
+    -unity-text-align: middle-left;
+}
+
+.laptop-sidebar__item.is-hovered {
+    background-color: rgba(255, 255, 255, 0.07);
+    opacity: 1;
+}
+
+.laptop-sidebar__item.is-selected {
+    background-color: rgba(77, 136, 255, 0.24);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(120, 168, 255, 0.28);
+    border-right-color: rgba(120, 168, 255, 0.18);
+    border-top-color: rgba(120, 168, 255, 0.22);
+    border-bottom-color: rgba(120, 168, 255, 0.22);
+    opacity: 1;
+}
+
+.laptop-sidebar__item.is-pressed {
+    background-color: rgba(77, 136, 255, 0.30);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(120, 168, 255, 0.30);
+    border-right-color: rgba(120, 168, 255, 0.20);
+    border-top-color: rgba(120, 168, 255, 0.24);
+    border-bottom-color: rgba(120, 168, 255, 0.24);
+    opacity: 1;
+}
+
+.laptop-main-view,
+.laptop-conversation,
+.laptop-detail-pane,
+.laptop-music-player,
+.laptop-game-panel,
+.laptop-settings-section,
+.laptop-card-grid,
+.laptop-photo-grid,
+.laptop-arcade-host {
+    flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.laptop-main-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.laptop-grid-card {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 176px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(14, 19, 28, 0.78);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.07);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+
+.laptop-grid-card.is-hovered {
+    background-color: rgba(23, 31, 45, 0.92);
+}
+
+.laptop-grid-card.is-selected {
+    background-color: rgba(28, 38, 56, 0.96);
+    border-left-color: rgba(103, 149, 255, 0.30);
+    border-right-color: rgba(103, 149, 255, 0.18);
+    border-top-color: rgba(103, 149, 255, 0.22);
+    border-bottom-color: rgba(103, 149, 255, 0.22);
+}
+
+.laptop-grid-card__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.laptop-grid-card__body {
+    color: rgb(217, 224, 235);
+    font-size: 12px;
+    opacity: 0.82;
+    white-space: normal;
+}
+
+.laptop-conversation {
+    padding-left: 12px;
+    padding-top: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(10, 14, 22, 0.52);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-message-bubble {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(18, 24, 34, 0.90);
+    border-radius: 16px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-message-bubble.is-hovered {
+    background-color: rgba(26, 33, 47, 0.94);
+}
+
+.laptop-message-bubble.is-selected {
+    background-color: rgba(34, 44, 62, 0.98);
+    border-left-color: rgba(91, 143, 255, 0.46);
+    border-right-color: rgba(91, 143, 255, 0.28);
+    border-top-color: rgba(91, 143, 255, 0.30);
+    border-bottom-color: rgba(91, 143, 255, 0.30);
+}
+
+.laptop-message-bubble.is-incoming {
+    background-color: rgba(28, 36, 51, 0.88);
+}
+
+.laptop-message-bubble.is-highlighted {
+    border-left-color: rgba(77, 136, 255, 0.58);
+    border-right-color: rgba(77, 136, 255, 0.36);
+    border-top-color: rgba(77, 136, 255, 0.36);
+    border-bottom-color: rgba(77, 136, 255, 0.36);
+}
+
+.laptop-message-bubble__speaker {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.laptop-message-bubble__body {
+    color: rgb(221, 229, 241);
+    font-size: 11px;
+}
+
+.laptop-message-actions {
+    flex-direction: row;
+    margin-top: 12px;
+}
+
+.laptop-primary-button,
+.laptop-secondary-button,
+.laptop-setting-action,
+.laptop-snake-button,
+.laptop-tab-button {
+    height: 36px;
+    margin-right: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+    background-color: rgba(31, 39, 55, 0.88);
+    border-radius: 12px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.06);
+    border-right-color: rgba(255, 255, 255, 0.06);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-primary-button {
+    background-color: rgba(76, 132, 255, 0.95);
+}
+
+.laptop-secondary-button {
+    background-color: rgba(34, 41, 54, 0.94);
+}
+
+.laptop-primary-button.is-hovered,
+.laptop-secondary-button.is-hovered,
+.laptop-setting-action.is-hovered,
+.laptop-snake-button.is-hovered,
+.laptop-tab-button.is-hovered {
+    background-color: rgba(52, 65, 92, 0.96);
+}
+
+.laptop-primary-button.is-hovered {
+    background-color: rgba(94, 148, 255, 0.98);
+}
+
+.laptop-timeline {
+    width: 280px;
+    margin-right: 16px;
+}
+
+.laptop-timeline-item {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(8, 12, 18, 0.56);
+    border-radius: 16px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-timeline-item.is-hovered {
+    background-color: rgba(16, 22, 33, 0.88);
+}
+
+.laptop-timeline-item.is-selected {
+    background-color: rgba(22, 29, 43, 0.94);
+    border-left-color: rgba(101, 152, 255, 0.34);
+    border-right-color: rgba(101, 152, 255, 0.18);
+    border-top-color: rgba(101, 152, 255, 0.24);
+    border-bottom-color: rgba(101, 152, 255, 0.24);
+}
+
+.laptop-timeline-item__time {
+    color: rgb(128, 168, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.laptop-timeline-item__title {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.laptop-timeline-item__body,
+.laptop-summary-card__body,
+.laptop-note-card__body,
+.laptop-photo-tile__title,
+.laptop-mini-stat__value,
+.laptop-settings-section__body,
+.laptop-launchpad-tile__description {
+    color: rgb(217, 224, 235);
+    font-size: 11px;
+}
+
+.laptop-detail-pane {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(10, 14, 20, 0.54);
+    border-radius: 18px;
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+    min-width: 0;
+}
+
+.laptop-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    background-color: rgba(16, 20, 28, 0.90);
+    border-radius: 16px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(120, 170, 255, 0.16);
+    border-right-color: rgba(120, 170, 255, 0.08);
+    border-top-color: rgba(120, 170, 255, 0.12);
+    border-bottom-color: rgba(120, 170, 255, 0.12);
+}
+
+.laptop-summary-card.is-hovered {
+    background-color: rgba(22, 28, 39, 0.96);
+}
+
+.laptop-summary-card.is-pressed,
+.laptop-summary-card.is-selected {
+    background-color: rgba(30, 38, 54, 0.98);
+    border-left-color: rgba(120, 170, 255, 0.34);
+    border-right-color: rgba(120, 170, 255, 0.18);
+    border-top-color: rgba(120, 170, 255, 0.24);
+    border-bottom-color: rgba(120, 170, 255, 0.24);
+}
+
+.laptop-preview-card {
+    background-color: rgba(12, 16, 24, 0.76);
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-summary-card__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.laptop-summary-card__body {
+    margin-bottom: 10px;
+}
+
+.laptop-summary-card__footer {
+    color: rgb(128, 168, 255);
+    font-size: 12px;
+}
+
+.laptop-card-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.laptop-note-card {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 188px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(246, 220, 106, 0.14);
+    border-radius: 16px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(246, 220, 106, 0.18);
+    border-right-color: rgba(246, 220, 106, 0.12);
+    border-top-color: rgba(246, 220, 106, 0.16);
+    border-bottom-color: rgba(246, 220, 106, 0.16);
+}
+
+.laptop-note-card.is-hovered {
+    background-color: rgba(246, 220, 106, 0.20);
+}
+
+.laptop-note-card.is-selected {
+    background-color: rgba(246, 220, 106, 0.26);
+    border-left-color: rgba(246, 220, 106, 0.28);
+    border-right-color: rgba(246, 220, 106, 0.18);
+    border-top-color: rgba(246, 220, 106, 0.24);
+    border-bottom-color: rgba(246, 220, 106, 0.24);
+}
+
+.laptop-note-card.is-pressed {
+    background-color: rgba(246, 220, 106, 0.30);
+    border-left-color: rgba(246, 220, 106, 0.34);
+    border-right-color: rgba(246, 220, 106, 0.22);
+    border-top-color: rgba(246, 220, 106, 0.28);
+    border-bottom-color: rgba(246, 220, 106, 0.28);
+}
+
+.laptop-note-card__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.laptop-note-card__body {
+    white-space: normal;
+}
+
+.laptop-mini-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 108px;
+    margin-right: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(10, 14, 20, 0.76);
+    border-radius: 14px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-mini-stat.is-hovered {
+    background-color: rgba(19, 25, 37, 0.92);
+}
+
+.laptop-mini-stat.is-selected {
+    background-color: rgba(26, 34, 49, 0.96);
+    border-left-color: rgba(103, 149, 255, 0.24);
+    border-right-color: rgba(103, 149, 255, 0.16);
+    border-top-color: rgba(103, 149, 255, 0.20);
+    border-bottom-color: rgba(103, 149, 255, 0.20);
+}
+
+.laptop-mini-stat.is-pressed {
+    background-color: rgba(32, 42, 60, 0.98);
+    border-left-color: rgba(103, 149, 255, 0.30);
+    border-right-color: rgba(103, 149, 255, 0.18);
+    border-top-color: rgba(103, 149, 255, 0.24);
+    border-bottom-color: rgba(103, 149, 255, 0.24);
+}
+
+.laptop-mini-stat__title {
+    color: rgb(128, 168, 255);
+    font-size: 11px;
+    -unity-font-style: bold;
+    margin-bottom: 3px;
+}
+
+.laptop-mini-stat__value {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.laptop-music-player {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(10, 14, 20, 0.54);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-album-art {
+    width: 220px;
+    height: 220px;
+    margin-bottom: 14px;
+    background-color: rgba(62, 116, 255, 0.78);
+    border-radius: 24px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.12);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.laptop-album-art.is-hovered {
+    background-color: rgba(76, 128, 255, 0.92);
+}
+
+.laptop-album-art.is-selected {
+    background-color: rgba(88, 138, 255, 0.96);
+    border-left-color: rgba(255, 255, 255, 0.18);
+    border-right-color: rgba(255, 255, 255, 0.18);
+    border-top-color: rgba(255, 255, 255, 0.22);
+    border-bottom-color: rgba(255, 255, 255, 0.22);
+}
+
+.laptop-album-title {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.laptop-album-subtitle {
+    color: rgb(215, 224, 238);
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.laptop-music-controls {
+    flex-direction: row;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.laptop-visualizer {
+    flex-direction: row;
+    align-items: flex-end;
+    height: 96px;
+}
+
+.laptop-visualizer__bar {
+    width: 16px;
+    margin-right: 8px;
+    border-radius: 8px;
+}
+
+.laptop-photo-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.laptop-photo-tile {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 168px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(10, 14, 20, 0.56);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-photo-tile.is-hovered {
+    background-color: rgba(18, 24, 34, 0.88);
+}
+
+.laptop-photo-tile.is-selected {
+    background-color: rgba(24, 31, 44, 0.94);
+    border-left-color: rgba(102, 149, 255, 0.26);
+    border-right-color: rgba(102, 149, 255, 0.16);
+    border-top-color: rgba(102, 149, 255, 0.20);
+    border-bottom-color: rgba(102, 149, 255, 0.20);
+}
+
+.laptop-photo-tile.is-pressed {
+    background-color: rgba(30, 39, 56, 0.98);
+    border-left-color: rgba(102, 149, 255, 0.30);
+    border-right-color: rgba(102, 149, 255, 0.18);
+    border-top-color: rgba(102, 149, 255, 0.24);
+    border-bottom-color: rgba(102, 149, 255, 0.24);
+}
+
+.laptop-photo-tile__preview {
+    width: 146px;
+    height: 94px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.12);
+    border-right-color: rgba(255, 255, 255, 0.12);
+    border-top-color: rgba(255, 255, 255, 0.18);
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+
+.laptop-photo-tile__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.laptop-settings-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.laptop-settings-section {
+    width: 244px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(10, 14, 20, 0.56);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-settings-section__title {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.laptop-settings-section__body {
+    margin-bottom: 10px;
+}
+
+.laptop-settings-section__controls {
+    flex-direction: column;
+}
+
+.laptop-setting-row {
+    margin-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.laptop-setting-row__label {
+    color: rgb(232, 237, 247);
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.laptop-setting-toggle {
+    color: rgb(255, 255, 255);
+}
+
+.laptop-setting-slider {
+    width: 100%;
+}
+
+.laptop-setting-action.is-hovered,
+.laptop-setting-action.is-pressed,
+.laptop-setting-action.is-selected {
+    background-color: rgba(52, 65, 92, 0.98);
+    border-left-color: rgba(112, 171, 255, 0.28);
+    border-right-color: rgba(112, 171, 255, 0.28);
+    border-top-color: rgba(112, 171, 255, 0.32);
+    border-bottom-color: rgba(112, 171, 255, 0.32);
+}
+
+.laptop-tab-strip {
+    flex-direction: row;
+    margin-bottom: 14px;
+}
+
+.laptop-tab-button {
+    background-color: rgba(24, 31, 43, 0.84);
+}
+
+.laptop-tab-button.is-active {
+    background-color: rgba(78, 132, 255, 0.94);
+}
+
+.laptop-tab-button.is-pressed {
+    background-color: rgba(96, 146, 255, 0.98);
+}
+
+.laptop-arcade-host {
+    flex-direction: column;
+}
+
+.laptop-game-panel {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(10, 14, 20, 0.56);
+    border-radius: 18px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-game-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.laptop-game-header__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 17px;
+}
+
+.laptop-game-header__subtitle {
+    color: rgb(217, 224, 235);
+    font-size: 12px;
+}
+
+.laptop-game-score {
+    color: rgb(128, 168, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.laptop-snake-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 348px;
+    margin-bottom: 12px;
+}
+
+.laptop-snake-cell {
+    width: 28px;
+    height: 28px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    background-color: rgba(27, 33, 45, 0.92);
+    border-radius: 7px;
+}
+
+.laptop-snake-cell.is-snake {
+    background-color: rgba(105, 187, 95, 0.96);
+}
+
+.laptop-snake-cell.is-head {
+    background-color: rgba(173, 255, 141, 0.96);
+}
+
+.laptop-snake-cell.is-food {
+    background-color: rgba(255, 91, 91, 0.98);
+}
+
+.laptop-snake-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.laptop-snake-button {
+    width: 72px;
+    margin-bottom: 10px;
+}
+
+.laptop-memory-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 420px;
+}
+
+.laptop-memory-card {
+    width: 96px;
+    height: 96px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(28, 34, 48, 0.94);
+    border-radius: 16px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.04);
+    border-right-color: rgba(255, 255, 255, 0.04);
+    border-top-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.laptop-memory-card.is-hovered {
+    background-color: rgba(38, 45, 62, 0.98);
+}
+
+.laptop-memory-card.is-pressed {
+    background-color: rgba(53, 64, 92, 0.98);
+}
+
+.laptop-memory-card__front {
+    display: none;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 26px;
+}
+
+.laptop-memory-card__back {
+    color: rgb(157, 173, 196);
+    -unity-font-style: bold;
+    font-size: 26px;
+}
+
+.laptop-memory-card.is-revealed {
+    background-color: rgba(73, 123, 255, 0.92);
+}
+
+.laptop-toast {
+    width: 280px;
+    margin-bottom: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(11, 14, 20, 0.92);
+    border-radius: 16px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.05);
+    border-right-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.laptop-toast__title {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.laptop-toast__body {
+    color: rgb(218, 226, 240);
+    font-size: 11px;
+}

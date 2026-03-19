@@ -1,0 +1,20 @@
+{
+  "name": "ItemInteractionSystem.Editor",
+  "rootNamespace": "ItemInteraction.Editor",
+  "references": [
+    "ItemInteractionSystem.Runtime",
+    "Blocks.Gameplay.Core",
+    "Unity.Netcode.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,507 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "Assembly-CSharp/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Common": "1.0.0",
+          "Blocks.Gameplay.Core": "1.0.0",
+          "Blocks.Gameplay.Core.Editor": "1.0.0",
+          "Blocks.Gameplay.Core.Story.Editor": "1.0.0",
+          "Blocks.Gameplay.Platformer": "1.0.0",
+          "Blocks.Gameplay.Shooter": "1.0.0",
+          "Blocks.Gameplay.Shooter.Editor": "1.0.0",
+          "Blocks.Sessions": "1.0.0",
+          "Blocks.Sessions.Common": "1.0.0",
+          "ItemInteractionSystem.Editor": "1.0.0",
+          "ItemInteractionSystem.Runtime": "1.0.0",
+          "ModularStoryFlow.Editor": "1.0.0",
+          "ModularStoryFlow.Runtime.Bridges": "1.0.0",
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0",
+          "ModularStoryFlow.Runtime.Save": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Assembly-CSharp.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Assembly-CSharp.dll": {}
+        }
+      },
+      "Blocks.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "compile": {
+          "bin/placeholder/Blocks.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Common.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Sessions.Common": "1.0.0",
+          "ItemInteractionSystem.Runtime": "1.0.0",
+          "ModularStoryFlow.Runtime.Bridges": "1.0.0",
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Core.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Core.Editor/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core": "1.0.0",
+          "ItemInteractionSystem.Runtime": "1.0.0",
+          "ModularStoryFlow.Editor": "1.0.0",
+          "ModularStoryFlow.Runtime.Bridges": "1.0.0",
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Core.Editor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Core.Editor.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Core.Story.Editor/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core": "1.0.0",
+          "Blocks.Gameplay.Core.Editor": "1.0.0",
+          "ItemInteractionSystem.Runtime": "1.0.0",
+          "ModularStoryFlow.Editor": "1.0.0",
+          "ModularStoryFlow.Runtime.Bridges": "1.0.0",
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Core.Story.Editor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Core.Story.Editor.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Platformer/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Platformer.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Platformer.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Shooter/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Shooter.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Shooter.dll": {}
+        }
+      },
+      "Blocks.Gameplay.Shooter.Editor/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core.Editor": "1.0.0",
+          "Blocks.Gameplay.Shooter": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Gameplay.Shooter.Editor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Gameplay.Shooter.Editor.dll": {}
+        }
+      },
+      "Blocks.Sessions/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Common": "1.0.0",
+          "Blocks.Sessions.Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Sessions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Sessions.dll": {}
+        }
+      },
+      "Blocks.Sessions.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Blocks.Sessions.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Blocks.Sessions.Common.dll": {}
+        }
+      },
+      "ItemInteractionSystem.Editor/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Blocks.Gameplay.Core": "1.0.0",
+          "ItemInteractionSystem.Runtime": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ItemInteractionSystem.Editor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ItemInteractionSystem.Editor.dll": {}
+        }
+      },
+      "ItemInteractionSystem.Runtime/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ItemInteractionSystem.Runtime.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ItemInteractionSystem.Runtime.dll": {}
+        }
+      },
+      "ModularStoryFlow.Editor/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Bridges": "1.0.0",
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0",
+          "ModularStoryFlow.Runtime.Save": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Editor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Editor.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Bridges/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Player": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Bridges.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Bridges.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Channels/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Channels.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Channels.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Core.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Player/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Channels": "1.0.0",
+          "ModularStoryFlow.Runtime.Core": "1.0.0",
+          "ModularStoryFlow.Runtime.Save": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Player.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Player.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Save/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Save.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ModularStoryFlow.Runtime.Save.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Assembly-CSharp/1.0.0": {
+      "type": "project",
+      "path": "Assembly-CSharp.csproj",
+      "msbuildProject": "Assembly-CSharp.csproj"
+    },
+    "Blocks.Common/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Common.csproj",
+      "msbuildProject": "Blocks.Common.csproj"
+    },
+    "Blocks.Gameplay.Core/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Core.csproj",
+      "msbuildProject": "Blocks.Gameplay.Core.csproj"
+    },
+    "Blocks.Gameplay.Core.Editor/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Core.Editor.csproj",
+      "msbuildProject": "Blocks.Gameplay.Core.Editor.csproj"
+    },
+    "Blocks.Gameplay.Core.Story.Editor/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Core.Story.Editor.csproj",
+      "msbuildProject": "Blocks.Gameplay.Core.Story.Editor.csproj"
+    },
+    "Blocks.Gameplay.Platformer/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Platformer.csproj",
+      "msbuildProject": "Blocks.Gameplay.Platformer.csproj"
+    },
+    "Blocks.Gameplay.Shooter/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Shooter.csproj",
+      "msbuildProject": "Blocks.Gameplay.Shooter.csproj"
+    },
+    "Blocks.Gameplay.Shooter.Editor/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Gameplay.Shooter.Editor.csproj",
+      "msbuildProject": "Blocks.Gameplay.Shooter.Editor.csproj"
+    },
+    "Blocks.Sessions/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Sessions.csproj",
+      "msbuildProject": "Blocks.Sessions.csproj"
+    },
+    "Blocks.Sessions.Common/1.0.0": {
+      "type": "project",
+      "path": "Blocks.Sessions.Common.csproj",
+      "msbuildProject": "Blocks.Sessions.Common.csproj"
+    },
+    "ItemInteractionSystem.Editor/1.0.0": {
+      "type": "project",
+      "path": "ItemInteractionSystem.Editor.csproj",
+      "msbuildProject": "ItemInteractionSystem.Editor.csproj"
+    },
+    "ItemInteractionSystem.Runtime/1.0.0": {
+      "type": "project",
+      "path": "ItemInteractionSystem.Runtime.csproj",
+      "msbuildProject": "ItemInteractionSystem.Runtime.csproj"
+    },
+    "ModularStoryFlow.Editor/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Editor.csproj",
+      "msbuildProject": "ModularStoryFlow.Editor.csproj"
+    },
+    "ModularStoryFlow.Runtime.Bridges/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Runtime.Bridges.csproj",
+      "msbuildProject": "ModularStoryFlow.Runtime.Bridges.csproj"
+    },
+    "ModularStoryFlow.Runtime.Channels/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Runtime.Channels.csproj",
+      "msbuildProject": "ModularStoryFlow.Runtime.Channels.csproj"
+    },
+    "ModularStoryFlow.Runtime.Core/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Runtime.Core.csproj",
+      "msbuildProject": "ModularStoryFlow.Runtime.Core.csproj"
+    },
+    "ModularStoryFlow.Runtime.Player/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Runtime.Player.csproj",
+      "msbuildProject": "ModularStoryFlow.Runtime.Player.csproj"
+    },
+    "ModularStoryFlow.Runtime.Save/1.0.0": {
+      "type": "project",
+      "path": "ModularStoryFlow.Runtime.Save.csproj",
+      "msbuildProject": "ModularStoryFlow.Runtime.Save.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "Assembly-CSharp >= 1.0.0",
+      "Blocks.Common >= 1.0.0",
+      "Blocks.Gameplay.Core >= 1.0.0",
+      "Blocks.Gameplay.Core.Editor >= 1.0.0",
+      "Blocks.Gameplay.Core.Story.Editor >= 1.0.0",
+      "Blocks.Gameplay.Platformer >= 1.0.0",
+      "Blocks.Gameplay.Shooter >= 1.0.0",
+      "Blocks.Gameplay.Shooter.Editor >= 1.0.0",
+      "Blocks.Sessions >= 1.0.0",
+      "Blocks.Sessions.Common >= 1.0.0",
+      "ItemInteractionSystem.Editor >= 1.0.0",
+      "ItemInteractionSystem.Runtime >= 1.0.0",
+      "ModularStoryFlow.Editor >= 1.0.0",
+      "ModularStoryFlow.Runtime.Bridges >= 1.0.0",
+      "ModularStoryFlow.Runtime.Channels >= 1.0.0",
+      "ModularStoryFlow.Runtime.Core >= 1.0.0",
+      "ModularStoryFlow.Runtime.Player >= 1.0.0",
+      "ModularStoryFlow.Runtime.Save >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "/Users/zladwu/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/zladwu/My project/Assembly-CSharp-Editor.csproj",
+      "projectName": "Assembly-CSharp-Editor",
+      "projectPath": "/Users/zladwu/My project/Assembly-CSharp-Editor.csproj",
+      "packagesPath": "/Users/zladwu/.nuget/packages/",
+      "outputPath": "/Users/zladwu/My project/Temp/obj/Assembly-CSharp-Editor/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/Users/zladwu/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {
+            "/Users/zladwu/My project/Assembly-CSharp.csproj": {
+              "projectPath": "/Users/zladwu/My project/Assembly-CSharp.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Common.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Common.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Core.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Core.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Core.Editor.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Core.Editor.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Core.Story.Editor.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Core.Story.Editor.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Platformer.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Platformer.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Shooter.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Shooter.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Gameplay.Shooter.Editor.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Gameplay.Shooter.Editor.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Sessions.Common.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Sessions.Common.csproj"
+            },
+            "/Users/zladwu/My project/Blocks.Sessions.csproj": {
+              "projectPath": "/Users/zladwu/My project/Blocks.Sessions.csproj"
+            },
+            "/Users/zladwu/My project/ItemInteractionSystem.Editor.csproj": {
+              "projectPath": "/Users/zladwu/My project/ItemInteractionSystem.Editor.csproj"
+            },
+            "/Users/zladwu/My project/ItemInteractionSystem.Runtime.csproj": {
+              "projectPath": "/Users/zladwu/My project/ItemInteractionSystem.Runtime.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Editor.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Editor.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Runtime.Bridges.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Bridges.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj"
+            },
+            "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj": {
+              "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/sdk/10.0.103/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ItemInteractionSystem.Runtime",
+  "rootNamespace": "ItemInteraction",
+  "references": [
+    "GUID:7efa726bf2f054e0585d0b1747d3a7cc"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="url(#arcadeBg)"/>
+  <path d="M22 25H42C45.866 25 49 28.134 49 32C49 35.866 45.866 39 42 39H36.6L34 43H30L27.4 39H22C18.134 39 15 35.866 15 32C15 28.134 18.134 25 22 25Z" fill="#FFF4E9"/>
+  <path d="M24 32H30" stroke="#FF8A26" stroke-width="2.8" stroke-linecap="round"/>
+  <path d="M27 29V35" stroke="#FF8A26" stroke-width="2.8" stroke-linecap="round"/>
+  <circle cx="38.5" cy="30" r="2.5" fill="#7B5BFF"/>
+  <circle cx="43.5" cy="34" r="2.5" fill="#FF4F88"/>
+  <defs>
+    <linearGradient id="arcadeBg" x1="8" y1="8" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB45C"/>
+      <stop offset="1" stop-color="#FF7A1A"/>
+    </linearGradient>
+  </defs>
+</svg>

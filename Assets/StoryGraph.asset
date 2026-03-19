@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64ec9fece76741fba15bea9cc6d65c3, type: 3}
+  m_Name: StoryGraph
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.StoryGraphAsset
+  graphId: graph_05291c52c84942c88d31cf24eaeab793
+  entryNodeId: node_86d89a5e4fbf45df91edf34980f06ad1
+  nodes:
+  - {fileID: 4930594254660058935}
+  - {fileID: 836366092890778404}
+  - {fileID: 5358630678736665265}
+  connections:
+  - connectionId: a554cfa97d664509aeb49a78306f0b6b
+    fromNodeId: node_86d89a5e4fbf45df91edf34980f06ad1
+    fromPortId: next
+    toNodeId: node_110b5840cc924997aecdcb78b62f92be
+    toPortId: in
+  - connectionId: 02ce3b0c276e46e4afac65262f9a35eb
+    fromNodeId: node_110b5840cc924997aecdcb78b62f92be
+    fromPortId: next
+    toNodeId: node_a40828fdf3ae4291ba95971ab1c10359
+    toPortId: in
+--- !u!114 &836366092890778404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: DialogueNodeAsset
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core:ModularStoryFlow.Runtime.Graph:DialogueNodeAsset
+  nodeId: node_110b5840cc924997aecdcb78b62f92be
+  editorPosition:
+    serializedVersion: 2
+    x: 326.8225
+    y: 50.46749
+    width: 213
+    height: 332
+  notes: 
+  speakerId: 
+  speakerDisplayName: Narrator
+  body: Dialogue line...
+  portraitKey: 
+  moodTag: 
+  autoAdvance: 0
+  autoAdvanceDelaySeconds: 1
+--- !u!114 &4930594254660058935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: StartNodeAsset
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core:ModularStoryFlow.Runtime.Graph:StartNodeAsset
+  nodeId: node_86d89a5e4fbf45df91edf34980f06ad1
+  editorPosition:
+    serializedVersion: 2
+    x: 47
+    y: 110.99999
+    width: 213
+    height: 144.00003
+  notes: 
+--- !u!114 &5358630678736665265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: TimelineNodeAsset
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core:ModularStoryFlow.Runtime.Graph:TimelineNodeAsset
+  nodeId: node_a40828fdf3ae4291ba95971ab1c10359
+  editorPosition:
+    serializedVersion: 2
+    x: 620.5325
+    y: 131.56752
+    width: 213
+    height: 208.00002
+  notes: 
+  cue: {fileID: 0}
+  waitForCompletion: 1

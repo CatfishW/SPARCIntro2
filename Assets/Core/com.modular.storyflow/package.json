@@ -1,0 +1,29 @@
+{
+  "name": "com.modular.storyflow",
+  "version": "1.0.0",
+  "displayName": "Modular Story Flow",
+  "description": "A modular, event-driven story and game flow framework for Unity 6 with GraphView authoring, branching narratives, dialogue, choices, timelines, state machines, save/load, samples, and setup tooling.",
+  "unity": "6000.0",
+  "keywords": [
+    "story",
+    "narrative",
+    "graph",
+    "dialogue",
+    "choices",
+    "timeline",
+    "state-machine",
+    "save-system",
+    "workflow"
+  ],
+  "author": {
+    "name": "OpenAI",
+    "url": "https://openai.com"
+  },
+  "samples": [
+    {
+      "displayName": "Quick Start",
+      "description": "A lightweight overlay UI, sample graph generator, and a custom playable asset to help you stand up a working story flow in minutes.",
+      "path": "Samples~/QuickStart"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "ModularStoryFlow.Editor",
+  "rootNamespace": "ModularStoryFlow.Editor",
+  "references": [
+    "ModularStoryFlow.Runtime.Core",
+    "ModularStoryFlow.Runtime.Channels",
+    "ModularStoryFlow.Runtime.Save",
+    "ModularStoryFlow.Runtime.Player",
+    "ModularStoryFlow.Runtime.Bridges"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,4 @@
+{"type":"server-started","port":52993,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:52993","screen_dir":"/Users/zladwu/My project/.superpowers/brainstorm/56494-1773709117"}
+{"type":"screen-added","file":"/Users/zladwu/My project/.superpowers/brainstorm/56494-1773709117/subtitle-style.html"}
+{"type":"screen-added","file":"/Users/zladwu/My project/.superpowers/brainstorm/56494-1773709117/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}

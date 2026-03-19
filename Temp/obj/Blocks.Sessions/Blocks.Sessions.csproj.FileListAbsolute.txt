@@ -1,0 +1,9 @@
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Sessions.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Sessions.dll
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Sessions.pdb
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.Sessions.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.Sessions.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.Sessions.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.S.3EA8C555.Up2Date
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.Sessions.dll
+/Users/zladwu/My project/Temp/obj/Blocks.Sessions/Blocks.Sessions.pdb

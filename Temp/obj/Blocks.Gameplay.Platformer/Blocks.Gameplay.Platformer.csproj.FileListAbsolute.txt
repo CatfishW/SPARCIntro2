@@ -1,0 +1,9 @@
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Platformer.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Platformer.dll
+/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Platformer.pdb
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.Gameplay.Platformer.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.Gameplay.Platformer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.Gameplay.Platformer.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.G.74162D0A.Up2Date
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.Gameplay.Platformer.dll
+/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Platformer/Blocks.Gameplay.Platformer.pdb
