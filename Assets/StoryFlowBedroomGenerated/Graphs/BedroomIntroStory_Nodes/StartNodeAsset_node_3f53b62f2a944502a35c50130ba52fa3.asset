@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1698647bb7cdd462083b00cb5736fe5a, type: 3}
+  m_Name: StartNodeAsset_node_3f53b62f2a944502a35c50130ba52fa3
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.StartNodeAsset
+  nodeId: node_3f53b62f2a944502a35c50130ba52fa3
+  editorPosition:
+    serializedVersion: 2
+    x: 120
+    y: 200
+    width: 280
+    height: 220
+  notes: 

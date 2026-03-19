@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c1285bab7b441148786827c4d85915, type: 3}
+  m_Name: DelayNodeAsset_node_31e5cf0ae22d4fe8ac4bc950a43c53fe
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.DelayNodeAsset
+  nodeId: node_31e5cf0ae22d4fe8ac4bc950a43c53fe
+  editorPosition:
+    serializedVersion: 2
+    x: 320
+    y: 120
+    width: 280
+    height: 220
+  notes: 
+  seconds: 0.6

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b157aeb3ebfb04486bdeaccb046a82be, type: 3}
+  m_Name: StoryFlowProjectConfig
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Player::ModularStoryFlow.Runtime.Player.StoryFlowProjectConfig
+  graphRegistry: {fileID: 11400000, guid: 7b9ba353d2a97473fbfd5c1d2c3c2590, type: 2}
+  variableCatalog: {fileID: 11400000, guid: 50f0aa402de1841bb951d7d4ff51d644, type: 2}
+  stateMachineCatalog: {fileID: 11400000, guid: eb8ffabf67dc14e68ac83585b191de9a, type: 2}
+  timelineCatalog: {fileID: 11400000, guid: d4f910bc5b26a48ada71d8c7249b5846, type: 2}
+  channels: {fileID: 11400000, guid: ebaaf3cc13c3b4b3d91645a1c18f5ba5, type: 2}
+  saveProvider: {fileID: 11400000, guid: 519f80eb6078f4697aa9f7c7af079773, type: 2}

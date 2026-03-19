@@ -1,0 +1,25 @@
+{
+    "name": "Blocks.Gameplay.Core.Story.Editor",
+    "rootNamespace": "Blocks.Gameplay.Core.Story.Editor",
+    "references": [
+        "Blocks.Gameplay.Core",
+        "Blocks.Gameplay.Core.Editor",
+        "ModularStoryFlow.Editor",
+        "ModularStoryFlow.Runtime.Core",
+        "ModularStoryFlow.Runtime.Player",
+        "ModularStoryFlow.Runtime.Bridges",
+        "ModularStoryFlow.Runtime.Channels",
+        "ItemInteractionSystem.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

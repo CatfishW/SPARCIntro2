@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fd7bedfccf848ecb9e79a6c3457cd3, type: 3}
+  m_Name: StoryFlowChannels
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Channels::ModularStoryFlow.Runtime.Channels.StoryFlowChannels
+  dialogueRequests: {fileID: 11400000, guid: 685078d5ff1a248e388ed35934096c8e, type: 2}
+  advanceCommands: {fileID: 11400000, guid: 294bbec1372674123aff72d04520e9e5, type: 2}
+  choiceRequests: {fileID: 11400000, guid: 66475b8cf140a47158b63dea071ee22a, type: 2}
+  choiceSelections: {fileID: 11400000, guid: 5775788edb7af43449cd1e49726833c8, type: 2}
+  timelineRequests: {fileID: 11400000, guid: 5de8d574ff38940479a8e568a200891a, type: 2}
+  timelineResults: {fileID: 11400000, guid: 2a0eafa1e8c294213b0d67135a555a3b, type: 2}
+  raisedSignals: {fileID: 11400000, guid: 77cd671c9fbaa4ebe81a32ca776987eb, type: 2}
+  externalSignals: {fileID: 11400000, guid: 60c5b24dfd729432ca3a8fcf7cf987ef, type: 2}
+  stateChanged: {fileID: 11400000, guid: c64fac9fdd05b491eba8983e15c69f3b, type: 2}
+  nodeNotifications: {fileID: 11400000, guid: 67ab0cf8b39a245c49b5eb175c7751d1, type: 2}
+  graphNotifications: {fileID: 11400000, guid: f40f401a6e5b54e23b7f78745d2b4870, type: 2}
