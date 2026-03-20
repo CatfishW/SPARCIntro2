@@ -73,9 +73,21 @@ namespace Blocks.Gameplay.Core.Story
         public void Open()
         {
             EnsureBuilt();
+            ResolveRuntimeReferences();
             if (IsOpen)
             {
                 return;
+            }
+
+            if (overlay == null)
+            {
+                return;
+            }
+
+            if (uiDocument != null)
+            {
+                EnsurePanelSettingsBound();
+                uiDocument.sortingOrder = Mathf.Max(uiDocument.sortingOrder, 680);
             }
 
             currentPageIndex = Mathf.Clamp(currentPageIndex, 0, Mathf.Max(0, pageTitles.Length - 1));
@@ -109,9 +121,18 @@ namespace Blocks.Gameplay.Core.Story
 
         public void HideImmediate()
         {
+            var wasOpen = IsOpen;
             EnsureBuilt();
-            overlay.style.display = DisplayStyle.None;
+            if (overlay != null)
+            {
+                overlay.style.display = DisplayStyle.None;
+            }
+
             IsOpen = false;
+            if (wasOpen)
+            {
+                controlLock?.Release();
+            }
         }
 
         private void EnsureBuilt()
@@ -124,29 +145,16 @@ namespace Blocks.Gameplay.Core.Story
             uiDocument = uiDocument != null ? uiDocument : GetComponent<UIDocument>();
             if (uiDocument == null)
             {
+                uiDocument = gameObject.AddComponent<UIDocument>();
+            }
+
+            if (uiDocument == null)
+            {
                 return;
             }
 
-            if (uiDocument.panelSettings == null)
-            {
-                if (panelSettings != null)
-                {
-                    uiDocument.panelSettings = panelSettings;
-                }
-                else
-                {
-                    var anyDocument = FindFirstObjectByType<UIDocument>(FindObjectsInactive.Include);
-                    if (anyDocument != null && anyDocument != uiDocument && anyDocument.panelSettings != null)
-                    {
-                        uiDocument.panelSettings = anyDocument.panelSettings;
-                    }
-                    else
-                    {
-                        panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
-                        uiDocument.panelSettings = panelSettings;
-                    }
-                }
-            }
+            EnsurePanelSettingsBound();
+            uiDocument.sortingOrder = Mathf.Max(uiDocument.sortingOrder, 680);
 
             var root = uiDocument.rootVisualElement;
             root.Clear();
@@ -259,6 +267,50 @@ namespace Blocks.Gameplay.Core.Story
             built = true;
         }
 
+        private void ResolveRuntimeReferences()
+        {
+            if (controlLock != null)
+            {
+                return;
+            }
+
+            controlLock = GetComponentInParent<ClassroomPlayerControlLock>();
+            if (controlLock == null)
+            {
+                controlLock = FindFirstObjectByType<ClassroomPlayerControlLock>();
+            }
+        }
+
+        private void EnsurePanelSettingsBound()
+        {
+            if (uiDocument == null || uiDocument.panelSettings != null)
+            {
+                return;
+            }
+
+            if (panelSettings != null)
+            {
+                uiDocument.panelSettings = panelSettings;
+                return;
+            }
+
+            var anyDocuments = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < anyDocuments.Length; index++)
+            {
+                var candidate = anyDocuments[index];
+                if (candidate == null || candidate == uiDocument || candidate.panelSettings == null)
+                {
+                    continue;
+                }
+
+                uiDocument.panelSettings = candidate.panelSettings;
+                return;
+            }
+
+            panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
+            uiDocument.panelSettings = panelSettings;
+        }
+
         private void ApplyPage()
         {
             var maxPage = Mathf.Min(pageTitles.Length, pageBodies.Length) - 1;
@@ -275,7 +327,7 @@ namespace Blocks.Gameplay.Core.Story
             rightTitle.text = pageTitles[secondaryIndex];
             rightBody.text = pageBodies[secondaryIndex];
 
-            var imageKey = secondaryIndex < pageImageResourceKeys.Length ? pageImageResourceKeys[secondaryIndex] : string.Empty;
+            var imageKey = currentPageIndex < pageImageResourceKeys.Length ? pageImageResourceKeys[currentPageIndex] : string.Empty;
             if (!string.IsNullOrWhiteSpace(imageKey))
             {
                 var texture = Resources.Load<Texture2D>(imageKey);

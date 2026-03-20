@@ -284,3 +284,103 @@ Recommended split:
 - Let optional NPC conversations teach facts and adjust tone without forcing every optional branch through one linear graph.
 
 That keeps the scene readable, preserves player freedom, and avoids turning the story graph into an unreadable state explosion.
+
+## Implemented Runtime Branch Map (Classroom -> Lab)
+
+This section reflects the runtime branch map now used by classroom scripts:
+
+1. `FreshSpawn`:
+- Intro delay and mission framing subtitle.
+- Story state set to `BriefingActive`.
+
+2. `BriefingActive`:
+- Player must engage at least one meaningful classroom branch.
+- Teacher `Talk` branch now starts with `Scripted Talk / Free Chat / Leave`.
+
+3. `ExplorationActive`:
+- Science evidence is gathered via NPC and environment interactions:
+`TeacherSafetyExplained`, `FriendTalked`, `SkepticTalked`, `BoardExamined`, `DeskExamined`, `ShelfBookRead`, `ClockChecked`.
+- Volunteer option unlocks when evidence threshold is met.
+
+4. `DoorReady`:
+- Set when volunteer confirmation is accepted or explicit `LabClearanceEarned` signal is raised.
+- Entrance door interaction changes to lab-ready state.
+
+5. `TransitionCommitted`:
+- Door confirmation raises `DoorConfirmed`.
+- Scene transition commits to `LabMiniEntryScene`.
+
+## Free Chat LLM Protocol
+
+Free chat uses `https://game.agaii.org/mllm/v1` with:
+
+- model auto-detection from `GET /models`,
+- streaming output parsing from `/chat/completions`,
+- concise output guardrails (`max_tokens` cap + concise system prompt),
+- `chat_template_kwargs.enable_thinking=false`.
+
+Required response contract:
+
+```
+SAY: <short in-character reply>
+ACTIONS: <comma-separated action tokens or none>
+```
+
+Action tokens currently supported:
+
+- `dance`
+- `jump`
+- `surprised`
+- `lie_down`
+- `follow_player_short`
+- `go_talk_nia`
+- `go_talk_theo`
+- `go_talk_mira`
+- `start_quiz`
+
+## Camera/Control Rules
+
+- Only NPC conversation flows use presentation mode:
+  - movement lock
+  - HUD hidden
+  - speaker-focus conversation camera movement
+- Item interactions (`board`, `teacher desk`, `reference shelf`, `wall clock`) are non-presentation and do not move the camera.
+- Free chat runs inside NPC presentation mode and restores controls/HUD/camera cleanly on close.
+
+## Hidden Knowledge Quiz Flow
+
+The hidden quiz is a UI Toolkit overlay triggerable by NPC action (`start_quiz`):
+
+- countdown start
+- timed rounds
+- per-question options
+- immediate feedback/explanations
+- score + completion grade
+- clean control lock release on exit
+
+The quiz reinforces mission-critical knowledge:
+
+- airway vs esophagus route
+- epiglottis role
+- stomach acidity timing risk
+- small intestine absorption target
+
+## Voiceover Pipeline
+
+Classroom dialogue voice path now supports:
+
+1. Static pre-generated clips in `Resources/Audio/Story/Classroom`.
+2. Runtime TTS fallback for missing lines via `ClassroomNpcRuntimeVoiceoverService`.
+3. Runtime clip caching and subtitle presenter integration via `ClassroomStoryRuntimeVoiceCache`.
+
+Subtitle typewriter timing is adjusted to clip duration when audio is present.
+
+## Ambient NPC Chatter
+
+Ambient NPC-to-NPC chatter runs continuously on a light cadence:
+
+- selects NPC pairs every ~10-18 seconds,
+- requests short two-line exchanges from LLM,
+- renders world chat bubbles over speakers.
+
+To avoid API/audio spam, ambient chatter is text-only and does not trigger voice generation.

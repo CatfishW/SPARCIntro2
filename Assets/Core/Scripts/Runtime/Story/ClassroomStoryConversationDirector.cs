@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ItemInteraction;
 using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Events;
@@ -46,6 +49,21 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private StoryNpcAgent skepticNpc;
         [SerializeField] private ClassroomStoryConversationPresentationController presentationController;
         [SerializeField] private ClassroomBodyKnowledgeBookUi knowledgeBookUi;
+        [SerializeField] private ClassroomBodyKnowledgeQuizUi knowledgeQuizUi;
+        [SerializeField] private ClassroomLlmService llmService;
+        [SerializeField] private ClassroomNpcFreeChatUi freeChatUi;
+        [SerializeField] private ClassroomNpcRuntimeVoiceoverService runtimeVoiceoverService;
+        [SerializeField] private ClassroomNpcActionExecutor npcActionExecutor;
+        [SerializeField] private ClassroomNpcAmbientChatterLoop ambientChatterLoop;
+        [SerializeField, TextArea(4, 12)] private string freeChatSystemPrompt =
+            "You are roleplaying one NPC in a classroom preparing for a miniaturized biology mission. " +
+            "Reply briefly and naturally. Keep responses to 1-2 short sentences. " +
+            "Always output exactly this format:\n" +
+            "SAY: <what the NPC says>\n" +
+            "ACTIONS: <comma-separated actions or none>\n" +
+            "Allowed actions: dance,jump,surprised,lie_down,follow_player_short,start_quiz,go_talk_nia,go_talk_theo,go_talk_mira.";
+        [SerializeField, Min(2f)] private float llmRequestTimeoutSeconds = 30f;
+        [SerializeField, Min(8)] private int llmFreeChatMaxTokens = 136;
 
         [SerializeField] private InteractableItem boardInteractable;
         [SerializeField] private InteractableItem deskInteractable;
@@ -78,6 +96,7 @@ namespace Blocks.Gameplay.Core.Story
         private string pendingChoiceRequestId = string.Empty;
         private string pendingChoicePortId = string.Empty;
         private bool pendingChoiceResolved;
+        private readonly Queue<string> streamingDeltaQueue = new Queue<string>(64);
 
         private enum ClassroomPlayerAttitude
         {
@@ -151,6 +170,7 @@ namespace Blocks.Gameplay.Core.Story
             pendingChoiceResolved = false;
 
             presentationController?.EndConversation();
+            freeChatUi?.HideImmediate();
             UnregisterSceneHooks();
             UnregisterStoryChannels();
         }
@@ -194,6 +214,71 @@ namespace Blocks.Gameplay.Core.Story
             knowledgeBookUi = knowledgeBookUi != null
                 ? knowledgeBookUi
                 : FindFirstObjectByType<ClassroomBodyKnowledgeBookUi>(FindObjectsInactive.Include);
+
+            knowledgeQuizUi = knowledgeQuizUi != null
+                ? knowledgeQuizUi
+                : FindFirstObjectByType<ClassroomBodyKnowledgeQuizUi>(FindObjectsInactive.Include);
+
+            llmService = llmService != null
+                ? llmService
+                : FindFirstObjectByType<ClassroomLlmService>(FindObjectsInactive.Include);
+
+            if (llmService == null)
+            {
+                llmService = gameObject.GetComponent<ClassroomLlmService>();
+                if (llmService == null)
+                {
+                    llmService = gameObject.AddComponent<ClassroomLlmService>();
+                }
+            }
+
+            runtimeVoiceoverService = runtimeVoiceoverService != null
+                ? runtimeVoiceoverService
+                : FindFirstObjectByType<ClassroomNpcRuntimeVoiceoverService>(FindObjectsInactive.Include);
+
+            if (runtimeVoiceoverService == null)
+            {
+                runtimeVoiceoverService = gameObject.GetComponent<ClassroomNpcRuntimeVoiceoverService>();
+                if (runtimeVoiceoverService == null)
+                {
+                    runtimeVoiceoverService = gameObject.AddComponent<ClassroomNpcRuntimeVoiceoverService>();
+                }
+            }
+
+            npcActionExecutor = npcActionExecutor != null
+                ? npcActionExecutor
+                : FindFirstObjectByType<ClassroomNpcActionExecutor>(FindObjectsInactive.Include);
+            if (npcActionExecutor == null)
+            {
+                npcActionExecutor = gameObject.GetComponent<ClassroomNpcActionExecutor>();
+                if (npcActionExecutor == null)
+                {
+                    npcActionExecutor = gameObject.AddComponent<ClassroomNpcActionExecutor>();
+                }
+            }
+
+            freeChatUi = freeChatUi != null
+                ? freeChatUi
+                : FindFirstObjectByType<ClassroomNpcFreeChatUi>(FindObjectsInactive.Include);
+            if (freeChatUi == null)
+            {
+                freeChatUi = EnsureOverlayComponent<ClassroomNpcFreeChatUi>("ClassroomNpcFreeChatUiRoot");
+            }
+
+            if (knowledgeBookUi == null)
+            {
+                knowledgeBookUi = EnsureOverlayComponent<ClassroomBodyKnowledgeBookUi>("ClassroomBookUiRoot");
+            }
+
+            if (knowledgeQuizUi == null)
+            {
+                knowledgeQuizUi = EnsureOverlayComponent<ClassroomBodyKnowledgeQuizUi>("ClassroomQuizUiRoot");
+            }
+
+            if (ambientChatterLoop == null)
+            {
+                ambientChatterLoop = FindFirstObjectByType<ClassroomNpcAmbientChatterLoop>(FindObjectsInactive.Include);
+            }
 
             boardInteractable = EnsureInteractable(
                 boardInteractable,
@@ -254,6 +339,7 @@ namespace Blocks.Gameplay.Core.Story
             ConfigureShelfInteractable();
             ConfigureClockInteractable();
             RefreshInteractionAvailability();
+            ambientChatterLoop?.SetEnabled(true);
         }
 
         private void ConfigureBoardInteractable()
@@ -546,7 +632,7 @@ namespace Blocks.Gameplay.Core.Story
                     switch (payload.OptionId)
                     {
                         case TeacherTalkOptionId:
-                            BeginNpcConversation(TeacherTalkRoutine());
+                            BeginNpcConversation(TalkEntryRoutine(teacherNpc, TeacherTalkRoutine));
                             break;
 
                         case TeacherSafetyOptionId:
@@ -564,7 +650,7 @@ namespace Blocks.Gameplay.Core.Story
                     switch (payload.OptionId)
                     {
                         case FriendTalkOptionId:
-                            BeginNpcConversation(FriendTalkRoutine());
+                            BeginNpcConversation(TalkEntryRoutine(friendNpc, FriendTalkRoutine));
                             break;
 
                         case FriendReassureOptionId:
@@ -582,7 +668,7 @@ namespace Blocks.Gameplay.Core.Story
                     switch (payload.OptionId)
                     {
                         case SkepticTalkOptionId:
-                            BeginNpcConversation(SkepticTalkRoutine());
+                            BeginNpcConversation(TalkEntryRoutine(skepticNpc, SkepticTalkRoutine));
                             break;
 
                         case SkepticChallengeOptionId:
@@ -694,6 +780,234 @@ namespace Blocks.Gameplay.Core.Story
 
                 RefreshInteractionAvailability();
             }
+        }
+
+        private IEnumerator TalkEntryRoutine(StoryNpcAgent npc, Func<IEnumerator> scriptedRoutineFactory)
+        {
+            if (npc == null)
+            {
+                yield break;
+            }
+
+            var option = string.Empty;
+            yield return PresentChoice(
+                $"How do you want to approach {npc.NpcDisplayName}?",
+                choice => option = choice,
+                new ChoiceOptionConfig("scripted", "Scripted Talk"),
+                new ChoiceOptionConfig("free_chat", "Free Chat"),
+                new ChoiceOptionConfig("leave", "Leave"));
+
+            if (string.Equals(option, "scripted", StringComparison.Ordinal))
+            {
+                if (scriptedRoutineFactory != null)
+                {
+                    yield return scriptedRoutineFactory();
+                }
+
+                yield break;
+            }
+
+            if (string.Equals(option, "free_chat", StringComparison.Ordinal))
+            {
+                yield return RunFreeChatRoutine(npc);
+                yield break;
+            }
+        }
+
+        private IEnumerator RunFreeChatRoutine(StoryNpcAgent npc)
+        {
+            ResolveSceneReferences();
+            if (npc == null || freeChatUi == null || llmService == null)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("System", "Free chat is unavailable right now. Use scripted talk.", 2.3f));
+                yield break;
+            }
+
+            var history = new List<LlmChatMessage>(12)
+            {
+                new LlmChatMessage("system", BuildNpcSystemPrompt(npc))
+            };
+
+            var closeRequested = false;
+            string pendingInput = null;
+            void HandleSend(string text)
+            {
+                pendingInput = text;
+            }
+
+            void HandleClosed()
+            {
+                closeRequested = true;
+            }
+
+            freeChatUi.SendRequested += HandleSend;
+            freeChatUi.Closed += HandleClosed;
+            freeChatUi.Open(npc.NpcDisplayName);
+            freeChatUi.AppendSystem("Free chat active. Keep your prompts short. Type 'leave' to exit.");
+
+            try
+            {
+                while (!closeRequested)
+                {
+                    if (!string.IsNullOrWhiteSpace(pendingInput))
+                    {
+                        var line = pendingInput.Trim();
+                        pendingInput = null;
+                        if (line.Equals("leave", StringComparison.OrdinalIgnoreCase) ||
+                            line.Equals("bye", StringComparison.OrdinalIgnoreCase) ||
+                            line.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                        {
+                            closeRequested = true;
+                            continue;
+                        }
+
+                        yield return RunFreeChatExchange(npc, history, line);
+                    }
+
+                    yield return null;
+                }
+            }
+            finally
+            {
+                freeChatUi.SendRequested -= HandleSend;
+                freeChatUi.Closed -= HandleClosed;
+                freeChatUi.HideImmediate();
+            }
+        }
+
+        private IEnumerator RunFreeChatExchange(StoryNpcAgent npc, List<LlmChatMessage> history, string playerText)
+        {
+            if (npc == null || history == null || string.IsNullOrWhiteSpace(playerText))
+            {
+                yield break;
+            }
+
+            history.Add(new LlmChatMessage("user", playerText));
+            freeChatUi.AppendPlayer(playerText);
+            freeChatUi.SetBusy(true);
+            freeChatUi.BeginAssistantStreaming(npc.NpcDisplayName);
+            presentationController?.FocusOnSpeaker("You");
+
+            lock (streamingDeltaQueue)
+            {
+                streamingDeltaQueue.Clear();
+            }
+
+            using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(Mathf.Max(8f, llmRequestTimeoutSeconds)));
+            Task<string> requestTask;
+            try
+            {
+                requestTask = llmService.StreamChatAsync(
+                    history,
+                    delta =>
+                    {
+                        if (string.IsNullOrEmpty(delta))
+                        {
+                            return;
+                        }
+
+                        lock (streamingDeltaQueue)
+                        {
+                            streamingDeltaQueue.Enqueue(delta);
+                        }
+                    },
+                    llmFreeChatMaxTokens,
+                    0.62f,
+                    cancellation.Token);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClassroomStoryConversationDirector] Failed to issue LLM request: {ex.Message}", this);
+                freeChatUi.ReplaceActiveAssistantText("I could not reach the classroom model.");
+                freeChatUi.FinalizeAssistantStreaming();
+                freeChatUi.SetBusy(false);
+                yield break;
+            }
+
+            while (!requestTask.IsCompleted)
+            {
+                FlushStreamingDeltasToUi();
+                yield return null;
+            }
+
+            FlushStreamingDeltasToUi();
+            if (requestTask.IsFaulted)
+            {
+                freeChatUi.ReplaceActiveAssistantText("Connection failed. Try a shorter line.");
+                freeChatUi.FinalizeAssistantStreaming();
+                freeChatUi.SetBusy(false);
+                yield break;
+            }
+
+            var raw = requestTask.Result ?? string.Empty;
+            var structured = llmService.ParseStructuredNpcReply(raw);
+            var cleanedSpeech = ClampSpeechLength(structured.Say, 190);
+
+            freeChatUi.ReplaceActiveAssistantText(cleanedSpeech);
+            freeChatUi.FinalizeAssistantStreaming();
+            freeChatUi.SetBusy(false);
+
+            if (!string.IsNullOrWhiteSpace(cleanedSpeech))
+            {
+                history.Add(new LlmChatMessage(
+                    "assistant",
+                    $"SAY: {cleanedSpeech}\nACTIONS: {string.Join(",", structured.Actions)}"));
+                presentationController?.FocusOnSpeaker(npc.NpcDisplayName);
+                yield return PresentDialogue(npc.NpcDisplayName, cleanedSpeech, Mathf.Clamp(cleanedSpeech.Length * 0.06f, 1.8f, 4.8f));
+            }
+
+            if (structured.Actions != null && structured.Actions.Count > 0 && npcActionExecutor != null)
+            {
+                yield return npcActionExecutor.ExecuteActionsRoutine(npc, structured.Actions);
+            }
+        }
+
+        private void FlushStreamingDeltasToUi()
+        {
+            if (freeChatUi == null)
+            {
+                return;
+            }
+
+            lock (streamingDeltaQueue)
+            {
+                while (streamingDeltaQueue.Count > 0)
+                {
+                    var delta = streamingDeltaQueue.Dequeue();
+                    freeChatUi.AppendAssistantDelta(delta);
+                }
+            }
+        }
+
+        private string BuildNpcSystemPrompt(StoryNpcAgent npc)
+        {
+            var display = npc != null ? npc.NpcDisplayName : "NPC";
+            var npcId = npc != null ? npc.NpcId : string.Empty;
+            var prompt = new StringBuilder(640);
+            prompt.AppendLine(freeChatSystemPrompt);
+            prompt.Append("Current speaker: ").Append(display).Append(" (").Append(npcId).AppendLine(")");
+            prompt.AppendLine("Scene context: classroom before lab transition; mission is mini rocket entry through mouth.");
+            prompt.AppendLine("If user asks for action, include action tokens in ACTIONS line.");
+            prompt.AppendLine("Never include more than 2 action tokens in one response.");
+            prompt.AppendLine("Avoid long explanations. Keep teaching points compact and concrete.");
+            return prompt.ToString();
+        }
+
+        private static string ClampSpeechLength(string value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            var trimmed = value.Trim();
+            if (trimmed.Length <= maxLength)
+            {
+                return trimmed;
+            }
+
+            return trimmed.Substring(0, maxLength).TrimEnd() + "...";
         }
 
         private IEnumerator TeacherTalkRoutine()
@@ -1136,7 +1450,33 @@ namespace Blocks.Gameplay.Core.Story
             var clipKey = ClassroomStoryVoiceLibrary.BuildClipKey(speakerDisplay, body);
             var moodTag = ClassroomStoryVoiceLibrary.ResolveMoodTag(speakerDisplay, body);
             var autoDelay = Mathf.Max(0.25f, durationSeconds);
-            if (ClassroomStoryVoiceLibrary.TryGetClipDuration(clipKey, out var clipDuration))
+            if (!TryResolveVoiceDuration(clipKey, out var clipDuration) &&
+                runtimeVoiceoverService != null &&
+                !string.IsNullOrWhiteSpace(clipKey) &&
+                !string.IsNullOrWhiteSpace(body))
+            {
+                var generationDone = false;
+                runtimeVoiceoverService.RequestVoiceClip(
+                    speakerDisplay,
+                    body,
+                    clip =>
+                    {
+                        ClassroomStoryRuntimeVoiceCache.StoreClip(clipKey, clip);
+                        generationDone = true;
+                    },
+                    _ => generationDone = true);
+
+                var timeout = Mathf.Max(4f, llmRequestTimeoutSeconds * 0.5f);
+                while (!generationDone && timeout > 0f)
+                {
+                    timeout -= Time.unscaledDeltaTime;
+                    yield return null;
+                }
+
+                TryResolveVoiceDuration(clipKey, out clipDuration);
+            }
+
+            if (clipDuration > 0f)
             {
                 autoDelay = Mathf.Max(autoDelay, clipDuration + 0.05f);
             }
@@ -1156,6 +1496,17 @@ namespace Blocks.Gameplay.Core.Story
             });
 
             yield return new WaitForSecondsRealtime(autoDelay + linePaddingSeconds);
+        }
+
+        private static bool TryResolveVoiceDuration(string clipKey, out float clipDuration)
+        {
+            clipDuration = 0f;
+            if (ClassroomStoryRuntimeVoiceCache.TryGetClipDuration(clipKey, out clipDuration))
+            {
+                return true;
+            }
+
+            return ClassroomStoryVoiceLibrary.TryGetClipDuration(clipKey, out clipDuration);
         }
 
         private IEnumerator PresentChoice(
@@ -1464,6 +1815,30 @@ namespace Blocks.Gameplay.Core.Story
             {
                 interactable.options = new List<InteractionOption>();
             }
+        }
+
+        private static T EnsureOverlayComponent<T>(string rootName)
+            where T : MonoBehaviour
+        {
+            var root = GameObject.Find(rootName);
+            if (root == null)
+            {
+                root = new GameObject(rootName);
+            }
+
+            var document = root.GetComponent<UnityEngine.UIElements.UIDocument>();
+            if (document == null)
+            {
+                document = root.AddComponent<UnityEngine.UIElements.UIDocument>();
+            }
+
+            var component = root.GetComponent<T>();
+            if (component == null)
+            {
+                component = root.AddComponent<T>();
+            }
+
+            return component;
         }
 
         private static InteractableItem EnsureInteractable(

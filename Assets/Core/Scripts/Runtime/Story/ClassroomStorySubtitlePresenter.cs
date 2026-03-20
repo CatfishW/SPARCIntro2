@@ -91,7 +91,16 @@ namespace Blocks.Gameplay.Core.Story
                 ? Mathf.Max(0.25f, request.AutoAdvanceDelaySeconds)
                 : -1f;
 
-            if (request != null && !string.IsNullOrWhiteSpace(request.PortraitKey) && ClassroomStoryVoiceLibrary.TryGetClip(request.PortraitKey, out var clip))
+            AudioClip clip = null;
+            if (request != null && !string.IsNullOrWhiteSpace(request.PortraitKey))
+            {
+                if (!ClassroomStoryRuntimeVoiceCache.TryGetClip(request.PortraitKey, out clip))
+                {
+                    ClassroomStoryVoiceLibrary.TryGetClip(request.PortraitKey, out clip);
+                }
+            }
+
+            if (clip != null)
             {
                 voiceSource.Stop();
                 voiceSource.clip = clip;

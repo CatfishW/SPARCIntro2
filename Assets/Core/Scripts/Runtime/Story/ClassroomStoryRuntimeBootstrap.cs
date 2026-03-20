@@ -22,6 +22,14 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private ClassroomStoryInteractionBridge interactionBridge;
         [SerializeField] private ClassroomStoryConversationDirector conversationDirector;
         [SerializeField] private ClassroomStorySceneTransition sceneTransition;
+        [SerializeField] private ClassroomLlmService llmService;
+        [SerializeField] private ClassroomNpcRuntimeVoiceoverService runtimeVoiceoverService;
+        [SerializeField] private ClassroomNpcActionExecutor npcActionExecutor;
+        [SerializeField] private ClassroomNpcChatBubblePresenter chatBubblePresenter;
+        [SerializeField] private ClassroomNpcAmbientChatterLoop ambientChatterLoop;
+        [SerializeField] private ClassroomNpcFreeChatUi freeChatUi;
+        [SerializeField] private ClassroomBodyKnowledgeBookUi bookUi;
+        [SerializeField] private ClassroomBodyKnowledgeQuizUi quizUi;
         [SerializeField] private bool restartStoryOnBootstrap = true;
         [SerializeField] private string spawnAnchorPath = "_Spawns/Pfb_SpawnPad";
         [SerializeField, Min(0f)] private float spawnVerticalOffset = 0.08f;
@@ -73,6 +81,8 @@ namespace Blocks.Gameplay.Core.Story
             {
                 sceneTransition = gameObject.AddComponent<ClassroomStorySceneTransition>();
             }
+
+            EnsureStoryServices();
 
             BuildRuntimeProject();
             InjectRuntimeProject();
@@ -188,9 +198,121 @@ namespace Blocks.Gameplay.Core.Story
 
             if (interactionBridge != null)
             {
+                if (sceneTransition != null)
+                {
+                    sceneTransition.Configure("Assets/Core/TestScenes/LabMiniEntryScene.unity", "LabMiniEntryScene");
+                }
+
                 interactionBridge.Configure(runtimeChannels, null, null, sceneTransition);
                 interactionBridge.SetSessionId(player != null ? player.SessionId : string.Empty);
             }
+        }
+
+        private void EnsureStoryServices()
+        {
+            llmService = llmService != null ? llmService : FindFirstObjectByType<ClassroomLlmService>(FindObjectsInactive.Include);
+            if (llmService == null)
+            {
+                llmService = gameObject.AddComponent<ClassroomLlmService>();
+            }
+
+            runtimeVoiceoverService = runtimeVoiceoverService != null
+                ? runtimeVoiceoverService
+                : FindFirstObjectByType<ClassroomNpcRuntimeVoiceoverService>(FindObjectsInactive.Include);
+            if (runtimeVoiceoverService == null)
+            {
+                runtimeVoiceoverService = gameObject.AddComponent<ClassroomNpcRuntimeVoiceoverService>();
+            }
+
+            npcActionExecutor = npcActionExecutor != null
+                ? npcActionExecutor
+                : FindFirstObjectByType<ClassroomNpcActionExecutor>(FindObjectsInactive.Include);
+            if (npcActionExecutor == null)
+            {
+                npcActionExecutor = gameObject.AddComponent<ClassroomNpcActionExecutor>();
+            }
+
+            chatBubblePresenter = chatBubblePresenter != null
+                ? chatBubblePresenter
+                : FindFirstObjectByType<ClassroomNpcChatBubblePresenter>(FindObjectsInactive.Include);
+            if (chatBubblePresenter == null)
+            {
+                chatBubblePresenter = EnsureComponentObject<ClassroomNpcChatBubblePresenter>("ClassroomNpcChatBubblePresenter");
+            }
+
+            ambientChatterLoop = ambientChatterLoop != null
+                ? ambientChatterLoop
+                : FindFirstObjectByType<ClassroomNpcAmbientChatterLoop>(FindObjectsInactive.Include);
+            if (ambientChatterLoop == null)
+            {
+                ambientChatterLoop = gameObject.AddComponent<ClassroomNpcAmbientChatterLoop>();
+            }
+
+            freeChatUi = freeChatUi != null
+                ? freeChatUi
+                : FindFirstObjectByType<ClassroomNpcFreeChatUi>(FindObjectsInactive.Include);
+            if (freeChatUi == null)
+            {
+                freeChatUi = EnsureUiOverlayObject<ClassroomNpcFreeChatUi>("ClassroomNpcFreeChatUiRoot");
+            }
+
+            bookUi = bookUi != null
+                ? bookUi
+                : FindFirstObjectByType<ClassroomBodyKnowledgeBookUi>(FindObjectsInactive.Include);
+            if (bookUi == null)
+            {
+                bookUi = EnsureUiOverlayObject<ClassroomBodyKnowledgeBookUi>("ClassroomBookUiRoot");
+            }
+
+            quizUi = quizUi != null
+                ? quizUi
+                : FindFirstObjectByType<ClassroomBodyKnowledgeQuizUi>(FindObjectsInactive.Include);
+            if (quizUi == null)
+            {
+                quizUi = EnsureUiOverlayObject<ClassroomBodyKnowledgeQuizUi>("ClassroomQuizUiRoot");
+            }
+        }
+
+        private static T EnsureUiOverlayObject<T>(string objectName)
+            where T : Component
+        {
+            var existing = GameObject.Find(objectName);
+            if (existing == null)
+            {
+                existing = new GameObject(objectName);
+            }
+
+            var document = existing.GetComponent<UnityEngine.UIElements.UIDocument>();
+            if (document == null)
+            {
+                document = existing.AddComponent<UnityEngine.UIElements.UIDocument>();
+            }
+
+            var component = existing.GetComponent<T>();
+            if (component == null)
+            {
+                component = existing.AddComponent<T>();
+            }
+
+            return component;
+        }
+
+        private static T EnsureComponentObject<T>(string objectName)
+            where T : Component
+        {
+            var existing = GameObject.Find(objectName);
+            if (existing == null)
+            {
+                existing = new GameObject(objectName);
+            }
+
+            var component = existing.GetComponent<T>();
+            if (component == null)
+            {
+                component = existing.AddComponent<T>();
+            }
+
+            return component;
         }
 
         private StoryGraphAsset BuildGraph(

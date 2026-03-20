@@ -10,6 +10,7 @@ namespace Blocks.Gameplay.Core
         [Serializable]
         private sealed class AmbientNpcState
         {
+            public string npcId = string.Empty;
             public Transform root;
             public Animator animator;
             public RuntimeAnimatorController idleController;
@@ -41,10 +42,13 @@ namespace Blocks.Gameplay.Core
             [NonSerialized] public bool HasGrounded;
             [NonSerialized] public bool HasCrouch;
             [NonSerialized] public bool HasFreeFall;
+            [NonSerialized] public float FeetOffset;
+            [NonSerialized] public float BaseRootY;
         }
 
         [SerializeField] private AmbientNpcState teacher = new AmbientNpcState
         {
+            npcId = ClassroomStoryNpcIds.Teacher,
             moveSpeed = 0.33f,
             roamRadius = 0.9f,
             pauseMinSeconds = 1.4f,
@@ -53,6 +57,7 @@ namespace Blocks.Gameplay.Core
 
         [SerializeField] private AmbientNpcState friend = new AmbientNpcState
         {
+            npcId = ClassroomStoryNpcIds.Friend,
             moveSpeed = 0.52f,
             roamRadius = 1.55f,
             pauseMinSeconds = 0.7f,
@@ -61,6 +66,7 @@ namespace Blocks.Gameplay.Core
 
         [SerializeField] private AmbientNpcState skeptic = new AmbientNpcState
         {
+            npcId = ClassroomStoryNpcIds.Skeptic,
             moveSpeed = 0.56f,
             roamRadius = 1.55f,
             pauseMinSeconds = 0.7f,
@@ -69,6 +75,7 @@ namespace Blocks.Gameplay.Core
 
         [SerializeField] private Collider floorCollider;
         [SerializeField, Min(0f)] private float groundingOffset = 0.015f;
+        [SerializeField, Min(0.01f)] private float groundHeightClampRange = 0.2f;
         [SerializeField, Min(0.2f)] private float destinationTolerance = 0.12f;
         [SerializeField, Min(0.1f)] private float personalSpaceRadius = 0.55f;
         [SerializeField, Min(0f)] private float avoidanceStrength = 0.95f;
@@ -155,6 +162,43 @@ namespace Blocks.Gameplay.Core
             SnapCastToGround();
         }
 
+        public bool TrySetNpcCanMove(string npcId, bool canMove)
+        {
+            var npc = ResolveNpcState(npcId);
+            if (npc == null)
+            {
+                return false;
+            }
+
+            npc.canMove = canMove;
+            return true;
+        }
+
+        public bool TrySnapNpcToGround(string npcId)
+        {
+            var npc = ResolveNpcState(npcId);
+            if (npc == null)
+            {
+                return false;
+            }
+
+            EnsureGrounded(npc, keepHorizontalPosition: true);
+            return true;
+        }
+
+        public bool TryGetNpcTransform(string npcId, out Transform root)
+        {
+            root = null;
+            var npc = ResolveNpcState(npcId);
+            if (npc == null || npc.root == null)
+            {
+                return false;
+            }
+
+            root = npc.root;
+            return true;
+        }
+
         private void InitializeNpc(AmbientNpcState npc)
         {
             if (npc == null || npc.root == null)
@@ -183,6 +227,21 @@ namespace Blocks.Gameplay.Core
             npc.HomePosition = npc.root.position;
             npc.TargetPosition = npc.root.position;
             npc.PauseUntilTime = 0f;
+
+            npc.FeetOffset = 0f;
+            if (npc.Capsule != null)
+            {
+                npc.FeetOffset = Mathf.Clamp(
+                    (npc.Capsule.height * 0.5f) - npc.Capsule.center.y,
+                    0f,
+                    1.45f);
+            }
+            else if (TryGetCombinedBounds(npc.root.gameObject, out var bounds))
+            {
+                npc.FeetOffset = Mathf.Clamp(npc.root.position.y - bounds.min.y, 0f, 1.45f);
+            }
+
+            npc.BaseRootY = npc.root.position.y;
             PickNextDestination(npc, immediate: true);
         }
 
@@ -552,30 +611,77 @@ namespace Blocks.Gameplay.Core
 
         private Vector3 ProjectToGround(AmbientNpcState npc, Vector3 worldPosition)
         {
-            var floorY = ResolveFloorY(worldPosition);
-            var rootY = floorY + groundingOffset;
-
-            if (npc != null && npc.root != null && TryGetCombinedBounds(npc.root.gameObject, out var bounds))
+            var floorY = ResolveFloorY(npc, worldPosition);
+            var rootY = floorY + groundingOffset + (npc != null ? npc.FeetOffset : 0f);
+            if (npc != null && npc.BaseRootY != 0f)
             {
-                // Align by rendered feet to avoid hover/sink caused by capsule pivots.
-                rootY += npc.root.position.y - bounds.min.y;
+                rootY = Mathf.Clamp(rootY, npc.BaseRootY - groundHeightClampRange, npc.BaseRootY + groundHeightClampRange);
             }
 
             worldPosition.y = rootY;
             return worldPosition;
         }
 
-        private float ResolveFloorY(Vector3 aroundPosition)
+        private float ResolveFloorY(AmbientNpcState npc, Vector3 aroundPosition)
         {
             if (floorCollider != null)
             {
+                var expected = npc != null ? npc.BaseRootY - npc.FeetOffset : aroundPosition.y;
+                var probe = new Vector3(aroundPosition.x, expected + 0.6f, aroundPosition.z);
+                var closest = floorCollider.ClosestPoint(probe);
+                if (closest != probe)
+                {
+                    return closest.y;
+                }
+
                 return floorCollider.bounds.max.y;
             }
 
             var origin = aroundPosition + (Vector3.up * 2.5f);
-            if (Physics.Raycast(origin, Vector3.down, out var hit, 8f, ~0, QueryTriggerInteraction.Ignore))
+            var hits = Physics.RaycastAll(origin, Vector3.down, 8f, ~0, QueryTriggerInteraction.Ignore);
+            if (hits != null && hits.Length > 0)
             {
-                return hit.point.y;
+                var expectedFloor = npc != null ? npc.BaseRootY - npc.FeetOffset : aroundPosition.y;
+                var foundCandidate = false;
+                var candidateY = float.MinValue;
+                for (var index = 0; index < hits.Length; index++)
+                {
+                    var hit = hits[index];
+                    if (hit.collider == null || hit.normal.y < 0.3f)
+                    {
+                        continue;
+                    }
+
+                    if (hit.point.y > expectedFloor + 0.4f)
+                    {
+                        continue;
+                    }
+
+                    if (!foundCandidate || hit.point.y > candidateY)
+                    {
+                        candidateY = hit.point.y;
+                        foundCandidate = true;
+                    }
+                }
+
+                if (foundCandidate)
+                {
+                    return candidateY;
+                }
+
+                var nearest = hits[0].point.y;
+                var nearestDistance = Mathf.Abs(nearest - expectedFloor);
+                for (var index = 1; index < hits.Length; index++)
+                {
+                    var distance = Mathf.Abs(hits[index].point.y - expectedFloor);
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearest = hits[index].point.y;
+                    }
+                }
+
+                return nearest;
             }
 
             return aroundPosition.y;
@@ -611,6 +717,30 @@ namespace Blocks.Gameplay.Core
             }
 
             return hasBounds;
+        }
+
+        private AmbientNpcState ResolveNpcState(string npcId)
+        {
+            if (cast == null || cast.Length == 0 || string.IsNullOrWhiteSpace(npcId))
+            {
+                return null;
+            }
+
+            for (var index = 0; index < cast.Length; index++)
+            {
+                var npc = cast[index];
+                if (npc == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(npc.npcId, npcId, StringComparison.Ordinal))
+                {
+                    return npc;
+                }
+            }
+
+            return null;
         }
     }
 }
