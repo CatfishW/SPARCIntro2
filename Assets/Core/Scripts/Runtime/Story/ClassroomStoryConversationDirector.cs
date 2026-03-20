@@ -1,0 +1,1580 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using ItemInteraction;
+using ModularStoryFlow.Runtime.Channels;
+using ModularStoryFlow.Runtime.Events;
+using UnityEngine;
+
+namespace Blocks.Gameplay.Core.Story
+{
+    [DisallowMultipleComponent]
+    public sealed class ClassroomStoryConversationDirector : MonoBehaviour
+    {
+        private const string StoryNamespace = "classroom";
+
+        private const string TeacherDisplayName = "Dr. Mira Sato";
+        private const string FriendDisplayName = "Nia Park";
+        private const string SkepticDisplayName = "Theo Mercer";
+
+        private const string BoardDisplayName = "Route Board";
+        private const string DeskDisplayName = "Teacher Desk";
+        private const string ShelfDisplayName = "Reference Shelf";
+        private const string ClockDisplayName = "Wall Clock";
+
+        private const string TeacherTalkOptionId = "talk";
+        private const string TeacherSafetyOptionId = "ask_safety";
+        private const string TeacherVolunteerOptionId = "volunteer";
+
+        private const string FriendTalkOptionId = "talk";
+        private const string FriendReassureOptionId = "reassure";
+        private const string FriendJokeOptionId = "joke";
+
+        private const string SkepticTalkOptionId = "talk";
+        private const string SkepticChallengeOptionId = "challenge";
+        private const string SkepticAirwayOptionId = "ask_airway";
+
+        private const string BoardReadOptionId = "read";
+        private const string DeskReviewOptionId = "review_notes";
+        private const string ShelfBookOptionId = "take_book";
+        private const string ClockCheckOptionId = "check_time";
+
+        [SerializeField] private StoryFlowChannels channels;
+        [SerializeField] private StoryNpcRegistry npcRegistry;
+        [SerializeField] private StoryNpcAgent teacherNpc;
+        [SerializeField] private StoryNpcAgent friendNpc;
+        [SerializeField] private StoryNpcAgent skepticNpc;
+        [SerializeField] private ClassroomStoryConversationPresentationController presentationController;
+        [SerializeField] private ClassroomBodyKnowledgeBookUi knowledgeBookUi;
+
+        [SerializeField] private InteractableItem boardInteractable;
+        [SerializeField] private InteractableItem deskInteractable;
+        [SerializeField] private InteractableItem shelfInteractable;
+        [SerializeField] private InteractableItem clockInteractable;
+
+        [SerializeField] private string boardHierarchyPath = "Classroom/Collection/Collection|board_L_board.blend|Dupli|";
+        [SerializeField] private string deskHierarchyPath = "Classroom/teacherDesk.001/teacherDesk.001|teacherDesk_L_teacherDesk.blend|Dupli|";
+        [SerializeField] private string shelfHierarchyPath = "Classroom/etagere.001/etagere.001|etagere.001_L_etagere.blend|Dupli|1";
+        [SerializeField] private string clockHierarchyPath = "Classroom/clock.001/clock.001|clock_L_clock.blend|Dupli|";
+
+        [SerializeField] private string currentSessionId = string.Empty;
+        [SerializeField, Min(0.05f)] private float linePaddingSeconds = 0.18f;
+
+        [Header("Progress Flags")]
+        [SerializeField] private bool teacherTalked;
+        [SerializeField] private bool teacherSafetyExplained;
+        [SerializeField] private bool friendTalked;
+        [SerializeField] private bool skepticTalked;
+        [SerializeField] private bool boardExamined;
+        [SerializeField] private bool deskExamined;
+        [SerializeField] private bool shelfBookRead;
+        [SerializeField] private bool clockChecked;
+        [SerializeField] private bool volunteerConfirmed;
+        [SerializeField] private bool labClearanceEarned;
+        [SerializeField] private ClassroomPlayerAttitude playerAttitude;
+        [SerializeField] private ClassroomRelationshipMoment relationshipMoment;
+
+        private Coroutine activeConversationRoutine;
+        private string pendingChoiceRequestId = string.Empty;
+        private string pendingChoicePortId = string.Empty;
+        private bool pendingChoiceResolved;
+
+        private enum ClassroomPlayerAttitude
+        {
+            None = 0,
+            Curious = 1,
+            Brave = 2,
+            Nervous = 3
+        }
+
+        private enum ClassroomRelationshipMoment
+        {
+            None = 0,
+            ComfortedNia = 1,
+            DebatedTheo = 2,
+            PressedMira = 3
+        }
+
+        [Serializable]
+        private readonly struct DialogueBeat
+        {
+            public DialogueBeat(string speaker, string body, float durationSeconds = 2.8f)
+            {
+                Speaker = speaker;
+                Body = body;
+                DurationSeconds = durationSeconds;
+            }
+
+            public string Speaker { get; }
+            public string Body { get; }
+            public float DurationSeconds { get; }
+        }
+
+        private readonly struct ChoiceOptionConfig
+        {
+            public ChoiceOptionConfig(string portId, string label)
+            {
+                PortId = portId;
+                Label = label;
+            }
+
+            public string PortId { get; }
+            public string Label { get; }
+        }
+
+        private bool ConversationBusy => activeConversationRoutine != null;
+
+        private void Awake()
+        {
+            ResolveSceneReferences();
+            ConfigureSceneActors();
+        }
+
+        private void OnEnable()
+        {
+            ResolveSceneReferences();
+            RegisterStoryChannels();
+            RegisterSceneHooks();
+            ConfigureSceneActors();
+        }
+
+        private void OnDisable()
+        {
+            if (activeConversationRoutine != null)
+            {
+                StopCoroutine(activeConversationRoutine);
+                activeConversationRoutine = null;
+            }
+
+            pendingChoiceRequestId = string.Empty;
+            pendingChoicePortId = string.Empty;
+            pendingChoiceResolved = false;
+
+            presentationController?.EndConversation();
+            UnregisterSceneHooks();
+            UnregisterStoryChannels();
+        }
+
+        public void Configure(StoryFlowChannels storyChannels)
+        {
+            if (channels == storyChannels)
+            {
+                return;
+            }
+
+            if (isActiveAndEnabled)
+            {
+                UnregisterStoryChannels();
+            }
+
+            channels = storyChannels;
+
+            if (isActiveAndEnabled)
+            {
+                RegisterStoryChannels();
+            }
+        }
+
+        public void SetSessionId(string sessionId)
+        {
+            currentSessionId = sessionId ?? string.Empty;
+        }
+
+        private void ResolveSceneReferences()
+        {
+            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
+            teacherNpc = teacherNpc != null ? teacherNpc : ResolveNpc(ClassroomStoryNpcIds.Teacher);
+            friendNpc = friendNpc != null ? friendNpc : ResolveNpc(ClassroomStoryNpcIds.Friend);
+            skepticNpc = skepticNpc != null ? skepticNpc : ResolveNpc(ClassroomStoryNpcIds.Skeptic);
+
+            presentationController = presentationController != null
+                ? presentationController
+                : FindFirstObjectByType<ClassroomStoryConversationPresentationController>();
+
+            knowledgeBookUi = knowledgeBookUi != null
+                ? knowledgeBookUi
+                : FindFirstObjectByType<ClassroomBodyKnowledgeBookUi>(FindObjectsInactive.Include);
+
+            boardInteractable = EnsureInteractable(
+                boardInteractable,
+                boardHierarchyPath,
+                "Collection|board_L_board.blend|Dupli|",
+                BoardDisplayName);
+
+            deskInteractable = EnsureInteractable(
+                deskInteractable,
+                deskHierarchyPath,
+                "teacherDesk.001|teacherDesk_L_teacherDesk.blend|Dupli|",
+                DeskDisplayName);
+
+            shelfInteractable = EnsureInteractable(
+                shelfInteractable,
+                shelfHierarchyPath,
+                "etagere.001|etagere.001_L_etagere.blend|Dupli|1",
+                ShelfDisplayName);
+
+            clockInteractable = EnsureInteractable(
+                clockInteractable,
+                clockHierarchyPath,
+                "clock.001|clock_L_clock.blend|Dupli|",
+                ClockDisplayName);
+        }
+
+        private void ConfigureSceneActors()
+        {
+            teacherNpc?.ConfigureNpc(
+                ClassroomStoryNpcIds.Teacher,
+                TeacherDisplayName,
+                CreateTeacherOptions(),
+                "You",
+                "Dr. Mira is reading the room like she already knows who will volunteer and who will avoid eye contact.",
+                2.8f,
+                StoryNamespace);
+
+            friendNpc?.ConfigureNpc(
+                ClassroomStoryNpcIds.Friend,
+                FriendDisplayName,
+                CreateFriendOptions(),
+                "You",
+                "Nia keeps glancing from the board to the lab door, rehearsing worst-case scenarios before they happen.",
+                2.8f,
+                StoryNamespace);
+
+            skepticNpc?.ConfigureNpc(
+                ClassroomStoryNpcIds.Skeptic,
+                SkepticDisplayName,
+                CreateSkepticOptions(),
+                "You",
+                "Theo has the posture of someone pretending this is a joke so he does not have to admit he is nervous.",
+                2.7f,
+                StoryNamespace);
+
+            ConfigureBoardInteractable();
+            ConfigureDeskInteractable();
+            ConfigureShelfInteractable();
+            ConfigureClockInteractable();
+            RefreshInteractionAvailability();
+        }
+
+        private void ConfigureBoardInteractable()
+        {
+            if (boardInteractable == null)
+            {
+                return;
+            }
+
+            boardInteractable.displayName = BoardDisplayName;
+            boardInteractable.storyId = "classroom.route.board";
+            boardInteractable.lookDialogueSpeaker = "You";
+            boardInteractable.lookDialogueBody = "Mouth. Esophagus. Stomach. Small intestine. The route is simple on paper and brutal in motion.";
+            boardInteractable.lookDialogueDisplayDurationSeconds = 3f;
+            boardInteractable.isInteractable = true;
+            EnsureOptionsList(boardInteractable);
+            boardInteractable.options.Clear();
+            boardInteractable.options.Add(new InteractionOption
+            {
+                id = BoardReadOptionId,
+                label = "Read",
+                slot = InteractionOptionSlot.Top,
+                visible = true,
+                enabled = true
+            });
+            boardInteractable.options.Add(new InteractionOption
+            {
+                id = "look",
+                label = "Observe",
+                slot = InteractionOptionSlot.Bottom,
+                visible = true,
+                enabled = true
+            });
+        }
+
+        private void ConfigureDeskInteractable()
+        {
+            if (deskInteractable == null)
+            {
+                return;
+            }
+
+            deskInteractable.displayName = DeskDisplayName;
+            deskInteractable.storyId = "classroom.teacher.desk";
+            deskInteractable.lookDialogueSpeaker = "You";
+            deskInteractable.lookDialogueBody = "A clipboard, launch checklist, and handwritten timing notes. Nothing here looks improvised.";
+            deskInteractable.lookDialogueDisplayDurationSeconds = 2.9f;
+            deskInteractable.isInteractable = true;
+            EnsureOptionsList(deskInteractable);
+            deskInteractable.options.Clear();
+            deskInteractable.options.Add(new InteractionOption
+            {
+                id = DeskReviewOptionId,
+                label = "Review Notes",
+                slot = InteractionOptionSlot.Top,
+                visible = true,
+                enabled = true
+            });
+            deskInteractable.options.Add(new InteractionOption
+            {
+                id = "look",
+                label = "Observe",
+                slot = InteractionOptionSlot.Bottom,
+                visible = true,
+                enabled = true
+            });
+        }
+
+        private void ConfigureShelfInteractable()
+        {
+            if (shelfInteractable == null)
+            {
+                return;
+            }
+
+            shelfInteractable.displayName = ShelfDisplayName;
+            shelfInteractable.storyId = "classroom.reference.shelf";
+            shelfInteractable.lookDialogueSpeaker = "You";
+            shelfInteractable.lookDialogueBody = "A worn anatomy atlas is wedged between old chemistry binders.";
+            shelfInteractable.lookDialogueDisplayDurationSeconds = 2.7f;
+            shelfInteractable.isInteractable = true;
+            EnsureOptionsList(shelfInteractable);
+            shelfInteractable.options.Clear();
+            shelfInteractable.options.Add(new InteractionOption
+            {
+                id = ShelfBookOptionId,
+                label = "Take Book",
+                slot = InteractionOptionSlot.Top,
+                visible = true,
+                enabled = true
+            });
+            shelfInteractable.options.Add(new InteractionOption
+            {
+                id = "look",
+                label = "Observe",
+                slot = InteractionOptionSlot.Bottom,
+                visible = true,
+                enabled = true
+            });
+        }
+
+        private void ConfigureClockInteractable()
+        {
+            if (clockInteractable == null)
+            {
+                return;
+            }
+
+            clockInteractable.displayName = ClockDisplayName;
+            clockInteractable.storyId = "classroom.wall.clock";
+            clockInteractable.lookDialogueSpeaker = "You";
+            clockInteractable.lookDialogueBody = "Second hand steady. No drama, just timing.";
+            clockInteractable.lookDialogueDisplayDurationSeconds = 2.5f;
+            clockInteractable.isInteractable = true;
+            EnsureOptionsList(clockInteractable);
+            clockInteractable.options.Clear();
+            clockInteractable.options.Add(new InteractionOption
+            {
+                id = ClockCheckOptionId,
+                label = "Check Time",
+                slot = InteractionOptionSlot.Top,
+                visible = true,
+                enabled = true
+            });
+            clockInteractable.options.Add(new InteractionOption
+            {
+                id = "look",
+                label = "Observe",
+                slot = InteractionOptionSlot.Bottom,
+                visible = true,
+                enabled = true
+            });
+        }
+
+        private void RegisterStoryChannels()
+        {
+            if (channels == null)
+            {
+                return;
+            }
+
+            channels.ChoiceSelections?.Register(HandleChoiceSelection);
+            channels.ExternalSignals?.Register(HandleExternalSignal);
+            channels.GraphNotifications?.Register(HandleGraphNotification);
+        }
+
+        private void UnregisterStoryChannels()
+        {
+            if (channels == null)
+            {
+                return;
+            }
+
+            channels.ChoiceSelections?.Unregister(HandleChoiceSelection);
+            channels.ExternalSignals?.Unregister(HandleExternalSignal);
+            channels.GraphNotifications?.Unregister(HandleGraphNotification);
+        }
+
+        private void RegisterSceneHooks()
+        {
+            StoryNpcAgent.AnyInteractionTriggered -= HandleNpcInteractionTriggered;
+            StoryNpcAgent.AnyInteractionTriggered += HandleNpcInteractionTriggered;
+
+            if (boardInteractable != null)
+            {
+                boardInteractable.OptionTriggered -= HandleBoardOptionTriggered;
+                boardInteractable.OptionTriggered += HandleBoardOptionTriggered;
+            }
+
+            if (deskInteractable != null)
+            {
+                deskInteractable.OptionTriggered -= HandleDeskOptionTriggered;
+                deskInteractable.OptionTriggered += HandleDeskOptionTriggered;
+            }
+
+            if (shelfInteractable != null)
+            {
+                shelfInteractable.OptionTriggered -= HandleShelfOptionTriggered;
+                shelfInteractable.OptionTriggered += HandleShelfOptionTriggered;
+            }
+
+            if (clockInteractable != null)
+            {
+                clockInteractable.OptionTriggered -= HandleClockOptionTriggered;
+                clockInteractable.OptionTriggered += HandleClockOptionTriggered;
+            }
+        }
+
+        private void UnregisterSceneHooks()
+        {
+            StoryNpcAgent.AnyInteractionTriggered -= HandleNpcInteractionTriggered;
+
+            if (boardInteractable != null)
+            {
+                boardInteractable.OptionTriggered -= HandleBoardOptionTriggered;
+            }
+
+            if (deskInteractable != null)
+            {
+                deskInteractable.OptionTriggered -= HandleDeskOptionTriggered;
+            }
+
+            if (shelfInteractable != null)
+            {
+                shelfInteractable.OptionTriggered -= HandleShelfOptionTriggered;
+            }
+
+            if (clockInteractable != null)
+            {
+                clockInteractable.OptionTriggered -= HandleClockOptionTriggered;
+            }
+        }
+
+        private void HandleGraphNotification(StoryGraphNotification notification)
+        {
+            if (notification == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(notification.SessionId))
+            {
+                currentSessionId = notification.SessionId;
+            }
+
+            if (notification.Kind == StoryGraphNotificationKind.Started ||
+                notification.Kind == StoryGraphNotificationKind.Loaded)
+            {
+                ResetConversationState();
+            }
+        }
+
+        private void HandleExternalSignal(StoryExternalSignal signal)
+        {
+            if (signal == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(signal.SessionId))
+            {
+                currentSessionId = signal.SessionId;
+            }
+
+            switch (signal.SignalId)
+            {
+                case ClassroomStorySignals.VolunteerConfirmed:
+                    volunteerConfirmed = true;
+                    RefreshInteractionAvailability();
+                    break;
+
+                case ClassroomStorySignals.LabClearanceEarned:
+                    labClearanceEarned = true;
+                    RefreshInteractionAvailability();
+                    break;
+            }
+        }
+
+        private void HandleChoiceSelection(StoryChoiceSelection selection)
+        {
+            if (selection == null || string.IsNullOrWhiteSpace(pendingChoiceRequestId))
+            {
+                return;
+            }
+
+            if (!string.Equals(selection.RequestId, pendingChoiceRequestId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            pendingChoicePortId = selection.PortId ?? string.Empty;
+            pendingChoiceResolved = true;
+        }
+
+        private void HandleNpcInteractionTriggered(StoryNpcInteractionPayload payload)
+        {
+            if (payload == null || payload.Agent == null || ConversationBusy)
+            {
+                return;
+            }
+
+            if (!ReferencesRegisteredNpc(payload.Agent))
+            {
+                return;
+            }
+
+            switch (payload.NpcId)
+            {
+                case ClassroomStoryNpcIds.Teacher:
+                    switch (payload.OptionId)
+                    {
+                        case TeacherTalkOptionId:
+                            BeginNpcConversation(TeacherTalkRoutine());
+                            break;
+
+                        case TeacherSafetyOptionId:
+                            BeginNpcConversation(TeacherSafetyRoutine());
+                            break;
+
+                        case TeacherVolunteerOptionId:
+                            BeginNpcConversation(TeacherVolunteerRoutine());
+                            break;
+                    }
+
+                    break;
+
+                case ClassroomStoryNpcIds.Friend:
+                    switch (payload.OptionId)
+                    {
+                        case FriendTalkOptionId:
+                            BeginNpcConversation(FriendTalkRoutine());
+                            break;
+
+                        case FriendReassureOptionId:
+                            BeginNpcConversation(FriendReassureRoutine());
+                            break;
+
+                        case FriendJokeOptionId:
+                            BeginNpcConversation(FriendJokeRoutine());
+                            break;
+                    }
+
+                    break;
+
+                case ClassroomStoryNpcIds.Skeptic:
+                    switch (payload.OptionId)
+                    {
+                        case SkepticTalkOptionId:
+                            BeginNpcConversation(SkepticTalkRoutine());
+                            break;
+
+                        case SkepticChallengeOptionId:
+                            BeginNpcConversation(SkepticChallengeRoutine());
+                            break;
+
+                        case SkepticAirwayOptionId:
+                            BeginNpcConversation(SkepticAirwayRoutine());
+                            break;
+                    }
+
+                    break;
+            }
+        }
+
+        private void HandleBoardOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != boardInteractable || ConversationBusy)
+            {
+                return;
+            }
+
+            if (string.Equals(invocation.OptionId, BoardReadOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                BeginItemConversation(BoardReadRoutine());
+            }
+        }
+
+        private void HandleDeskOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != deskInteractable || ConversationBusy)
+            {
+                return;
+            }
+
+            if (string.Equals(invocation.OptionId, DeskReviewOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                BeginItemConversation(DeskNotesRoutine());
+            }
+        }
+
+        private void HandleShelfOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != shelfInteractable || ConversationBusy)
+            {
+                return;
+            }
+
+            if (string.Equals(invocation.OptionId, ShelfBookOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                BeginItemConversation(ShelfBookRoutine());
+            }
+        }
+
+        private void HandleClockOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != clockInteractable || ConversationBusy)
+            {
+                return;
+            }
+
+            if (string.Equals(invocation.OptionId, ClockCheckOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                BeginItemConversation(ClockRoutine());
+            }
+        }
+
+        private void BeginNpcConversation(IEnumerator routine)
+        {
+            BeginConversation(routine, enablePresentation: true);
+        }
+
+        private void BeginItemConversation(IEnumerator routine)
+        {
+            BeginConversation(routine, enablePresentation: false);
+        }
+
+        private void BeginConversation(IEnumerator routine, bool enablePresentation)
+        {
+            if (routine == null || ConversationBusy)
+            {
+                return;
+            }
+
+            activeConversationRoutine = StartCoroutine(RunConversationRoutine(routine, enablePresentation));
+        }
+
+        private IEnumerator RunConversationRoutine(IEnumerator routine, bool enablePresentation)
+        {
+            if (enablePresentation)
+            {
+                presentationController?.BeginConversation();
+            }
+
+            try
+            {
+                yield return routine;
+            }
+            finally
+            {
+                pendingChoiceRequestId = string.Empty;
+                pendingChoicePortId = string.Empty;
+                pendingChoiceResolved = false;
+                activeConversationRoutine = null;
+                if (enablePresentation)
+                {
+                    presentationController?.EndConversation();
+                }
+
+                RefreshInteractionAvailability();
+            }
+        }
+
+        private IEnumerator TeacherTalkRoutine()
+        {
+            if (!teacherTalked)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "Settle in. Today's demonstration is not a simulation.", 2.5f),
+                    new DialogueBeat(TeacherDisplayName, "In the lab next door, one of you will pilot a mini rocket into a living digestive system.", 3.9f));
+
+                var firstResponse = string.Empty;
+                yield return PresentChoice(
+                    "How do you answer Dr. Mira?",
+                    choice => firstResponse = choice,
+                    new ChoiceOptionConfig("curious", "How does the route actually work?"),
+                    new ChoiceOptionConfig("brave", "Then I volunteer."),
+                    new ChoiceOptionConfig("nervous", "You are saying that like this is normal."));
+
+                switch (firstResponse)
+                {
+                    case "curious":
+                        playerAttitude = ClassroomPlayerAttitude.Curious;
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "How does the route actually work?", 2.1f),
+                            new DialogueBeat(TeacherDisplayName, "Good question. Mouth entry, esophagus transfer, rapid stomach traverse, then small intestine observation.", 4f),
+                            new DialogueBeat(TeacherDisplayName, "The science is only useful if you can explain where the risk changes and why.", 3.3f));
+                        break;
+
+                    case "brave":
+                        playerAttitude = ClassroomPlayerAttitude.Brave;
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "Then I volunteer.", 1.8f),
+                            new DialogueBeat(TeacherDisplayName, "Confidence is useful. Discipline is mandatory.", 2.7f),
+                            new DialogueBeat(TeacherDisplayName, "Talk to your classmates, inspect the room evidence, then volunteer with facts behind you.", 3.6f));
+                        break;
+
+                    default:
+                        playerAttitude = ClassroomPlayerAttitude.Nervous;
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "You are saying that like this is normal.", 2.2f),
+                            new DialogueBeat(TeacherDisplayName, "It is not normal. It is controlled.", 2.4f),
+                            new DialogueBeat(TeacherDisplayName, "Fear is fine. Uninformed fear is not. Build your understanding first.", 3.2f));
+                        break;
+                }
+
+                teacherTalked = true;
+                RaiseSignal(ClassroomStorySignals.TeacherTalked, ClassroomStoryNpcIds.Teacher);
+                RefreshInteractionAvailability();
+                yield break;
+            }
+
+            if (!HasEnoughScienceEvidence())
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "You still need more evidence before I clear the lab door.", 2.8f),
+                    new DialogueBeat(TeacherDisplayName, "Talk with Nia or Theo, read the board, review my desk notes, pull the shelf atlas, check timing on the wall clock.", 4.0f));
+                yield break;
+            }
+
+            if (!(volunteerConfirmed || labClearanceEarned))
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "You have done the work. Use the volunteer option if you are ready to commit.", 3.1f));
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat(TeacherDisplayName, "Lab door. We move now.", 2.4f));
+        }
+
+        private IEnumerator TeacherSafetyRoutine()
+        {
+            if (!teacherTalked)
+            {
+                yield return TeacherTalkRoutine();
+                yield break;
+            }
+
+            teacherSafetyExplained = true;
+            relationshipMoment = ClassroomRelationshipMoment.PressedMira;
+            RaiseSignal(ClassroomStorySignals.TeacherSafetyExplained, ClassroomStoryNpcIds.Teacher);
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "What are you still not saying about mission risk?", 2.2f),
+                new DialogueBeat(TeacherDisplayName, "The mouth is the easy part. The handoff at the throat is where mistakes become final.", 3.8f),
+                new DialogueBeat(TeacherDisplayName, "The esophagus is the intended route. If payload enters the airway instead, the mission ends instantly.", 4.0f),
+                new DialogueBeat(TeacherDisplayName, "After that, speed matters. Stomach acid is survivable only because we do not linger.", 3.7f));
+        }
+
+        private IEnumerator TeacherVolunteerRoutine()
+        {
+            if (!teacherTalked)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "You do not volunteer blind. Talk to me first.", 2.4f));
+                yield break;
+            }
+
+            if (!HasEnoughScienceEvidence())
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "Not yet. Give me evidence from this room and your classmates first.", 3.0f));
+                yield break;
+            }
+
+            if (volunteerConfirmed || labClearanceEarned)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "You already committed. Use the door.", 2.2f));
+                yield break;
+            }
+
+            var decision = string.Empty;
+            yield return PresentChoice(
+                "Dr. Mira waits for your answer.",
+                choice => decision = choice,
+                new ChoiceOptionConfig("go", "I am going."),
+                new ChoiceOptionConfig("summary", "Give me the short mission summary."),
+                new ChoiceOptionConfig("why", "Why me?"));
+
+            if (string.Equals(decision, "summary", StringComparison.Ordinal))
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "You shrink in the lab, board the mini rocket, and enter through the mouth.", 3.0f),
+                    new DialogueBeat(TeacherDisplayName, "You avoid airway diversion, cross the stomach quickly, and reach the small intestine for absorption mapping.", 4.2f),
+                    new DialogueBeat(TeacherDisplayName, "That is the lesson. Precision over spectacle.", 2.8f));
+
+                yield return PresentChoice(
+                    "After the recap?",
+                    choice => decision = choice,
+                    new ChoiceOptionConfig("go", "I am in."),
+                    new ChoiceOptionConfig("hold", "I need one minute."));
+            }
+            else if (string.Equals(decision, "why", StringComparison.Ordinal))
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "Why me?", 1.7f),
+                    new DialogueBeat(TeacherDisplayName, ResolveWhyMeLine(), 3.1f),
+                    new DialogueBeat(TeacherDisplayName, "That only matters if you still choose this with clear eyes.", 2.8f));
+
+                yield return PresentChoice(
+                    "Do you commit?",
+                    choice => decision = choice,
+                    new ChoiceOptionConfig("go", "I commit."),
+                    new ChoiceOptionConfig("hold", "Not yet."));
+            }
+
+            if (!string.Equals(decision, "go", StringComparison.Ordinal))
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(TeacherDisplayName, "Then breathe and decide on purpose.", 2.1f));
+                yield break;
+            }
+
+            volunteerConfirmed = true;
+            labClearanceEarned = true;
+            RaiseSignal(ClassroomStorySignals.VolunteerConfirmed, ClassroomStoryNpcIds.Teacher);
+            RaiseSignal(ClassroomStorySignals.LabClearanceEarned, ClassroomStoryNpcIds.Teacher);
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "I am going.", 1.6f),
+                new DialogueBeat(TeacherDisplayName, ResolveVolunteerApprovalLine(), 3.1f),
+                new DialogueBeat(TeacherDisplayName, "Lab door. Final briefing in sixty seconds, then launch.", 3.2f));
+        }
+
+        private IEnumerator FriendTalkRoutine()
+        {
+            if (!friendTalked)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(FriendDisplayName, "I know the diagrams. I just hate that we are turning a real body into a map.", 3.4f));
+
+                var choice = string.Empty;
+                yield return PresentChoice(
+                    "How do you answer Nia?",
+                    selected => choice = selected,
+                    new ChoiceOptionConfig("matter", "That is exactly why this matters."),
+                    new ChoiceOptionConfig("easy", "You do not need to act like this is easy."),
+                    new ChoiceOptionConfig("panic", "If I panic, I am blaming you for manifesting it."));
+
+                switch (choice)
+                {
+                    case "matter":
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "That is exactly why this matters.", 2.0f),
+                            new DialogueBeat(FriendDisplayName, "Right. It is someone alive, not just a biology hallway.", 2.7f));
+                        break;
+
+                    case "easy":
+                        relationshipMoment = ClassroomRelationshipMoment.ComfortedNia;
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "You do not need to act like this is easy.", 2.0f),
+                            new DialogueBeat(FriendDisplayName, "Thanks. People keep acting like educational means emotionally neutral.", 3.0f));
+                        break;
+
+                    default:
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "If I panic, I am blaming you for manifesting it.", 2.2f),
+                            new DialogueBeat(FriendDisplayName, "That is not how science works. Probably.", 2.2f));
+                        break;
+                }
+
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(FriendDisplayName, "Stomach acid is still the part that scares me.", 2.2f),
+                    new DialogueBeat(FriendDisplayName, "The stomach protects itself with mucus. We are safe only because the rocket is built for brief exposure and fast transit.", 4.4f));
+
+                friendTalked = true;
+                RaiseSignal(ClassroomStorySignals.FriendTalked, ClassroomStoryNpcIds.Friend);
+                RefreshInteractionAvailability();
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat(FriendDisplayName, "Team reminder: respect acid, respect timing.", 2.3f));
+        }
+
+        private IEnumerator FriendReassureRoutine()
+        {
+            if (!friendTalked)
+            {
+                yield return FriendTalkRoutine();
+                yield break;
+            }
+
+            relationshipMoment = ClassroomRelationshipMoment.ComfortedNia;
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "We understand the chemistry. That makes it risky, but not random.", 2.9f),
+                new DialogueBeat(FriendDisplayName, "That actually helps.", 1.9f),
+                new DialogueBeat(FriendDisplayName, "Once you reach the small intestine, it stops being survival and starts being observation.", 3.5f));
+        }
+
+        private IEnumerator FriendJokeRoutine()
+        {
+            if (!friendTalked)
+            {
+                friendTalked = true;
+                RaiseSignal(ClassroomStorySignals.FriendTalked, ClassroomStoryNpcIds.Friend);
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "If I come back smelling like acid, I am filing an academic complaint.", 2.3f),
+                new DialogueBeat(FriendDisplayName, "Please do not make that sentence real.", 2.2f),
+                new DialogueBeat(FriendDisplayName, "Still, good joke. Mostly because mucus lining exists.", 2.7f));
+        }
+
+        private IEnumerator SkepticTalkRoutine()
+        {
+            if (!skepticTalked)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(SkepticDisplayName, "So the plan is: get swallowed on purpose and call it curriculum?", 3.1f));
+
+                var choice = string.Empty;
+                yield return PresentChoice(
+                    "How do you answer Theo?",
+                    selected => choice = selected,
+                    new ChoiceOptionConfig("irresponsible", "That is an irresponsible summary."),
+                    new ChoiceOptionConfig("scores", "Still better than your test scores."),
+                    new ChoiceOptionConfig("airway", "What if the rocket hits the airway?"));
+
+                switch (choice)
+                {
+                    case "irresponsible":
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "That is an irresponsible summary.", 2.0f),
+                            new DialogueBeat(SkepticDisplayName, "Irresponsible and memorable. My specialty.", 2.3f));
+                        break;
+
+                    case "scores":
+                        relationshipMoment = ClassroomRelationshipMoment.DebatedTheo;
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "Still better than your test scores.", 1.9f),
+                            new DialogueBeat(SkepticDisplayName, "Cruel, accurate, and noted.", 2.0f));
+                        break;
+
+                    default:
+                        yield return PresentDialogueSequence(
+                            new DialogueBeat("You", "What if the rocket hits the airway?", 2.1f),
+                            new DialogueBeat(SkepticDisplayName, "Good. Useful panic.", 1.8f));
+                        break;
+                }
+
+                yield return PresentDialogueSequence(
+                    new DialogueBeat(SkepticDisplayName, "That is why the epiglottis matters.", 2.0f),
+                    new DialogueBeat(SkepticDisplayName, "Swallowing redirects traffic away from the trachea and toward the esophagus. Miss that, mission over.", 4.0f));
+
+                skepticTalked = true;
+                RaiseSignal(ClassroomStorySignals.SkepticTalked, ClassroomStoryNpcIds.Skeptic);
+                RefreshInteractionAvailability();
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat(SkepticDisplayName, "I still think educational ingestion is a terrible slogan.", 2.5f));
+        }
+
+        private IEnumerator SkepticChallengeRoutine()
+        {
+            if (!skepticTalked)
+            {
+                yield return SkepticTalkRoutine();
+                yield break;
+            }
+
+            relationshipMoment = ClassroomRelationshipMoment.DebatedTheo;
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "You joke because this is too real.", 2.2f),
+                new DialogueBeat(SkepticDisplayName, "Correct. Humor is my safety equipment.", 2.5f),
+                new DialogueBeat(SkepticDisplayName, "But the throat rule stands. Airway mistake means no second act.", 3.4f));
+        }
+
+        private IEnumerator SkepticAirwayRoutine()
+        {
+            if (!skepticTalked)
+            {
+                skepticTalked = true;
+                RaiseSignal(ClassroomStorySignals.SkepticTalked, ClassroomStoryNpcIds.Skeptic);
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "Walk me through airway risk again.", 2.0f),
+                new DialogueBeat(SkepticDisplayName, "Breathing and swallowing share space, which is rude design.", 2.6f),
+                new DialogueBeat(SkepticDisplayName, "Epiglottis protects the airway. Esophagus is the only acceptable lane.", 3.2f));
+        }
+
+        private IEnumerator BoardReadRoutine()
+        {
+            if (boardExamined)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "The board still points to the same destination: small intestine, absorption zone.", 3.0f));
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "Mouth. Esophagus. Stomach. Pylorus. Small intestine.", 2.8f),
+                new DialogueBeat("You", "The underlined note says: primary site of nutrient absorption.", 2.7f),
+                new DialogueBeat("You", "At micro scale, villi turn tissue into topography.", 2.6f));
+
+            boardExamined = true;
+            RaiseSignal(ClassroomStorySignals.BoardExamined, "route.board");
+            RefreshInteractionAvailability();
+        }
+
+        private IEnumerator DeskNotesRoutine()
+        {
+            if (deskExamined)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "Same desk notes: launch window, stomach transit cap, intestine checkpoint.", 3.0f));
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "Mira's checklist is strict: throat alignment, acid transit under forty seconds, intestine telemetry online.", 4.0f),
+                new DialogueBeat("You", "Every line is operational. No room for heroic improvisation.", 2.9f));
+
+            deskExamined = true;
+            RaiseSignal(ClassroomStorySignals.DeskExamined, "teacher.desk");
+            RefreshInteractionAvailability();
+        }
+
+        private IEnumerator ShelfBookRoutine()
+        {
+            if (knowledgeBookUi != null)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "I pull out the anatomy atlas and open the digestive section.", 2.7f));
+                yield return knowledgeBookUi.OpenAndWait();
+            }
+            else
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "I pull out an anatomy atlas and skim digestive diagrams.", 2.7f));
+            }
+
+            if (shelfBookRead)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "The atlas reinforces the same message: route discipline beats confidence.", 3.0f));
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "Cross-sections make the route feel less abstract and more navigable.", 2.8f),
+                new DialogueBeat("You", "Mouth entry is logistics. Intestine arrival is the real objective.", 2.8f));
+
+            shelfBookRead = true;
+            RaiseSignal(ClassroomStorySignals.ShelfBookRead, "shelf.atlas");
+            RefreshInteractionAvailability();
+        }
+
+        private IEnumerator ClockRoutine()
+        {
+            if (clockChecked)
+            {
+                yield return PresentDialogueSequence(
+                    new DialogueBeat("You", "The clock keeps reminding me this mission is measured in seconds, not speeches.", 3.0f));
+                yield break;
+            }
+
+            yield return PresentDialogueSequence(
+                new DialogueBeat("You", "The second hand makes the mission feel real: every segment has a timing budget.", 3.2f),
+                new DialogueBeat("You", "Throat alignment, stomach transit, intestine handoff. No drift.", 2.8f));
+
+            clockChecked = true;
+            RaiseSignal(ClassroomStorySignals.ClockChecked, "wall.clock");
+            RefreshInteractionAvailability();
+        }
+
+        private IEnumerator PresentDialogueSequence(params DialogueBeat[] beats)
+        {
+            if (beats == null)
+            {
+                yield break;
+            }
+
+            for (var index = 0; index < beats.Length; index++)
+            {
+                var beat = beats[index];
+                if (string.IsNullOrWhiteSpace(beat.Body))
+                {
+                    continue;
+                }
+
+                yield return PresentDialogue(beat.Speaker, beat.Body, beat.DurationSeconds);
+            }
+        }
+
+        private IEnumerator PresentDialogue(string speaker, string body, float durationSeconds)
+        {
+            if (channels == null)
+            {
+                yield break;
+            }
+
+            var speakerDisplay = string.IsNullOrWhiteSpace(speaker) ? "Narrator" : speaker;
+            presentationController?.FocusOnSpeaker(speakerDisplay);
+
+            var clipKey = ClassroomStoryVoiceLibrary.BuildClipKey(speakerDisplay, body);
+            var moodTag = ClassroomStoryVoiceLibrary.ResolveMoodTag(speakerDisplay, body);
+            var autoDelay = Mathf.Max(0.25f, durationSeconds);
+            if (ClassroomStoryVoiceLibrary.TryGetClipDuration(clipKey, out var clipDuration))
+            {
+                autoDelay = Mathf.Max(autoDelay, clipDuration + 0.05f);
+            }
+
+            channels.DialogueRequests?.Raise(new StoryDialogueRequest
+            {
+                SessionId = currentSessionId,
+                RequestId = Guid.NewGuid().ToString("N"),
+                SpeakerDisplayName = speakerDisplay,
+                Body = body ?? string.Empty,
+                SpeakerId = speakerDisplay,
+                NodeId = "conversation",
+                PortraitKey = clipKey,
+                MoodTag = moodTag,
+                AutoAdvance = true,
+                AutoAdvanceDelaySeconds = autoDelay
+            });
+
+            yield return new WaitForSecondsRealtime(autoDelay + linePaddingSeconds);
+        }
+
+        private IEnumerator PresentChoice(
+            string prompt,
+            Action<string> onResolved,
+            params ChoiceOptionConfig[] options)
+        {
+            if (channels == null || options == null || options.Length == 0)
+            {
+                onResolved?.Invoke(string.Empty);
+                yield break;
+            }
+
+            pendingChoiceRequestId = Guid.NewGuid().ToString("N");
+            pendingChoicePortId = string.Empty;
+            pendingChoiceResolved = false;
+
+            var request = new StoryChoiceRequest
+            {
+                SessionId = currentSessionId,
+                RequestId = pendingChoiceRequestId,
+                Prompt = prompt ?? string.Empty,
+                NodeId = "conversation.choice",
+                GraphId = "ClassroomConversation"
+            };
+
+            for (var index = 0; index < options.Length; index++)
+            {
+                request.Options.Add(new StoryChoiceOption
+                {
+                    PortId = options[index].PortId,
+                    Label = options[index].Label,
+                    IsAvailable = true
+                });
+            }
+
+            channels.ChoiceRequests?.Raise(request);
+
+            while (!pendingChoiceResolved)
+            {
+                yield return null;
+            }
+
+            var resolvedPortId = pendingChoicePortId;
+            pendingChoiceRequestId = string.Empty;
+            pendingChoicePortId = string.Empty;
+            pendingChoiceResolved = false;
+            onResolved?.Invoke(resolvedPortId);
+        }
+
+        private void ResetConversationState()
+        {
+            teacherTalked = false;
+            teacherSafetyExplained = false;
+            friendTalked = false;
+            skepticTalked = false;
+            boardExamined = false;
+            deskExamined = false;
+            shelfBookRead = false;
+            clockChecked = false;
+            volunteerConfirmed = false;
+            labClearanceEarned = false;
+            playerAttitude = ClassroomPlayerAttitude.None;
+            relationshipMoment = ClassroomRelationshipMoment.None;
+            RefreshInteractionAvailability();
+        }
+
+        private void RefreshInteractionAvailability()
+        {
+            teacherNpc?.SetOptionVisible(TeacherSafetyOptionId, teacherTalked);
+            teacherNpc?.SetOptionEnabled(TeacherSafetyOptionId, teacherTalked);
+            teacherNpc?.SetOptionVisible(TeacherVolunteerOptionId, teacherTalked);
+            teacherNpc?.SetOptionEnabled(TeacherVolunteerOptionId, teacherTalked && HasEnoughScienceEvidence());
+
+            if (teacherNpc != null)
+            {
+                var clearedForLab = volunteerConfirmed || labClearanceEarned;
+                teacherNpc.SetOptionLabel(
+                    TeacherVolunteerOptionId,
+                    clearedForLab ? "Proceed to Lab" : "Volunteer");
+            }
+
+            friendNpc?.SetOptionEnabled(FriendReassureOptionId, true);
+            friendNpc?.SetOptionEnabled(FriendJokeOptionId, true);
+            skepticNpc?.SetOptionEnabled(SkepticChallengeOptionId, true);
+            skepticNpc?.SetOptionEnabled(SkepticAirwayOptionId, true);
+
+            boardInteractable?.SetOptionVisible(BoardReadOptionId, true);
+            boardInteractable?.SetOptionEnabled(BoardReadOptionId, true);
+            deskInteractable?.SetOptionVisible(DeskReviewOptionId, true);
+            deskInteractable?.SetOptionEnabled(DeskReviewOptionId, true);
+            shelfInteractable?.SetOptionVisible(ShelfBookOptionId, true);
+            shelfInteractable?.SetOptionEnabled(ShelfBookOptionId, true);
+            clockInteractable?.SetOptionVisible(ClockCheckOptionId, true);
+            clockInteractable?.SetOptionEnabled(ClockCheckOptionId, true);
+        }
+
+        private bool HasEnoughScienceEvidence()
+        {
+            if (EvidenceCount() < 2)
+            {
+                return false;
+            }
+
+            return teacherSafetyExplained || friendTalked || skepticTalked;
+        }
+
+        private int EvidenceCount()
+        {
+            var count = 0;
+            if (teacherSafetyExplained)
+            {
+                count++;
+            }
+
+            if (friendTalked)
+            {
+                count++;
+            }
+
+            if (skepticTalked)
+            {
+                count++;
+            }
+
+            if (boardExamined)
+            {
+                count++;
+            }
+
+            if (deskExamined)
+            {
+                count++;
+            }
+
+            if (shelfBookRead)
+            {
+                count++;
+            }
+
+            if (clockChecked)
+            {
+                count++;
+            }
+
+            return count;
+        }
+
+        private string ResolveWhyMeLine()
+        {
+            return playerAttitude switch
+            {
+                ClassroomPlayerAttitude.Curious => "Because curiosity scales better than bravado when the inside of a body becomes terrain.",
+                ClassroomPlayerAttitude.Brave => "Because you stepped forward, then stayed long enough to understand what stepping forward costs.",
+                ClassroomPlayerAttitude.Nervous => "Because you are still here despite fear, which means you are measuring risk instead of performing confidence.",
+                _ => "Because you are asking the right question at the right moment."
+            };
+        }
+
+        private string ResolveVolunteerApprovalLine()
+        {
+            if (relationshipMoment == ClassroomRelationshipMoment.ComfortedNia)
+            {
+                return "Good. Keep that empathy. In the lab, empathy keeps science human.";
+            }
+
+            if (relationshipMoment == ClassroomRelationshipMoment.DebatedTheo)
+            {
+                return "Good. Keep the wit, but keep airway facts closer.";
+            }
+
+            if (relationshipMoment == ClassroomRelationshipMoment.PressedMira)
+            {
+                return "Good. Skepticism is useful when paired with discipline.";
+            }
+
+            return "Good. Carry facts, not fantasy.";
+        }
+
+        private void RaiseSignal(string signalId, string payload = null)
+        {
+            if (channels == null || string.IsNullOrWhiteSpace(signalId))
+            {
+                return;
+            }
+
+            channels.ExternalSignals?.Raise(new StoryExternalSignal
+            {
+                SessionId = currentSessionId,
+                SignalId = signalId,
+                Payload = payload ?? string.Empty
+            });
+        }
+
+        private StoryNpcAgent ResolveNpc(string npcId)
+        {
+            if (npcRegistry != null)
+            {
+                var fromRegistry = npcRegistry.GetNpc(npcId);
+                if (fromRegistry != null)
+                {
+                    return fromRegistry;
+                }
+            }
+
+            var npcs = FindObjectsByType<StoryNpcAgent>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < npcs.Length; index++)
+            {
+                if (npcs[index] != null && string.Equals(npcs[index].NpcId, npcId, StringComparison.Ordinal))
+                {
+                    return npcs[index];
+                }
+            }
+
+            var fallbackName = ResolveFallbackNpcName(npcId);
+            if (!string.IsNullOrWhiteSpace(fallbackName))
+            {
+                for (var index = 0; index < npcs.Length; index++)
+                {
+                    if (npcs[index] != null &&
+                        string.Equals(npcs[index].gameObject.name, fallbackName, StringComparison.Ordinal))
+                    {
+                        return npcs[index];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static string ResolveFallbackNpcName(string npcId)
+        {
+            if (string.Equals(npcId, ClassroomStoryNpcIds.Teacher, StringComparison.Ordinal))
+            {
+                return "DrMira";
+            }
+
+            if (string.Equals(npcId, ClassroomStoryNpcIds.Friend, StringComparison.Ordinal))
+            {
+                return "NiaPark";
+            }
+
+            if (string.Equals(npcId, ClassroomStoryNpcIds.Skeptic, StringComparison.Ordinal))
+            {
+                return "TheoMercer";
+            }
+
+            return string.Empty;
+        }
+
+        private bool ReferencesRegisteredNpc(StoryNpcAgent agent)
+        {
+            return agent == teacherNpc || agent == friendNpc || agent == skepticNpc;
+        }
+
+        private static List<StoryNpcOptionDefinition> CreateTeacherOptions()
+        {
+            return new List<StoryNpcOptionDefinition>
+            {
+                CreateOption(TeacherTalkOptionId, "Talk", InteractionOptionSlot.Top),
+                CreateOption(TeacherSafetyOptionId, "Ask Safety", InteractionOptionSlot.Left, false),
+                CreateOption(TeacherVolunteerOptionId, "Volunteer", InteractionOptionSlot.Right, false)
+            };
+        }
+
+        private static List<StoryNpcOptionDefinition> CreateFriendOptions()
+        {
+            return new List<StoryNpcOptionDefinition>
+            {
+                CreateOption(FriendTalkOptionId, "Talk", InteractionOptionSlot.Top),
+                CreateOption(FriendReassureOptionId, "Reassure", InteractionOptionSlot.Left),
+                CreateOption(FriendJokeOptionId, "Joke", InteractionOptionSlot.Right)
+            };
+        }
+
+        private static List<StoryNpcOptionDefinition> CreateSkepticOptions()
+        {
+            return new List<StoryNpcOptionDefinition>
+            {
+                CreateOption(SkepticTalkOptionId, "Talk", InteractionOptionSlot.Top),
+                CreateOption(SkepticChallengeOptionId, "Challenge", InteractionOptionSlot.Left),
+                CreateOption(SkepticAirwayOptionId, "Ask Airway", InteractionOptionSlot.Right)
+            };
+        }
+
+        private static StoryNpcOptionDefinition CreateOption(
+            string id,
+            string label,
+            InteractionOptionSlot slot,
+            bool visible = true)
+        {
+            return new StoryNpcOptionDefinition
+            {
+                id = id,
+                label = label,
+                slot = slot,
+                interactionId = string.Concat(StoryNamespace, ".", id),
+                visible = visible,
+                enabled = visible
+            };
+        }
+
+        private static void EnsureOptionsList(InteractableItem interactable)
+        {
+            if (interactable.options == null)
+            {
+                interactable.options = new List<InteractionOption>();
+            }
+        }
+
+        private static InteractableItem EnsureInteractable(
+            InteractableItem existing,
+            string hierarchyPath,
+            string fallbackName,
+            string displayName)
+        {
+            if (existing != null)
+            {
+                return PrepareInteractable(existing, displayName);
+            }
+
+            var gameObject = GameObject.Find(hierarchyPath) ?? GameObject.Find(fallbackName);
+            if (gameObject == null)
+            {
+                return null;
+            }
+
+            var interactable = gameObject.GetComponent<InteractableItem>();
+            if (interactable == null)
+            {
+                interactable = gameObject.AddComponent<InteractableItem>();
+            }
+
+            return PrepareInteractable(interactable, displayName);
+        }
+
+        private static InteractableItem PrepareInteractable(InteractableItem interactable, string displayName)
+        {
+            if (interactable == null)
+            {
+                return null;
+            }
+
+            interactable.displayName = displayName;
+            interactable.promptAnchor = EnsurePromptAnchor(interactable);
+            interactable.inspectionSourceRoot = interactable.inspectionSourceRoot != null ? interactable.inspectionSourceRoot : interactable.transform;
+            interactable.outline = interactable.outline != null
+                ? interactable.outline
+                : interactable.GetComponent<SelectableOutline>() ?? interactable.gameObject.AddComponent<SelectableOutline>();
+            interactable.isInteractable = true;
+            return interactable;
+        }
+
+        private static Transform EnsurePromptAnchor(InteractableItem interactable)
+        {
+            if (interactable == null || interactable.transform == null)
+            {
+                return null;
+            }
+
+            var root = interactable.transform;
+            var anchor = root.Find("PromptAnchor");
+            if (anchor == null)
+            {
+                var anchorObject = new GameObject("PromptAnchor");
+                anchorObject.hideFlags = HideFlags.HideInHierarchy;
+                anchor = anchorObject.transform;
+                anchor.SetParent(root, false);
+            }
+
+            if (TryGetCombinedBounds(interactable.gameObject, out var bounds))
+            {
+                var objectHeight = Mathf.Max(bounds.size.y, 0.01f);
+                var normalizedHeight = objectHeight >= 1.8f
+                    ? 0.14f
+                    : objectHeight >= 0.8f
+                        ? 0.32f
+                        : 0.62f;
+                var anchorY = Mathf.Lerp(bounds.min.y, bounds.max.y, normalizedHeight);
+                anchor.position = new Vector3(bounds.center.x, anchorY, bounds.center.z);
+            }
+            else
+            {
+                anchor.localPosition = new Vector3(0f, 0.2f, 0f);
+            }
+
+            return anchor;
+        }
+
+        private static bool TryGetCombinedBounds(GameObject target, out Bounds bounds)
+        {
+            bounds = default;
+            if (target == null)
+            {
+                return false;
+            }
+
+            var renderers = target.GetComponentsInChildren<Renderer>(true);
+            var hasBounds = false;
+            for (var index = 0; index < renderers.Length; index++)
+            {
+                var current = renderers[index];
+                if (current == null)
+                {
+                    continue;
+                }
+
+                if (!hasBounds)
+                {
+                    bounds = current.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(current.bounds);
+                }
+            }
+
+            return hasBounds;
+        }
+    }
+}
