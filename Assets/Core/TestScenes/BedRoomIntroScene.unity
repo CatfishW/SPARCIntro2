@@ -1406,6 +1406,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1299548702}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!134 &785540290
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ' (Instance) (Instance)'
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!64 &786830180
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1438,19 +1451,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7659318674726366128, guid: 51238ec1086bd4d9abf55bc190cdfd1a, type: 3}
   m_PrefabInstance: {fileID: 1414215049}
   m_PrefabAsset: {fileID: 0}
---- !u!134 &810409508
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: ' (Instance)'
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1001 &814480158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4393,7 +4393,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814480194}
-  m_Material: {fileID: 810409508}
+  m_Material: {fileID: 785540290}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5082,6 +5082,8 @@ GameObject:
   - component: {fileID: 1990826444}
   - component: {fileID: 1990826446}
   - component: {fileID: 1990826445}
+  - component: {fileID: 1990826448}
+  - component: {fileID: 1990826447}
   m_Layer: 0
   m_Name: BedroomStoryFlowPlayer
   m_TagString: Untagged
@@ -5114,6 +5116,7 @@ MonoBehaviour:
   localPlayerManager: {fileID: 0}
   laptopDesktopSystem: {fileID: 0}
   sceneTransition: {fileID: 1990826439}
+  objectivePanel: {fileID: 1990826447}
   laptopResolved: 0
   laptopObjectiveActive: 0
   laptopSignalSent: 0
@@ -5329,6 +5332,43 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1990826447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990826437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41f82a0d09dfc44c2a0233f4c76106b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.BedroomObjectivePanelUi
+  uiDocument: {fileID: 0}
+  panelSettings: {fileID: 0}
+--- !u!114 &1990826448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990826437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!4 &2011447715 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7640131756749541028, guid: e7d42944e4eb9477a8d3c108b154900a, type: 3}
