@@ -92,12 +92,9 @@ namespace Blocks.Gameplay.Core.Story
                 : -1f;
 
             AudioClip clip = null;
-            if (request != null && !string.IsNullOrWhiteSpace(request.PortraitKey))
+            if (request != null && IsNpcVoiceKey(request.PortraitKey))
             {
-                if (!ClassroomStoryRuntimeVoiceCache.TryGetClip(request.PortraitKey, out clip))
-                {
-                    ClassroomStoryVoiceLibrary.TryGetClip(request.PortraitKey, out clip);
-                }
+                ClassroomStoryVoiceLibrary.TryGetClip(request.PortraitKey, out clip);
             }
 
             if (clip != null)
@@ -194,11 +191,11 @@ namespace Blocks.Gameplay.Core.Story
             bandRect.anchorMin = new Vector2(0.5f, 0f);
             bandRect.anchorMax = new Vector2(0.5f, 0f);
             bandRect.pivot = new Vector2(0.5f, 0f);
-            bandRect.sizeDelta = new Vector2(980f, 156f);
-            bandRect.anchoredPosition = new Vector2(0f, 86f);
+            bandRect.sizeDelta = new Vector2(980f, 176f);
+            bandRect.anchoredPosition = new Vector2(0f, 80f);
 
             background = bandRect.gameObject.AddComponent<Image>();
-            background.color = new Color(0.01f, 0.02f, 0.03f, 0.34f);
+            background.color = new Color(0.01f, 0.02f, 0.03f, 0.1f);
             background.raycastTarget = false;
 
             canvasGroup = bandRect.gameObject.AddComponent<CanvasGroup>();
@@ -211,8 +208,11 @@ namespace Blocks.Gameplay.Core.Story
             speakerText.rectTransform.anchorMin = new Vector2(0.5f, 1f);
             speakerText.rectTransform.anchorMax = new Vector2(0.5f, 1f);
             speakerText.rectTransform.pivot = new Vector2(0.5f, 1f);
-            speakerText.rectTransform.sizeDelta = new Vector2(840f, 38f);
-            speakerText.rectTransform.anchoredPosition = new Vector2(0f, -12f);
+            speakerText.rectTransform.sizeDelta = new Vector2(860f, 38f);
+            speakerText.rectTransform.anchoredPosition = new Vector2(0f, -14f);
+            speakerText.resizeTextForBestFit = true;
+            speakerText.resizeTextMinSize = 24;
+            speakerText.resizeTextMaxSize = 33;
 
             divider = BedroomStoryUiFactory.CreateImage("Divider", bandRect, new Color(1f, 1f, 1f, 0.92f));
             divider.sprite = BedroomStoryUiFactory.HorizontalDividerSprite;
@@ -220,20 +220,35 @@ namespace Blocks.Gameplay.Core.Story
             divider.rectTransform.anchorMin = new Vector2(0.5f, 1f);
             divider.rectTransform.anchorMax = new Vector2(0.5f, 1f);
             divider.rectTransform.pivot = new Vector2(0.5f, 1f);
-            divider.rectTransform.sizeDelta = new Vector2(860f, 3f);
+            divider.rectTransform.sizeDelta = new Vector2(820f, 3f);
             divider.rectTransform.anchoredPosition = new Vector2(0f, -50f);
 
             bodyText = BedroomStoryUiFactory.CreateText("Body", bandRect, 30, TextAnchor.UpperCenter);
             bodyText.font = BedroomStoryUiFactory.DefaultSerifFont;
             bodyText.fontStyle = FontStyle.Italic;
             bodyText.horizontalOverflow = HorizontalWrapMode.Wrap;
-            bodyText.verticalOverflow = VerticalWrapMode.Overflow;
+            bodyText.verticalOverflow = VerticalWrapMode.Truncate;
             bodyText.lineSpacing = 1.25f;
             bodyText.rectTransform.anchorMin = new Vector2(0.5f, 1f);
             bodyText.rectTransform.anchorMax = new Vector2(0.5f, 1f);
             bodyText.rectTransform.pivot = new Vector2(0.5f, 1f);
-            bodyText.rectTransform.sizeDelta = new Vector2(860f, 88f);
-            bodyText.rectTransform.anchoredPosition = new Vector2(0f, -68f);
+            bodyText.rectTransform.sizeDelta = new Vector2(860f, 114f);
+            bodyText.rectTransform.anchoredPosition = new Vector2(0f, -64f);
+            bodyText.resizeTextForBestFit = true;
+            bodyText.resizeTextMinSize = 20;
+            bodyText.resizeTextMaxSize = 30;
+        }
+
+        private static bool IsNpcVoiceKey(string portraitKey)
+        {
+            if (string.IsNullOrWhiteSpace(portraitKey))
+            {
+                return false;
+            }
+
+            return portraitKey.StartsWith("dr_mira_sato_", System.StringComparison.OrdinalIgnoreCase) ||
+                   portraitKey.StartsWith("nia_park_", System.StringComparison.OrdinalIgnoreCase) ||
+                   portraitKey.StartsWith("theo_mercer_", System.StringComparison.OrdinalIgnoreCase);
         }
     }
 }

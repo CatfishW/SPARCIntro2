@@ -48,16 +48,16 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private StoryNpcAgent friendNpc;
         [SerializeField] private StoryNpcAgent skepticNpc;
         [SerializeField] private ClassroomStoryConversationPresentationController presentationController;
+        [SerializeField] private ClassroomStoryObjectivePresenter objectivePresenter;
         [SerializeField] private ClassroomBodyKnowledgeBookUi knowledgeBookUi;
         [SerializeField] private ClassroomBodyKnowledgeQuizUi knowledgeQuizUi;
         [SerializeField] private ClassroomLlmService llmService;
         [SerializeField] private ClassroomNpcFreeChatUi freeChatUi;
-        [SerializeField] private ClassroomNpcRuntimeVoiceoverService runtimeVoiceoverService;
         [SerializeField] private ClassroomNpcActionExecutor npcActionExecutor;
         [SerializeField] private ClassroomNpcAmbientChatterLoop ambientChatterLoop;
         [SerializeField, TextArea(4, 12)] private string freeChatSystemPrompt =
-            "You are roleplaying one NPC in a classroom preparing for a miniaturized biology mission. " +
-            "Reply briefly and naturally. Keep responses to 1-2 short sentences. " +
+            "You are roleplaying one friendly NPC in a K-12 biology classroom preparing for a miniaturized mission. " +
+            "Use simple, clear words. Reply in 1-2 short sentences. " +
             "Always output exactly this format:\n" +
             "SAY: <what the NPC says>\n" +
             "ACTIONS: <comma-separated actions or none>\n" +
@@ -155,6 +155,7 @@ namespace Blocks.Gameplay.Core.Story
             RegisterStoryChannels();
             RegisterSceneHooks();
             ConfigureSceneActors();
+            RefreshInteractionAvailability();
         }
 
         private void OnDisable()
@@ -171,6 +172,7 @@ namespace Blocks.Gameplay.Core.Story
 
             presentationController?.EndConversation();
             freeChatUi?.HideImmediate();
+            objectivePresenter?.Clear();
             UnregisterSceneHooks();
             UnregisterStoryChannels();
         }
@@ -211,6 +213,10 @@ namespace Blocks.Gameplay.Core.Story
                 ? presentationController
                 : FindFirstObjectByType<ClassroomStoryConversationPresentationController>();
 
+            objectivePresenter = objectivePresenter != null
+                ? objectivePresenter
+                : FindFirstObjectByType<ClassroomStoryObjectivePresenter>(FindObjectsInactive.Include);
+
             knowledgeBookUi = knowledgeBookUi != null
                 ? knowledgeBookUi
                 : FindFirstObjectByType<ClassroomBodyKnowledgeBookUi>(FindObjectsInactive.Include);
@@ -229,19 +235,6 @@ namespace Blocks.Gameplay.Core.Story
                 if (llmService == null)
                 {
                     llmService = gameObject.AddComponent<ClassroomLlmService>();
-                }
-            }
-
-            runtimeVoiceoverService = runtimeVoiceoverService != null
-                ? runtimeVoiceoverService
-                : FindFirstObjectByType<ClassroomNpcRuntimeVoiceoverService>(FindObjectsInactive.Include);
-
-            if (runtimeVoiceoverService == null)
-            {
-                runtimeVoiceoverService = gameObject.GetComponent<ClassroomNpcRuntimeVoiceoverService>();
-                if (runtimeVoiceoverService == null)
-                {
-                    runtimeVoiceoverService = gameObject.AddComponent<ClassroomNpcRuntimeVoiceoverService>();
                 }
             }
 
@@ -626,6 +619,8 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            presentationController?.SetConversationTarget(payload.Agent.transform);
+
             switch (payload.NpcId)
             {
                 case ClassroomStoryNpcIds.Teacher:
@@ -743,6 +738,7 @@ namespace Blocks.Gameplay.Core.Story
 
         private void BeginItemConversation(IEnumerator routine)
         {
+            presentationController?.SetConversationTarget(null);
             BeginConversation(routine, enablePresentation: false);
         }
 
@@ -1015,41 +1011,41 @@ namespace Blocks.Gameplay.Core.Story
             if (!teacherTalked)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "Settle in. Today's demonstration is not a simulation.", 2.5f),
-                    new DialogueBeat(TeacherDisplayName, "In the lab next door, one of you will pilot a mini rocket into a living digestive system.", 3.9f));
+                    new DialogueBeat(TeacherDisplayName, "Alright team, big science day.", 2.3f),
+                    new DialogueBeat(TeacherDisplayName, "In the lab next door, one of you will ride a tiny rocket through the digestive system.", 3.9f));
 
                 var firstResponse = string.Empty;
                 yield return PresentChoice(
                     "How do you answer Dr. Mira?",
                     choice => firstResponse = choice,
-                    new ChoiceOptionConfig("curious", "How does the route actually work?"),
-                    new ChoiceOptionConfig("brave", "Then I volunteer."),
-                    new ChoiceOptionConfig("nervous", "You are saying that like this is normal."));
+                    new ChoiceOptionConfig("curious", "Can you explain the route?"),
+                    new ChoiceOptionConfig("brave", "I can do it."),
+                    new ChoiceOptionConfig("nervous", "This sounds kind of scary."));
 
                 switch (firstResponse)
                 {
                     case "curious":
                         playerAttitude = ClassroomPlayerAttitude.Curious;
                         yield return PresentDialogueSequence(
-                            new DialogueBeat("You", "How does the route actually work?", 2.1f),
-                            new DialogueBeat(TeacherDisplayName, "Good question. Mouth entry, esophagus transfer, rapid stomach traverse, then small intestine observation.", 4f),
-                            new DialogueBeat(TeacherDisplayName, "The science is only useful if you can explain where the risk changes and why.", 3.3f));
+                            new DialogueBeat("You", "Can you explain the route?", 2.1f),
+                            new DialogueBeat(TeacherDisplayName, "Great question. We enter through the mouth, move down the food tube, pass the stomach, and reach the small intestine.", 4f),
+                            new DialogueBeat(TeacherDisplayName, "What matters is knowing where it gets risky, and what to do next.", 3.3f));
                         break;
 
                     case "brave":
                         playerAttitude = ClassroomPlayerAttitude.Brave;
                         yield return PresentDialogueSequence(
-                            new DialogueBeat("You", "Then I volunteer.", 1.8f),
-                            new DialogueBeat(TeacherDisplayName, "Confidence is useful. Discipline is mandatory.", 2.7f),
-                            new DialogueBeat(TeacherDisplayName, "Talk to your classmates, inspect the room evidence, then volunteer with facts behind you.", 3.6f));
+                            new DialogueBeat("You", "I can do it.", 1.8f),
+                            new DialogueBeat(TeacherDisplayName, "Bravery helps, but following safety rules matters more.", 2.7f),
+                            new DialogueBeat(TeacherDisplayName, "Talk to classmates and check room clues, then volunteer with real facts.", 3.6f));
                         break;
 
                     default:
                         playerAttitude = ClassroomPlayerAttitude.Nervous;
                         yield return PresentDialogueSequence(
-                            new DialogueBeat("You", "You are saying that like this is normal.", 2.2f),
-                            new DialogueBeat(TeacherDisplayName, "It is not normal. It is controlled.", 2.4f),
-                            new DialogueBeat(TeacherDisplayName, "Fear is fine. Uninformed fear is not. Build your understanding first.", 3.2f));
+                            new DialogueBeat("You", "This sounds kind of scary.", 2.2f),
+                            new DialogueBeat(TeacherDisplayName, "It is unusual, but we control every step.", 2.4f),
+                            new DialogueBeat(TeacherDisplayName, "Being nervous is okay. Learn the facts first.", 3.2f));
                         break;
                 }
 
@@ -1062,20 +1058,20 @@ namespace Blocks.Gameplay.Core.Story
             if (!HasEnoughScienceEvidence())
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "You still need more evidence before I clear the lab door.", 2.8f),
-                    new DialogueBeat(TeacherDisplayName, "Talk with Nia or Theo, read the board, review my desk notes, pull the shelf atlas, check timing on the wall clock.", 4.0f));
+                    new DialogueBeat(TeacherDisplayName, "You need a little more evidence before I open the lab door.", 2.8f),
+                    new DialogueBeat(TeacherDisplayName, "Talk with Nia or Theo, read the board, check my desk notes, open the shelf atlas, and check the wall clock.", 4.0f));
                 yield break;
             }
 
             if (!(volunteerConfirmed || labClearanceEarned))
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "You have done the work. Use the volunteer option if you are ready to commit.", 3.1f));
+                    new DialogueBeat(TeacherDisplayName, "Nice work. If you are ready, choose Volunteer.", 3.1f));
                 yield break;
             }
 
             yield return PresentDialogueSequence(
-                new DialogueBeat(TeacherDisplayName, "Lab door. We move now.", 2.4f));
+                new DialogueBeat(TeacherDisplayName, "Lab door is ready. Let's go.", 2.4f));
         }
 
         private IEnumerator TeacherSafetyRoutine()
@@ -1091,10 +1087,10 @@ namespace Blocks.Gameplay.Core.Story
             RaiseSignal(ClassroomStorySignals.TeacherSafetyExplained, ClassroomStoryNpcIds.Teacher);
 
             yield return PresentDialogueSequence(
-                new DialogueBeat("You", "What are you still not saying about mission risk?", 2.2f),
-                new DialogueBeat(TeacherDisplayName, "The mouth is the easy part. The handoff at the throat is where mistakes become final.", 3.8f),
-                new DialogueBeat(TeacherDisplayName, "The esophagus is the intended route. If payload enters the airway instead, the mission ends instantly.", 4.0f),
-                new DialogueBeat(TeacherDisplayName, "After that, speed matters. Stomach acid is survivable only because we do not linger.", 3.7f));
+                new DialogueBeat("You", "What part of the risk are you still worried about?", 2.2f),
+                new DialogueBeat(TeacherDisplayName, "Mouth entry is the easy part. The throat handoff is the risky part.", 3.8f),
+                new DialogueBeat(TeacherDisplayName, "The rocket must go into the food tube. If it goes into the airway, mission over.", 4.0f),
+                new DialogueBeat(TeacherDisplayName, "Then speed matters. We can handle stomach acid only if we keep moving.", 3.7f));
         }
 
         private IEnumerator TeacherVolunteerRoutine()
@@ -1102,14 +1098,14 @@ namespace Blocks.Gameplay.Core.Story
             if (!teacherTalked)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "You do not volunteer blind. Talk to me first.", 2.4f));
+                    new DialogueBeat(TeacherDisplayName, "No blind volunteering. Talk to me first.", 2.4f));
                 yield break;
             }
 
             if (!HasEnoughScienceEvidence())
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "Not yet. Give me evidence from this room and your classmates first.", 3.0f));
+                    new DialogueBeat(TeacherDisplayName, "Not yet. Bring me more evidence from the room and classmates.", 3.0f));
                 yield break;
             }
 
@@ -1124,21 +1120,21 @@ namespace Blocks.Gameplay.Core.Story
             yield return PresentChoice(
                 "Dr. Mira waits for your answer.",
                 choice => decision = choice,
-                new ChoiceOptionConfig("go", "I am going."),
-                new ChoiceOptionConfig("summary", "Give me the short mission summary."),
+                new ChoiceOptionConfig("go", "I'm going."),
+                new ChoiceOptionConfig("summary", "Give me the quick mission summary."),
                 new ChoiceOptionConfig("why", "Why me?"));
 
             if (string.Equals(decision, "summary", StringComparison.Ordinal))
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "You shrink in the lab, board the mini rocket, and enter through the mouth.", 3.0f),
-                    new DialogueBeat(TeacherDisplayName, "You avoid airway diversion, cross the stomach quickly, and reach the small intestine for absorption mapping.", 4.2f),
-                    new DialogueBeat(TeacherDisplayName, "That is the lesson. Precision over spectacle.", 2.8f));
+                    new DialogueBeat(TeacherDisplayName, "In the lab, you shrink, board the mini rocket, and enter through the mouth.", 3.0f),
+                    new DialogueBeat(TeacherDisplayName, "Stay out of the airway, cross the stomach quickly, then reach the small intestine to study absorption.", 4.2f),
+                    new DialogueBeat(TeacherDisplayName, "That's the core lesson: be precise, not flashy.", 2.8f));
 
                 yield return PresentChoice(
                     "After the recap?",
                     choice => decision = choice,
-                    new ChoiceOptionConfig("go", "I am in."),
+                    new ChoiceOptionConfig("go", "I'm in."),
                     new ChoiceOptionConfig("hold", "I need one minute."));
             }
             else if (string.Equals(decision, "why", StringComparison.Ordinal))
@@ -1146,10 +1142,10 @@ namespace Blocks.Gameplay.Core.Story
                 yield return PresentDialogueSequence(
                     new DialogueBeat("You", "Why me?", 1.7f),
                     new DialogueBeat(TeacherDisplayName, ResolveWhyMeLine(), 3.1f),
-                    new DialogueBeat(TeacherDisplayName, "That only matters if you still choose this with clear eyes.", 2.8f));
+                    new DialogueBeat(TeacherDisplayName, "That answer matters only if you still choose this clearly.", 2.8f));
 
                 yield return PresentChoice(
-                    "Do you commit?",
+                    "Are you ready to commit?",
                     choice => decision = choice,
                     new ChoiceOptionConfig("go", "I commit."),
                     new ChoiceOptionConfig("hold", "Not yet."));
@@ -1158,7 +1154,7 @@ namespace Blocks.Gameplay.Core.Story
             if (!string.Equals(decision, "go", StringComparison.Ordinal))
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(TeacherDisplayName, "Then breathe and decide on purpose.", 2.1f));
+                    new DialogueBeat(TeacherDisplayName, "Take a breath and choose when you are ready.", 2.1f));
                 yield break;
             }
 
@@ -1168,9 +1164,9 @@ namespace Blocks.Gameplay.Core.Story
             RaiseSignal(ClassroomStorySignals.LabClearanceEarned, ClassroomStoryNpcIds.Teacher);
 
             yield return PresentDialogueSequence(
-                new DialogueBeat("You", "I am going.", 1.6f),
+                new DialogueBeat("You", "I'm going.", 1.6f),
                 new DialogueBeat(TeacherDisplayName, ResolveVolunteerApprovalLine(), 3.1f),
-                new DialogueBeat(TeacherDisplayName, "Lab door. Final briefing in sixty seconds, then launch.", 3.2f));
+                new DialogueBeat(TeacherDisplayName, "Lab door. Final briefing in one minute, then launch.", 3.2f));
         }
 
         private IEnumerator FriendTalkRoutine()
@@ -1178,7 +1174,7 @@ namespace Blocks.Gameplay.Core.Story
             if (!friendTalked)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(FriendDisplayName, "I know the diagrams. I just hate that we are turning a real body into a map.", 3.4f));
+                    new DialogueBeat(FriendDisplayName, "I know the diagrams, but it feels weird to map a real body.", 3.4f));
 
                 var choice = string.Empty;
                 yield return PresentChoice(
@@ -1186,33 +1182,33 @@ namespace Blocks.Gameplay.Core.Story
                     selected => choice = selected,
                     new ChoiceOptionConfig("matter", "That is exactly why this matters."),
                     new ChoiceOptionConfig("easy", "You do not need to act like this is easy."),
-                    new ChoiceOptionConfig("panic", "If I panic, I am blaming you for manifesting it."));
+                    new ChoiceOptionConfig("panic", "If I panic, I blame you for jinxing me."));
 
                 switch (choice)
                 {
                     case "matter":
                         yield return PresentDialogueSequence(
                             new DialogueBeat("You", "That is exactly why this matters.", 2.0f),
-                            new DialogueBeat(FriendDisplayName, "Right. It is someone alive, not just a biology hallway.", 2.7f));
+                            new DialogueBeat(FriendDisplayName, "Exactly. It's a real person, not just a school diagram.", 2.7f));
                         break;
 
                     case "easy":
                         relationshipMoment = ClassroomRelationshipMoment.ComfortedNia;
                         yield return PresentDialogueSequence(
                             new DialogueBeat("You", "You do not need to act like this is easy.", 2.0f),
-                            new DialogueBeat(FriendDisplayName, "Thanks. People keep acting like educational means emotionally neutral.", 3.0f));
+                            new DialogueBeat(FriendDisplayName, "Thanks. People forget this feels scary, not just like homework.", 3.0f));
                         break;
 
                     default:
                         yield return PresentDialogueSequence(
-                            new DialogueBeat("You", "If I panic, I am blaming you for manifesting it.", 2.2f),
-                            new DialogueBeat(FriendDisplayName, "That is not how science works. Probably.", 2.2f));
+                            new DialogueBeat("You", "If I panic, I blame you for jinxing me.", 2.2f),
+                            new DialogueBeat(FriendDisplayName, "That is not how science works... I think.", 2.2f));
                         break;
                 }
 
                 yield return PresentDialogueSequence(
                     new DialogueBeat(FriendDisplayName, "Stomach acid is still the part that scares me.", 2.2f),
-                    new DialogueBeat(FriendDisplayName, "The stomach protects itself with mucus. We are safe only because the rocket is built for brief exposure and fast transit.", 4.4f));
+                    new DialogueBeat(FriendDisplayName, "The stomach has a mucus shield. We stay safe by moving fast.", 4.4f));
 
                 friendTalked = true;
                 RaiseSignal(ClassroomStorySignals.FriendTalked, ClassroomStoryNpcIds.Friend);
@@ -1236,7 +1232,7 @@ namespace Blocks.Gameplay.Core.Story
             yield return PresentDialogueSequence(
                 new DialogueBeat("You", "We understand the chemistry. That makes it risky, but not random.", 2.9f),
                 new DialogueBeat(FriendDisplayName, "That actually helps.", 1.9f),
-                new DialogueBeat(FriendDisplayName, "Once you reach the small intestine, it stops being survival and starts being observation.", 3.5f));
+                new DialogueBeat(FriendDisplayName, "Once you reach the small intestine, the real science starts.", 3.5f));
         }
 
         private IEnumerator FriendJokeRoutine()
@@ -1249,8 +1245,8 @@ namespace Blocks.Gameplay.Core.Story
 
             yield return PresentDialogueSequence(
                 new DialogueBeat("You", "If I come back smelling like acid, I am filing an academic complaint.", 2.3f),
-                new DialogueBeat(FriendDisplayName, "Please do not make that sentence real.", 2.2f),
-                new DialogueBeat(FriendDisplayName, "Still, good joke. Mostly because mucus lining exists.", 2.7f));
+                new DialogueBeat(FriendDisplayName, "Please do not make that real.", 2.2f),
+                new DialogueBeat(FriendDisplayName, "Still, good joke. Thanks for the laugh.", 2.7f));
         }
 
         private IEnumerator SkepticTalkRoutine()
@@ -1258,7 +1254,7 @@ namespace Blocks.Gameplay.Core.Story
             if (!skepticTalked)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat(SkepticDisplayName, "So the plan is: get swallowed on purpose and call it curriculum?", 3.1f));
+                    new DialogueBeat(SkepticDisplayName, "So the plan is to get swallowed on purpose for class?", 3.1f));
 
                 var choice = string.Empty;
                 yield return PresentChoice(
@@ -1280,19 +1276,19 @@ namespace Blocks.Gameplay.Core.Story
                         relationshipMoment = ClassroomRelationshipMoment.DebatedTheo;
                         yield return PresentDialogueSequence(
                             new DialogueBeat("You", "Still better than your test scores.", 1.9f),
-                            new DialogueBeat(SkepticDisplayName, "Cruel, accurate, and noted.", 2.0f));
+                            new DialogueBeat(SkepticDisplayName, "Ouch. Fair point.", 2.0f));
                         break;
 
                     default:
                         yield return PresentDialogueSequence(
                             new DialogueBeat("You", "What if the rocket hits the airway?", 2.1f),
-                            new DialogueBeat(SkepticDisplayName, "Good. Useful panic.", 1.8f));
+                            new DialogueBeat(SkepticDisplayName, "Good question. That is the right worry.", 1.8f));
                         break;
                 }
 
                 yield return PresentDialogueSequence(
                     new DialogueBeat(SkepticDisplayName, "That is why the epiglottis matters.", 2.0f),
-                    new DialogueBeat(SkepticDisplayName, "Swallowing redirects traffic away from the trachea and toward the esophagus. Miss that, mission over.", 4.0f));
+                    new DialogueBeat(SkepticDisplayName, "When you swallow, the epiglottis helps block the airway and sends us to the food tube. Miss that, mission over.", 4.0f));
 
                 skepticTalked = true;
                 RaiseSignal(ClassroomStorySignals.SkepticTalked, ClassroomStoryNpcIds.Skeptic);
@@ -1301,7 +1297,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             yield return PresentDialogueSequence(
-                new DialogueBeat(SkepticDisplayName, "I still think educational ingestion is a terrible slogan.", 2.5f));
+                new DialogueBeat(SkepticDisplayName, "I still think 'learning by swallowing' is a terrible slogan.", 2.5f));
         }
 
         private IEnumerator SkepticChallengeRoutine()
@@ -1315,8 +1311,8 @@ namespace Blocks.Gameplay.Core.Story
             relationshipMoment = ClassroomRelationshipMoment.DebatedTheo;
             yield return PresentDialogueSequence(
                 new DialogueBeat("You", "You joke because this is too real.", 2.2f),
-                new DialogueBeat(SkepticDisplayName, "Correct. Humor is my safety equipment.", 2.5f),
-                new DialogueBeat(SkepticDisplayName, "But the throat rule stands. Airway mistake means no second act.", 3.4f));
+                new DialogueBeat(SkepticDisplayName, "True. Jokes are how I calm down.", 2.5f),
+                new DialogueBeat(SkepticDisplayName, "But the throat rule is serious. Wrong tube means mission over.", 3.4f));
         }
 
         private IEnumerator SkepticAirwayRoutine()
@@ -1329,8 +1325,8 @@ namespace Blocks.Gameplay.Core.Story
 
             yield return PresentDialogueSequence(
                 new DialogueBeat("You", "Walk me through airway risk again.", 2.0f),
-                new DialogueBeat(SkepticDisplayName, "Breathing and swallowing share space, which is rude design.", 2.6f),
-                new DialogueBeat(SkepticDisplayName, "Epiglottis protects the airway. Esophagus is the only acceptable lane.", 3.2f));
+                new DialogueBeat(SkepticDisplayName, "Breathing and swallowing use the same space, which is bad design.", 2.6f),
+                new DialogueBeat(SkepticDisplayName, "Epiglottis guards the airway. The food tube is our only lane.", 3.2f));
         }
 
         private IEnumerator BoardReadRoutine()
@@ -1338,7 +1334,7 @@ namespace Blocks.Gameplay.Core.Story
             if (boardExamined)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat("You", "The board still points to the same destination: small intestine, absorption zone.", 3.0f));
+                    new DialogueBeat("You", "The board still points to the same goal: small intestine, absorption zone.", 3.0f));
                 yield break;
             }
 
@@ -1362,8 +1358,8 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             yield return PresentDialogueSequence(
-                new DialogueBeat("You", "Mira's checklist is strict: throat alignment, acid transit under forty seconds, intestine telemetry online.", 4.0f),
-                new DialogueBeat("You", "Every line is operational. No room for heroic improvisation.", 2.9f));
+                new DialogueBeat("You", "Mira's checklist is strict: throat alignment, stomach crossing under forty seconds, intestine telemetry online.", 4.0f),
+                new DialogueBeat("You", "Every line is practical. No room for risky improvising.", 2.9f));
 
             deskExamined = true;
             RaiseSignal(ClassroomStorySignals.DeskExamined, "teacher.desk");
@@ -1387,13 +1383,13 @@ namespace Blocks.Gameplay.Core.Story
             if (shelfBookRead)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat("You", "The atlas reinforces the same message: route discipline beats confidence.", 3.0f));
+                    new DialogueBeat("You", "The atlas says the same thing: route discipline beats confidence.", 3.0f));
                 yield break;
             }
 
             yield return PresentDialogueSequence(
-                new DialogueBeat("You", "Cross-sections make the route feel less abstract and more navigable.", 2.8f),
-                new DialogueBeat("You", "Mouth entry is logistics. Intestine arrival is the real objective.", 2.8f));
+                new DialogueBeat("You", "Cross-sections make the route easier to picture and navigate.", 2.8f),
+                new DialogueBeat("You", "Mouth entry is setup. Reaching the intestine is the real goal.", 2.8f));
 
             shelfBookRead = true;
             RaiseSignal(ClassroomStorySignals.ShelfBookRead, "shelf.atlas");
@@ -1405,13 +1401,13 @@ namespace Blocks.Gameplay.Core.Story
             if (clockChecked)
             {
                 yield return PresentDialogueSequence(
-                    new DialogueBeat("You", "The clock keeps reminding me this mission is measured in seconds, not speeches.", 3.0f));
+                    new DialogueBeat("You", "The clock keeps reminding me this mission is measured in seconds.", 3.0f));
                 yield break;
             }
 
             yield return PresentDialogueSequence(
-                new DialogueBeat("You", "The second hand makes the mission feel real: every segment has a timing budget.", 3.2f),
-                new DialogueBeat("You", "Throat alignment, stomach transit, intestine handoff. No drift.", 2.8f));
+                new DialogueBeat("You", "The second hand makes it real: every segment has a time limit.", 3.2f),
+                new DialogueBeat("You", "Throat alignment, stomach crossing, intestine handoff. No mistakes.", 2.8f));
 
             clockChecked = true;
             RaiseSignal(ClassroomStorySignals.ClockChecked, "wall.clock");
@@ -1447,36 +1443,12 @@ namespace Blocks.Gameplay.Core.Story
             var speakerDisplay = string.IsNullOrWhiteSpace(speaker) ? "Narrator" : speaker;
             presentationController?.FocusOnSpeaker(speakerDisplay);
 
-            var clipKey = ClassroomStoryVoiceLibrary.BuildClipKey(speakerDisplay, body);
+            var clipKey = IsNpcSpeaker(speakerDisplay)
+                ? ClassroomStoryVoiceLibrary.BuildClipKey(speakerDisplay, body)
+                : string.Empty;
             var moodTag = ClassroomStoryVoiceLibrary.ResolveMoodTag(speakerDisplay, body);
             var autoDelay = Mathf.Max(0.25f, durationSeconds);
-            if (!TryResolveVoiceDuration(clipKey, out var clipDuration) &&
-                runtimeVoiceoverService != null &&
-                !string.IsNullOrWhiteSpace(clipKey) &&
-                !string.IsNullOrWhiteSpace(body))
-            {
-                var generationDone = false;
-                runtimeVoiceoverService.RequestVoiceClip(
-                    speakerDisplay,
-                    body,
-                    clip =>
-                    {
-                        ClassroomStoryRuntimeVoiceCache.StoreClip(clipKey, clip);
-                        generationDone = true;
-                    },
-                    _ => generationDone = true);
-
-                var timeout = Mathf.Max(4f, llmRequestTimeoutSeconds * 0.5f);
-                while (!generationDone && timeout > 0f)
-                {
-                    timeout -= Time.unscaledDeltaTime;
-                    yield return null;
-                }
-
-                TryResolveVoiceDuration(clipKey, out clipDuration);
-            }
-
-            if (clipDuration > 0f)
+            if (TryResolveVoiceDuration(clipKey, out var clipDuration) && clipDuration > 0f)
             {
                 autoDelay = Mathf.Max(autoDelay, clipDuration + 0.05f);
             }
@@ -1501,12 +1473,27 @@ namespace Blocks.Gameplay.Core.Story
         private static bool TryResolveVoiceDuration(string clipKey, out float clipDuration)
         {
             clipDuration = 0f;
-            if (ClassroomStoryRuntimeVoiceCache.TryGetClipDuration(clipKey, out clipDuration))
+            if (string.IsNullOrWhiteSpace(clipKey))
             {
-                return true;
+                return false;
             }
 
             return ClassroomStoryVoiceLibrary.TryGetClipDuration(clipKey, out clipDuration);
+        }
+
+        private static bool IsNpcSpeaker(string speakerDisplay)
+        {
+            if (string.IsNullOrWhiteSpace(speakerDisplay))
+            {
+                return false;
+            }
+
+            return speakerDisplay.Equals(TeacherDisplayName, StringComparison.OrdinalIgnoreCase) ||
+                   speakerDisplay.Equals(FriendDisplayName, StringComparison.OrdinalIgnoreCase) ||
+                   speakerDisplay.Equals(SkepticDisplayName, StringComparison.OrdinalIgnoreCase) ||
+                   speakerDisplay.Equals(ClassroomStoryNpcIds.Teacher, StringComparison.OrdinalIgnoreCase) ||
+                   speakerDisplay.Equals(ClassroomStoryNpcIds.Friend, StringComparison.OrdinalIgnoreCase) ||
+                   speakerDisplay.Equals(ClassroomStoryNpcIds.Skeptic, StringComparison.OrdinalIgnoreCase);
         }
 
         private IEnumerator PresentChoice(
@@ -1602,6 +1589,70 @@ namespace Blocks.Gameplay.Core.Story
             shelfInteractable?.SetOptionEnabled(ShelfBookOptionId, true);
             clockInteractable?.SetOptionVisible(ClockCheckOptionId, true);
             clockInteractable?.SetOptionEnabled(ClockCheckOptionId, true);
+            RefreshObjectiveHint();
+        }
+
+        private void RefreshObjectiveHint()
+        {
+            if (objectivePresenter == null)
+            {
+                return;
+            }
+
+            if (labClearanceEarned || volunteerConfirmed)
+            {
+                objectivePresenter.SetObjective(
+                    "Next: Go To The Lab",
+                    "Return to Dr. Mira and choose Proceed to Lab if needed.",
+                    "Use the classroom door to transition to LabMiniEntryScene.");
+                return;
+            }
+
+            if (!teacherTalked)
+            {
+                objectivePresenter.SetObjective(
+                    "Next: Start Briefing",
+                    "Talk to Dr. Mira Sato at the teacher desk.",
+                    "Choose Talk to unlock mission context.");
+                return;
+            }
+
+            if (!HasEnoughScienceEvidence())
+            {
+                var lines = new List<string>(4);
+                if (!teacherSafetyExplained)
+                {
+                    lines.Add("Ask Dr. Mira about safety and the throat handoff.");
+                }
+
+                if (!friendTalked)
+                {
+                    lines.Add("Talk to Nia Park about stomach and intestine risks.");
+                }
+
+                if (!skepticTalked)
+                {
+                    lines.Add("Talk to Theo Mercer about airway mistakes.");
+                }
+
+                if (!boardExamined || !deskExamined || !shelfBookRead || !clockChecked)
+                {
+                    lines.Add("Inspect classroom props for route evidence (board, desk, shelf, clock).");
+                }
+
+                if (lines.Count == 0)
+                {
+                    lines.Add("Collect at least two science clues before volunteering.");
+                }
+
+                objectivePresenter.SetObjective("Next: Gather Evidence", lines.ToArray());
+                return;
+            }
+
+            objectivePresenter.SetObjective(
+                "Next: Volunteer",
+                "Talk to Dr. Mira again.",
+                "Choose Volunteer to unlock lab clearance.");
         }
 
         private bool HasEnoughScienceEvidence()
@@ -1659,10 +1710,10 @@ namespace Blocks.Gameplay.Core.Story
         {
             return playerAttitude switch
             {
-                ClassroomPlayerAttitude.Curious => "Because curiosity scales better than bravado when the inside of a body becomes terrain.",
-                ClassroomPlayerAttitude.Brave => "Because you stepped forward, then stayed long enough to understand what stepping forward costs.",
-                ClassroomPlayerAttitude.Nervous => "Because you are still here despite fear, which means you are measuring risk instead of performing confidence.",
-                _ => "Because you are asking the right question at the right moment."
+                ClassroomPlayerAttitude.Curious => "Because you keep asking smart questions.",
+                ClassroomPlayerAttitude.Brave => "Because you stepped up and stayed to learn the risks.",
+                ClassroomPlayerAttitude.Nervous => "Because you are scared but still thinking clearly.",
+                _ => "Because you asked the right question at the right time."
             };
         }
 
@@ -1670,20 +1721,20 @@ namespace Blocks.Gameplay.Core.Story
         {
             if (relationshipMoment == ClassroomRelationshipMoment.ComfortedNia)
             {
-                return "Good. Keep that empathy. In the lab, empathy keeps science human.";
+                return "Good. Keep that empathy. It makes science safer and kinder.";
             }
 
             if (relationshipMoment == ClassroomRelationshipMoment.DebatedTheo)
             {
-                return "Good. Keep the wit, but keep airway facts closer.";
+                return "Good. Keep the jokes, but keep airway facts even closer.";
             }
 
             if (relationshipMoment == ClassroomRelationshipMoment.PressedMira)
             {
-                return "Good. Skepticism is useful when paired with discipline.";
+                return "Good. Questions help when you also follow the rules.";
             }
 
-            return "Good. Carry facts, not fantasy.";
+            return "Good. Bring facts, not guesses.";
         }
 
         private void RaiseSignal(string signalId, string payload = null)

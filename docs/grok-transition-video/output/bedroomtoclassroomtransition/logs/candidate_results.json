@@ -1,0 +1,34 @@
+[
+  {
+    "shot_id": "s01_bedroom_exit",
+    "round": 1,
+    "attempt": 1,
+    "run_stamp": "20260320012605",
+    "score": 0,
+    "error": "Could not extract video URL from Grok response.",
+    "used_prompt": "Canonical subject anchor: a stylized 3D student protagonist leaving a bedroom and arriving at class in the same game world. Style anchor: stylized Unity cutscene look, soft morning light, grounded cinematic framing, clean game-ready visuals. World anchor: consistent bedroom architecture, hallway travel beat, and warm classroom arrival space within one coherent school-morning world. Continuity rules: keep the same face, hairstyle, costume, silhouette, and body proportions; preserve the same palette, rendering style, and lighting language; avoid subject drift, costume swaps, or environment resets unless explicitly requested; for follow-up shots of the same subject, begin with a brief continuity hold that matches the prior approved frame before introducing new motion. hero reference (primary reference): https://example.com/reference.jpg. Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the player character grabs momentum and moves toward the bedroom door after deciding to leave for class. Intimate over-shoulder start, then a smooth forward tracking move toward the door as warm sunlight cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark.",
+    "used_base_prompt": "Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the player character grabs momentum and moves toward the bedroom door after deciding to leave for class. Intimate over-shoulder start, then a smooth forward tracking move toward the door as warm sunlight cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark.",
+    "used_must_haves": [
+      "clear bedroom setting",
+      "student protagonist moving toward the door",
+      "soft morning light",
+      "smooth forward camera movement"
+    ]
+  },
+  {
+    "shot_id": "s01_bedroom_exit",
+    "round": 1,
+    "attempt": 2,
+    "run_stamp": "20260320012605",
+    "score": 0,
+    "error": "Could not extract video URL from Grok response.",
+    "used_prompt": "Canonical subject anchor: a stylized 3D student protagonist leaving a bedroom and arriving at class in the same game world. Style anchor: stylized Unity cutscene look, soft morning light, grounded cinematic framing, clean game-ready visuals. World anchor: consistent bedroom architecture, hallway travel beat, and warm classroom arrival space within one coherent school-morning world. Continuity rules: keep the same face, hairstyle, costume, silhouette, and body proportions; preserve the same palette, rendering style, and lighting language; avoid subject drift, costume swaps, or environment resets unless explicitly requested; for follow-up shots of the same subject, begin with a brief continuity hold that matches the prior approved frame before introducing new motion. hero reference (primary reference): https://example.com/reference.jpg. Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the student protagonist grabs momentum and walks toward the bedroom door after deciding to leave for class. Intimate over-shoulder start smoothly transitions to forward tracking camera move toward the door as soft morning light cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark.",
+    "used_base_prompt": "Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the student protagonist grabs momentum and walks toward the bedroom door after deciding to leave for class. Intimate over-shoulder start smoothly transitions to forward tracking camera move toward the door as soft morning light cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark.",
+    "used_must_haves": [
+      "stylized 3D student bedroom setting",
+      "student protagonist walking toward bedroom door",
+      "soft morning light cutting across room",
+      "intimate over-shoulder start with smooth forward tracking camera"
+    ]
+  }
+]

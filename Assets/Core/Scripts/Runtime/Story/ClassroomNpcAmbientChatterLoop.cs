@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Blocks.Gameplay.Core;
 using UnityEngine;
 
 namespace Blocks.Gameplay.Core.Story
@@ -14,9 +15,11 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private StoryNpcRegistry npcRegistry;
         [SerializeField] private ClassroomLlmService llmService;
         [SerializeField] private ClassroomNpcChatBubblePresenter bubblePresenter;
+        [SerializeField] private ClassroomNpcAmbientController ambientController;
         [SerializeField, Min(4f)] private float minCadenceSeconds = 10f;
         [SerializeField, Min(5f)] private float maxCadenceSeconds = 18f;
         [SerializeField, Min(0.3f)] private float lineGapSeconds = 1.1f;
+        [SerializeField, Min(0.6f)] private float pairTalkHoldSeconds = 2.2f;
         [SerializeField] private bool enabledByDefault = true;
 
         private readonly Dictionary<string, string> pairMemory = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -117,6 +120,7 @@ namespace Blocks.Gameplay.Core.Story
                 var exchange = exchangeTask.Result;
                 if (!string.IsNullOrWhiteSpace(exchange.FirstLine))
                 {
+                    ApplyPairConversationPose(first, second, true);
                     bubblePresenter.ShowBubble(first, exchange.FirstLine, 4.8f, first.NpcDisplayName);
                 }
 
@@ -126,6 +130,9 @@ namespace Blocks.Gameplay.Core.Story
                 {
                     bubblePresenter.ShowBubble(second, exchange.SecondLine, 4.8f, second.NpcDisplayName);
                 }
+
+                yield return new WaitForSecondsRealtime(pairTalkHoldSeconds);
+                ApplyPairConversationPose(first, second, false);
 
                 var memory = new StringBuilder(220);
                 memory.Append(first.NpcDisplayName).Append(": ").Append(exchange.FirstLine).Append('\n');
@@ -249,6 +256,53 @@ namespace Blocks.Gameplay.Core.Story
             npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
             llmService = llmService != null ? llmService : FindFirstObjectByType<ClassroomLlmService>();
             bubblePresenter = bubblePresenter != null ? bubblePresenter : FindFirstObjectByType<ClassroomNpcChatBubblePresenter>();
+            ambientController = ambientController != null ? ambientController : FindFirstObjectByType<ClassroomNpcAmbientController>();
+        }
+
+        private void ApplyPairConversationPose(StoryNpcAgent first, StoryNpcAgent second, bool talking)
+        {
+            if (first == null || second == null || ambientController == null)
+            {
+                return;
+            }
+
+            ambientController.TrySetNpcCanMove(first.NpcId, !talking);
+            ambientController.TrySetNpcCanMove(second.NpcId, !talking);
+
+            if (!talking)
+            {
+                return;
+            }
+
+            if (!ambientController.TryGetNpcTransform(first.NpcId, out var firstTransform) ||
+                !ambientController.TryGetNpcTransform(second.NpcId, out var secondTransform) ||
+                firstTransform == null ||
+                secondTransform == null)
+            {
+                return;
+            }
+
+            FaceTowards(firstTransform, secondTransform.position);
+            FaceTowards(secondTransform, firstTransform.position);
+            ambientController.TrySnapNpcToGround(first.NpcId);
+            ambientController.TrySnapNpcToGround(second.NpcId);
+        }
+
+        private static void FaceTowards(Transform source, Vector3 targetPosition)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            var direction = targetPosition - source.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude <= 0.0001f)
+            {
+                return;
+            }
+
+            source.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
         }
 
         private readonly struct AmbientExchange

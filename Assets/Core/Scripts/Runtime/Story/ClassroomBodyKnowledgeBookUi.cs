@@ -22,9 +22,9 @@ namespace Blocks.Gameplay.Core.Story
 
         [SerializeField, TextArea] private string[] pageBodies =
         {
-            "The mini rocket enters through the mouth, is routed into the esophagus, survives the stomach chamber, and targets the first region of the small intestine where absorption is strongest.",
-            "Swallowing and breathing share a corridor. The epiglottis helps close the airway route during swallowing so cargo is redirected to the esophagus instead of the trachea.",
-            "In the small intestine, villi and microvilli massively increase surface area. At miniature scale, this region becomes a navigable biome where nutrient absorption is visible in motion."
+            "The mini rocket starts at the mouth, goes down the esophagus, passes the stomach, and aims for the small intestine where nutrient pickup is strongest.",
+            "Breathing and swallowing share one hallway. During swallowing, the epiglottis helps cover the airway so the rocket goes to the esophagus, not the trachea.",
+            "Inside the small intestine, villi and microvilli create lots of surface area. At tiny scale, this area feels like a landscape where absorption happens in front of you."
         };
 
         [SerializeField] private string[] pageImageResourceKeys =
@@ -181,9 +181,9 @@ namespace Blocks.Gameplay.Core.Story
                 name = "classroom-book-frame"
             };
 
-            bookFrame.style.width = new Length(78f, LengthUnit.Percent);
+            bookFrame.style.width = new Length(84f, LengthUnit.Percent);
             bookFrame.style.maxWidth = 1280f;
-            bookFrame.style.height = new Length(70f, LengthUnit.Percent);
+            bookFrame.style.height = new Length(74f, LengthUnit.Percent);
             bookFrame.style.maxHeight = 760f;
             bookFrame.style.flexDirection = FlexDirection.Row;
             bookFrame.style.paddingLeft = 24f;
@@ -377,6 +377,7 @@ namespace Blocks.Gameplay.Core.Story
             page.style.borderTopRightRadius = 8f;
             page.style.borderBottomLeftRadius = 8f;
             page.style.borderBottomRightRadius = 8f;
+            page.style.overflow = Overflow.Hidden;
             return page;
         }
 
@@ -388,10 +389,14 @@ namespace Blocks.Gameplay.Core.Story
             };
 
             label.style.unityFontStyleAndWeight = FontStyle.Bold;
-            label.style.fontSize = 30f;
+            label.style.fontSize = 20f;
             label.style.color = new Color(0.25f, 0.17f, 0.09f, 1f);
             label.style.marginBottom = 12f;
             label.style.unityTextAlign = TextAnchor.UpperLeft;
+            label.style.whiteSpace = WhiteSpace.Normal;
+            label.style.height = 58f;
+            label.style.flexShrink = 1f;
+            label.style.overflow = Overflow.Hidden;
             return label;
         }
 
@@ -403,9 +408,12 @@ namespace Blocks.Gameplay.Core.Story
             };
 
             label.style.whiteSpace = WhiteSpace.Normal;
-            label.style.fontSize = 22f;
+            label.style.fontSize = 18f;
             label.style.color = new Color(0.24f, 0.18f, 0.12f, 1f);
             label.style.flexGrow = 1f;
+            label.style.flexShrink = 1f;
+            label.style.unityTextAlign = TextAnchor.UpperLeft;
+            label.style.overflow = Overflow.Hidden;
             return label;
         }
 

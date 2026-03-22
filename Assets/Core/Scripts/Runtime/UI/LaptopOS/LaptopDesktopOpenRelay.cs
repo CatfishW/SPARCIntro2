@@ -21,7 +21,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
             if (laptopSystem == null)
             {
-                laptopSystem = FindFirstObjectByType<LaptopDesktopSystem>();
+                laptopSystem = FindFirstObjectByType<LaptopDesktopSystem>(FindObjectsInactive.Include);
             }
         }
 
@@ -48,7 +48,12 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
         private void HandleOptionTriggered(InteractionInvocation invocation)
         {
-            if (invocation == null || invocation.Target != sourceItem)
+            if (invocation == null)
+            {
+                return;
+            }
+
+            if (sourceItem != null && invocation.Target != null && invocation.Target != sourceItem)
             {
                 return;
             }
@@ -60,7 +65,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
             if (laptopSystem == null)
             {
-                laptopSystem = FindFirstObjectByType<LaptopDesktopSystem>();
+                laptopSystem = FindFirstObjectByType<LaptopDesktopSystem>(FindObjectsInactive.Include);
             }
 
             laptopSystem?.Open();

@@ -23,6 +23,7 @@ namespace Blocks.Gameplay.Core
         [SerializeField] private StatChangeEvent onStatChanged;
         [SerializeField] private NotificationEvent onNotification;
         [SerializeField] private RespawnStatusEvent onRespawnStatusChanged;
+        [SerializeField] private bool showVitalsBars;
 
         // UI Element References
         private Label m_MessageLabel;
@@ -76,6 +77,9 @@ namespace Blocks.Gameplay.Core
                 DisableForNonOwner();
                 return;
             }
+
+            // Design requirement: hide health/stamina bars in all scenes.
+            showVitalsBars = false;
 
             if (!ValidateComponents()) return;
 
@@ -298,6 +302,8 @@ namespace Blocks.Gameplay.Core
                 {
                     m_PlayerHealthBarFill.style.backgroundColor = k_HealthBarColor;
                 }
+
+                m_PlayerHealthBar.style.display = showVitalsBars ? DisplayStyle.Flex : DisplayStyle.None;
             }
 
             if (m_PlayerStaminaBar != null)
@@ -307,6 +313,8 @@ namespace Blocks.Gameplay.Core
                 {
                     m_PlayerStaminaBarFill.style.backgroundColor = k_StaminaBarColor;
                 }
+
+                m_PlayerStaminaBar.style.display = showVitalsBars ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
 

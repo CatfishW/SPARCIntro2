@@ -22,18 +22,26 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private ClassroomStoryInteractionBridge interactionBridge;
         [SerializeField] private ClassroomStoryConversationDirector conversationDirector;
         [SerializeField] private ClassroomStorySceneTransition sceneTransition;
+        [SerializeField] private ClassroomCollisionBootstrapper collisionBootstrapper;
         [SerializeField] private ClassroomLlmService llmService;
-        [SerializeField] private ClassroomNpcRuntimeVoiceoverService runtimeVoiceoverService;
         [SerializeField] private ClassroomNpcActionExecutor npcActionExecutor;
         [SerializeField] private ClassroomNpcChatBubblePresenter chatBubblePresenter;
         [SerializeField] private ClassroomNpcAmbientChatterLoop ambientChatterLoop;
+        [SerializeField] private ClassroomStoryAmbientSoundscape ambientSoundscape;
+        [SerializeField] private ClassroomSceneIntroCutscene introCutscene;
         [SerializeField] private ClassroomNpcFreeChatUi freeChatUi;
+        [SerializeField] private ClassroomStoryObjectivePresenter objectivePresenter;
         [SerializeField] private ClassroomBodyKnowledgeBookUi bookUi;
         [SerializeField] private ClassroomBodyKnowledgeQuizUi quizUi;
+        [SerializeField] private StoryNpcRegistry npcRegistry;
+        [SerializeField] private SoundDef sharedFootstepSound;
+        [SerializeField] private SoundDef sharedLandSound;
+        [SerializeField] private SoundDef environmentClockTickSound;
         [SerializeField] private bool restartStoryOnBootstrap = true;
         [SerializeField] private string spawnAnchorPath = "_Spawns/Pfb_SpawnPad";
         [SerializeField, Min(0f)] private float spawnVerticalOffset = 0.08f;
         [SerializeField] private string spawnLookTargetPath = "Classroom/teacherDesk.001";
+        [SerializeField, Min(0.5f)] private float audioWiringTimeoutSeconds = 8f;
 
         private StoryFlowProjectConfig runtimeConfig;
         private StoryGraphAsset runtimeGraph;
@@ -90,13 +98,7 @@ namespace Blocks.Gameplay.Core.Story
 
         private void Start()
         {
-            StartCoroutine(PositionPlayerAtSpawnRoutine());
-
-            var graphToStart = runtimeGraph != null ? runtimeGraph : player != null ? player.InitialGraph : null;
-            if (restartStoryOnBootstrap && player != null && graphToStart != null)
-            {
-                player.StartStory(graphToStart);
-            }
+            StartCoroutine(BootstrapSceneRoutine());
         }
 
         private void OnDestroy()
@@ -210,18 +212,20 @@ namespace Blocks.Gameplay.Core.Story
 
         private void EnsureStoryServices()
         {
+            DisableRuntimeNpcTtsServices();
+
             llmService = llmService != null ? llmService : FindFirstObjectByType<ClassroomLlmService>(FindObjectsInactive.Include);
             if (llmService == null)
             {
                 llmService = gameObject.AddComponent<ClassroomLlmService>();
             }
 
-            runtimeVoiceoverService = runtimeVoiceoverService != null
-                ? runtimeVoiceoverService
-                : FindFirstObjectByType<ClassroomNpcRuntimeVoiceoverService>(FindObjectsInactive.Include);
-            if (runtimeVoiceoverService == null)
+            collisionBootstrapper = collisionBootstrapper != null
+                ? collisionBootstrapper
+                : FindFirstObjectByType<ClassroomCollisionBootstrapper>(FindObjectsInactive.Include);
+            if (collisionBootstrapper == null)
             {
-                runtimeVoiceoverService = gameObject.AddComponent<ClassroomNpcRuntimeVoiceoverService>();
+                collisionBootstrapper = gameObject.AddComponent<ClassroomCollisionBootstrapper>();
             }
 
             npcActionExecutor = npcActionExecutor != null
@@ -248,12 +252,48 @@ namespace Blocks.Gameplay.Core.Story
                 ambientChatterLoop = gameObject.AddComponent<ClassroomNpcAmbientChatterLoop>();
             }
 
+            ambientSoundscape = ambientSoundscape != null
+                ? ambientSoundscape
+                : FindFirstObjectByType<ClassroomStoryAmbientSoundscape>(FindObjectsInactive.Include);
+            if (ambientSoundscape == null)
+            {
+                ambientSoundscape = gameObject.GetComponent<ClassroomStoryAmbientSoundscape>();
+                if (ambientSoundscape == null)
+                {
+                    ambientSoundscape = gameObject.AddComponent<ClassroomStoryAmbientSoundscape>();
+                }
+            }
+
+            introCutscene = introCutscene != null
+                ? introCutscene
+                : FindFirstObjectByType<ClassroomSceneIntroCutscene>(FindObjectsInactive.Include);
+            if (introCutscene == null)
+            {
+                introCutscene = gameObject.GetComponent<ClassroomSceneIntroCutscene>();
+                if (introCutscene == null)
+                {
+                    introCutscene = gameObject.AddComponent<ClassroomSceneIntroCutscene>();
+                }
+            }
+
+            npcRegistry = npcRegistry != null
+                ? npcRegistry
+                : FindFirstObjectByType<StoryNpcRegistry>(FindObjectsInactive.Include);
+
             freeChatUi = freeChatUi != null
                 ? freeChatUi
                 : FindFirstObjectByType<ClassroomNpcFreeChatUi>(FindObjectsInactive.Include);
             if (freeChatUi == null)
             {
                 freeChatUi = EnsureUiOverlayObject<ClassroomNpcFreeChatUi>("ClassroomNpcFreeChatUiRoot");
+            }
+
+            objectivePresenter = objectivePresenter != null
+                ? objectivePresenter
+                : FindFirstObjectByType<ClassroomStoryObjectivePresenter>(FindObjectsInactive.Include);
+            if (objectivePresenter == null)
+            {
+                objectivePresenter = EnsureComponentObject<ClassroomStoryObjectivePresenter>("ClassroomStoryObjectivePresenter");
             }
 
             bookUi = bookUi != null
@@ -270,6 +310,90 @@ namespace Blocks.Gameplay.Core.Story
             if (quizUi == null)
             {
                 quizUi = EnsureUiOverlayObject<ClassroomBodyKnowledgeQuizUi>("ClassroomQuizUiRoot");
+            }
+        }
+
+        private IEnumerator ConfigureImmersiveAudioRoutine()
+        {
+            var timeout = Mathf.Max(0.5f, audioWiringTimeoutSeconds);
+            while (timeout > 0f)
+            {
+                if (TryResolveLocalPlayerAnimator(out var playerAnimator) && playerAnimator != null)
+                {
+                    if (sharedFootstepSound != null)
+                    {
+                        playerAnimator.SetFootstepSoundDef(sharedFootstepSound, overwriteExisting: false);
+                    }
+
+                    if (sharedFootstepSound == null && playerAnimator.FootstepSoundDef != null)
+                    {
+                        sharedFootstepSound = playerAnimator.FootstepSoundDef;
+                    }
+
+                    if (sharedFootstepSound != null)
+                    {
+                        break;
+                    }
+                }
+
+                timeout -= 0.1f;
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            if (sharedFootstepSound == null)
+            {
+                sharedFootstepSound = TryFindLoadedSoundDef("SoundDef_Footstep");
+            }
+
+            if (sharedLandSound == null)
+            {
+                sharedLandSound = sharedFootstepSound;
+            }
+
+            if (environmentClockTickSound == null)
+            {
+                environmentClockTickSound = TryFindLoadedSoundDef("SoundDef_CountdownBeep");
+            }
+
+            ConfigureNpcFootsteps();
+            npcActionExecutor?.ConfigureAudio(sharedFootstepSound, environmentClockTickSound);
+            ambientSoundscape?.ConfigureSoundDefs(sharedFootstepSound, environmentClockTickSound);
+        }
+
+        private IEnumerator BootstrapSceneRoutine()
+        {
+            var spawnRoutine = StartCoroutine(PositionPlayerAtSpawnRoutine());
+            StartCoroutine(ConfigureImmersiveAudioRoutine());
+
+            if (introCutscene != null)
+            {
+                yield return introCutscene.PlayIntroSequenceRoutine();
+            }
+
+            if (spawnRoutine != null)
+            {
+                yield return spawnRoutine;
+            }
+
+            var graphToStart = runtimeGraph != null ? runtimeGraph : player != null ? player.InitialGraph : null;
+            if (restartStoryOnBootstrap && player != null && graphToStart != null)
+            {
+                player.StartStory(graphToStart);
+            }
+        }
+
+        private static void DisableRuntimeNpcTtsServices()
+        {
+            var services = FindObjectsByType<ClassroomNpcRuntimeVoiceoverService>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < services.Length; index++)
+            {
+                var service = services[index];
+                if (service == null)
+                {
+                    continue;
+                }
+
+                service.enabled = false;
             }
         }
 
@@ -487,6 +611,104 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return false;
+        }
+
+        private static bool TryResolveLocalPlayerAnimator(out CoreAnimator animator)
+        {
+            animator = null;
+
+            if (TryResolveLocalPlayerMovement(out var movement) && movement != null)
+            {
+                animator = movement.GetComponentInChildren<CoreAnimator>(true);
+                if (animator != null)
+                {
+                    return true;
+                }
+            }
+
+            var managers = FindObjectsByType<CorePlayerManager>(FindObjectsSortMode.None);
+            for (var index = 0; index < managers.Length; index++)
+            {
+                var candidate = managers[index];
+                if (candidate == null || !candidate.IsOwner)
+                {
+                    continue;
+                }
+
+                animator = candidate.GetComponentInChildren<CoreAnimator>(true);
+                if (animator != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void ConfigureNpcFootsteps()
+        {
+            if (sharedFootstepSound == null)
+            {
+                return;
+            }
+
+            npcRegistry = npcRegistry != null
+                ? npcRegistry
+                : FindFirstObjectByType<StoryNpcRegistry>(FindObjectsInactive.Include);
+            if (npcRegistry == null)
+            {
+                return;
+            }
+
+            npcRegistry.Refresh();
+            var cast = npcRegistry.Npcs;
+            for (var index = 0; index < cast.Count; index++)
+            {
+                var npc = cast[index];
+                if (npc == null)
+                {
+                    continue;
+                }
+
+                var animator = npc.GetComponentInChildren<Animator>(true);
+                if (animator == null)
+                {
+                    continue;
+                }
+
+                var relay = animator.GetComponent<NpcAnimationEventRelay>();
+                if (relay == null)
+                {
+                    relay = animator.gameObject.AddComponent<NpcAnimationEventRelay>();
+                }
+
+                relay.Configure(sharedFootstepSound, sharedLandSound);
+            }
+        }
+
+        private static SoundDef TryFindLoadedSoundDef(string expectedName)
+        {
+            if (string.IsNullOrWhiteSpace(expectedName))
+            {
+                return null;
+            }
+
+            var loadedDefs = Resources.FindObjectsOfTypeAll<SoundDef>();
+            for (var index = 0; index < loadedDefs.Length; index++)
+            {
+                var candidate = loadedDefs[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(candidate.name, expectedName, System.StringComparison.Ordinal))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private static T CreateNode<T>() where T : StoryNodeAsset

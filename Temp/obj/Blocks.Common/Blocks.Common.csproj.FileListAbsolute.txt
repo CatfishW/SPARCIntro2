@@ -1,8 +1,0 @@
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Common.deps.json
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Common.dll
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Common.pdb
-/Users/zladwu/My project/Temp/obj/Blocks.Common/Blocks.Common.csproj.AssemblyReference.cache
-/Users/zladwu/My project/Temp/obj/Blocks.Common/Blocks.Common.GeneratedMSBuildEditorConfig.editorconfig
-/Users/zladwu/My project/Temp/obj/Blocks.Common/Blocks.Common.csproj.CoreCompileInputs.cache
-/Users/zladwu/My project/Temp/obj/Blocks.Common/Blocks.Common.dll
-/Users/zladwu/My project/Temp/obj/Blocks.Common/Blocks.Common.pdb

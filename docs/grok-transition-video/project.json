@@ -1,0 +1,157 @@
+{
+  "project_name": "bedroomtoclassroomtransition",
+  "output_root": "./output/bedroomtoclassroomtransition",
+  "grok": {
+    "base_url": "https://mc.agaii.org/grok/v1",
+    "image_model": "grok-4.1-fast",
+    "edit_model": "grok-4.1-fast",
+    "model": "grok-imagine-1.0-video",
+    "planner_model": "grok-4.20-beta",
+    "repair_model": "grok-4.20-beta",
+    "api_key_env": [
+      "GROK_API_KEY",
+      "XAI_API_KEY"
+    ],
+    "planner_temperature": 0.2,
+    "repair_temperature": 0.35,
+    "text_max_tokens": 3200,
+    "media_retry_limit": 120,
+    "media_retry_initial_delay_seconds": 2.0,
+    "media_retry_backoff_multiplier": 1.25,
+    "media_retry_max_delay_seconds": 45.0
+  },
+  "grounding": {
+    "script_path": "/Users/zladwu/.config/opencode/skills/video-download-understand/scripts/video_pipeline.py",
+    "accept_score": 8,
+    "hero_accept_score": 9,
+    "max_attempts": 4,
+    "max_rounds": 2,
+    "sleep_between_attempts": 2.0,
+    "auto_repair_prompt": true,
+    "require_accept": false,
+    "global_requirements": [
+      "trailer-grade cinematic quality",
+      "clear hero framing",
+      "strong camera movement",
+      "clean composition",
+      "no on-screen text"
+    ],
+    "final_review_rounds": 2,
+    "final_review_accept": 9
+  },
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "crf": 16,
+    "preset": "slow",
+    "fade_seconds": 0.35
+  },
+  "audio": {
+    "narration_mode": "none",
+    "voice": "",
+    "voice_rate": 155,
+    "ambient_volume": 1.0,
+    "narration_volume": 1.45,
+    "bgm_path": null,
+    "bgm_volume": 0.18,
+    "tension_window": {
+      "start": 0.0,
+      "end": 0.0
+    },
+    "duration": 12.0
+  },
+  "planning": {
+    "mode": "general",
+    "max_shots": 4
+  },
+  "consistency": {
+    "main_subject": "a stylized 3D student protagonist leaving a bedroom and arriving at class in the same game world",
+    "style_anchor": "stylized Unity cutscene look, soft morning light, grounded cinematic framing, clean game-ready visuals",
+    "world_anchor": "consistent bedroom architecture, hallway travel beat, and warm classroom arrival space within one coherent school-morning world",
+    "continuity_rules": [
+      "keep the same face, hairstyle, costume, silhouette, and body proportions",
+      "preserve the same palette, rendering style, and lighting language",
+      "avoid subject drift, costume swaps, or environment resets unless explicitly requested",
+      "for follow-up shots of the same subject, begin with a brief continuity hold that matches the prior approved frame before introducing new motion"
+    ],
+    "negative_constraints": [
+      "no on-screen text",
+      "no subtitles",
+      "no watermark"
+    ],
+    "reference_images": [
+      {
+        "id": "hero",
+        "purpose": "canonical subject identity and overall styling",
+        "prompt": "Premium key art reference image for a stylized 3D Unity narrative game. A student protagonist in a quiet bedroom at soft morning light, clearly readable face and silhouette, grounded game-cinematic look, clean materials, no text, no watermark. Establish costume, palette, and the emotional tone of leaving for school.",
+        "url": "https://mc.agaii.org/grok/v1/files/image/52016a5b-2703-42f8-96c6-400878ce8cc9-final.jpg",
+        "local": "/Users/zladwu/My project/docs/grok-transition-video/output/bedroomtoclassroomtransition/anchors/hero.jpg"
+      },
+      {
+        "id": "environment",
+        "purpose": "world design, palette, and environment continuity",
+        "prompt": "Premium environment reference image for the same stylized 3D Unity narrative game. A coherent school-morning world bridging a quiet bedroom and a warm classroom arrival space, soft sunlight, grounded cinematic atmosphere, gameplay-ready visual clarity, no text, no watermark.",
+        "url": "https://mc.agaii.org/grok/v1/files/image/210a725b-5b72-4d56-bad4-1bc0a57e55d5-final.jpg",
+        "local": "/Users/zladwu/My project/docs/grok-transition-video/output/bedroomtoclassroomtransition/anchors/environment.jpg"
+      }
+    ],
+    "reference_image_prompt": "Premium key art reference image for a stylized 3D Unity narrative game. A student protagonist in a quiet bedroom at soft morning light, clearly readable face and silhouette, grounded game-cinematic look, clean materials, no text, no watermark. Establish costume, palette, and the emotional tone of leaving for school.",
+    "reference_image_url": "https://mc.agaii.org/grok/v1/files/image/52016a5b-2703-42f8-96c6-400878ce8cc9-final.jpg",
+    "reference_image_local": "/Users/zladwu/My project/docs/grok-transition-video/output/bedroomtoclassroomtransition/anchors/hero.jpg",
+    "shot_reference_images": {
+      "s01_bedroom_exit": {
+        "shot_id": "s01_bedroom_exit",
+        "base_anchor_id": "hero",
+        "hold_seconds": 0.75,
+        "transition_source_shot_id": "",
+        "transition_frame_url": "",
+        "opening_prompt": "",
+        "opening_url": "",
+        "opening_local": "",
+        "prompt": "Create a clean target-state guide still for a future video generation. This guide represents the later visual state of the shot after the opening continuity hold, not the first frame. Preserve the exact same character identity, face, hairstyle, costume, silhouette, body proportions, palette, and rendering style from the source image. Target shot intent: s01_bedroom_exit. Target shot prompt: Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the player character grabs momentum and moves toward the bedroom door after deciding to leave for class. Intimate over-shoulder start, then a smooth forward tracking move toward the door as warm sunlight cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark. Continuity rules: keep the same face, hairstyle, costume, silhouette, and body proportions; preserve the same palette, rendering style, and lighting language; avoid subject drift, costume swaps, or environment resets unless explicitly requested; for follow-up shots of the same subject, begin with a brief continuity hold that matches the prior approved frame before introducing new motion. Use the supplied source image as the canonical identity anchor. Secondary reference environment: https://mc.agaii.org/grok/v1/files/image/210a725b-5b72-4d56-bad4-1bc0a57e55d5-final.jpg. Source image: https://mc.agaii.org/grok/v1/files/image/52016a5b-2703-42f8-96c6-400878ce8cc9-final.jpg. Return a single polished still, no text, no subtitles, no watermark.",
+        "url": "https://mc.agaii.org/grok/v1/files/image/52016a5b-2703-42f8-96c6-400878ce8cc9-final.jpg",
+        "local": "/Users/zladwu/My project/docs/grok-transition-video/output/bedroomtoclassroomtransition/anchors/shots/s01-bedroom-exit.jpg"
+      }
+    }
+  },
+  "shots": [
+    {
+      "id": "s01_bedroom_exit",
+      "target_duration": 4.0,
+      "prompt": "Single continuous 4-second shot. Inside a quiet stylized 3D student bedroom at morning, the player character grabs momentum and moves toward the bedroom door after deciding to leave for class. Intimate over-shoulder start, then a smooth forward tracking move toward the door as warm sunlight cuts across the room. Calm anticipation, grounded body language, coherent bedroom geography, clean game-cinematic composition, no dialogue, no subtitles, no text, no watermark.",
+      "must_haves": [
+        "clear bedroom setting",
+        "student protagonist moving toward the door",
+        "soft morning light",
+        "smooth forward camera movement"
+      ],
+      "accept_score": 8
+    },
+    {
+      "id": "s02_transition_matchcut",
+      "target_duration": 3.0,
+      "prompt": "Single continuous 3-second shot. The bedroom door opening transitions through a bright morning-light match cut into a short stylized travel beat, suggesting the walk to school without hard montage fragmentation. Keep the same protagonist silhouette and motion direction, with elegant light-driven visual continuity from interior shadow into exterior glow. Smooth camera carry-through, no dialogue, no subtitles, no text, no watermark.",
+      "must_haves": [
+        "match-cut from bedroom exit",
+        "morning light transition",
+        "same protagonist silhouette",
+        "continuous motion"
+      ],
+      "accept_score": 8
+    },
+    {
+      "id": "s03_classroom_arrival",
+      "target_duration": 5.0,
+      "prompt": "Single continuous 5-second shot. Arrive inside a warm stylized 3D classroom entry space as the protagonist steps in and the camera gently settles into a clean gameplay-ready final frame. The room should feel welcoming, lightly fogged with soft morning warmth, with desks or academic cues visible and enough spatial clarity to hand off into the next playable classroom scene. Calm, anticipatory tone, no dialogue, no subtitles, no text, no watermark.",
+      "must_haves": [
+        "clear classroom setting",
+        "arrival through the doorway or entry path",
+        "warm morning atmosphere",
+        "clean final gameplay-ready frame"
+      ],
+      "accept_score": 8
+    }
+  ],
+  "narration": []
+}

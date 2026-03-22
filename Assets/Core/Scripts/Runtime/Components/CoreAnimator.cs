@@ -29,6 +29,8 @@ namespace Blocks.Gameplay.Core
         private readonly int m_AnimIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 
         public Animator BoundAnimator => Animator;
+        public bool HasFootstepSoundDef => soundDefFootstep != null;
+        public SoundDef FootstepSoundDef => soundDefFootstep;
 
         #endregion
 
@@ -97,6 +99,11 @@ namespace Blocks.Gameplay.Core
         /// <param name="filterCutoffOffset"></param>
         public void OnFootstep(AnimationEvent animationEvent, float walkRunPitchCents, float walkRunVolumeScale, float filterCutoffOffset)
         {
+            if (soundDefFootstep == null)
+            {
+                return;
+            }
+
             var overrideData = new SoundEmitter.SoundDefOverrideData
             {
                 BasePitchInCents = walkRunPitchCents,
@@ -118,10 +125,30 @@ namespace Blocks.Gameplay.Core
         /// <param name="animationEvent">Data from the animation event.</param>
         public void OnLand(AnimationEvent animationEvent)
         {
+            if (soundDefFootstep == null)
+            {
+                return;
+            }
+
             CoreDirector.RequestAudio(soundDefFootstep)
                 .AttachedTo(transform)
                 .AsReserved(SoundEmitter.ReservedInfo.ReservedEmitterAndAudioSources)
                 .Play();
+        }
+
+        public void SetFootstepSoundDef(SoundDef footstepDef, bool overwriteExisting = false)
+        {
+            if (footstepDef == null)
+            {
+                return;
+            }
+
+            if (soundDefFootstep != null && !overwriteExisting)
+            {
+                return;
+            }
+
+            soundDefFootstep = footstepDef;
         }
 
         #endregion

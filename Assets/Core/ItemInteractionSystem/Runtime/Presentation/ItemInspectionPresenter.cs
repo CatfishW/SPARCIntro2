@@ -253,14 +253,14 @@ namespace ItemInteraction
         {
             rigRoot = new GameObject("InspectionPreviewRig").transform;
             rigRoot.SetParent(transform, false);
-            rigRoot.hideFlags = HideFlags.HideAndDontSave;
+            rigRoot.gameObject.hideFlags = HideFlags.HideAndDontSave;
             rigRoot.position = new Vector3(10000f, 10000f, 10000f);
 
             rotationRoot = new GameObject("RotationRoot").transform;
             rotationRoot.SetParent(rigRoot, false);
             rotationRoot.localPosition = Vector3.zero;
             rotationRoot.localRotation = Quaternion.identity;
-            rotationRoot.hideFlags = HideFlags.HideAndDontSave;
+            rotationRoot.gameObject.hideFlags = HideFlags.HideAndDontSave;
 
             var cameraGo = new GameObject("PreviewCamera", typeof(Camera));
             cameraGo.transform.SetParent(rigRoot, false);

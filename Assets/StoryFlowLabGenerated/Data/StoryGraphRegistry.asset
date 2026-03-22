@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: StoryGraphRegistry
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Integration.StoryGraphRegistry
   graphs:
-  - {fileID: 11400000, guid: 4a5c70053cf654b02aa5f3510ce04f15, type: 2}
+  - {fileID: 11400000, guid: d218a7a773454629a911254b60519a6c, type: 2}

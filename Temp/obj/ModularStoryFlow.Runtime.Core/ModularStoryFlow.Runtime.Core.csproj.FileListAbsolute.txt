@@ -1,8 +1,0 @@
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Core.deps.json
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Core.dll
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Core.pdb
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/ModularStoryFlow.Runtime.Core.csproj.AssemblyReference.cache
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/ModularStoryFlow.Runtime.Core.GeneratedMSBuildEditorConfig.editorconfig
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/ModularStoryFlow.Runtime.Core.csproj.CoreCompileInputs.cache
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/ModularStoryFlow.Runtime.Core.dll
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/ModularStoryFlow.Runtime.Core.pdb

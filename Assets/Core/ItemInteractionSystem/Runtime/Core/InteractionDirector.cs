@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace ItemInteraction
@@ -28,6 +29,27 @@ namespace ItemInteraction
         private Coroutine openInspectionRoutine;
         private Transform cachedPlayerTransform;
         private float nextPlayerResolveTime;
+        private float nextStoryUiResolveTime;
+
+        private readonly List<MonoBehaviour> externalBusyBehaviours = new List<MonoBehaviour>(16);
+        private readonly List<MonoBehaviour> uiBuffer = new List<MonoBehaviour>(64);
+
+        private static readonly string[] BusyOpenTypeNames =
+        {
+            "Blocks.Gameplay.Core.Story.ClassroomNpcFreeChatUi",
+            "Blocks.Gameplay.Core.Story.LabBodyInspectionUi",
+            "Blocks.Gameplay.Core.Story.LabLightPuzzleUi",
+            "Blocks.Gameplay.Core.Story.ClassroomBodyKnowledgeBookUi",
+            "Blocks.Gameplay.Core.Story.ClassroomBodyKnowledgeQuizUi"
+        };
+
+        private static readonly string[] BusyVisibleTypeNames =
+        {
+            "Blocks.Gameplay.Core.Story.BedroomStorySubtitlePresenter",
+            "Blocks.Gameplay.Core.Story.ClassroomStorySubtitlePresenter",
+            "Blocks.Gameplay.Core.Story.BedroomStoryChoicePresenter",
+            "Blocks.Gameplay.Core.Story.ClassroomStoryChoicePresenter"
+        };
 
         private Dictionary<InteractableItem, float> itemCooldowns = new Dictionary<InteractableItem, float>();
         private float cooldownDuration = 2f;
@@ -78,6 +100,8 @@ namespace ItemInteraction
 
         private void Awake()
         {
+            lockInteractions = false;
+
             if (gameplayCamera == null)
             {
                 gameplayCamera = Camera.main;
@@ -93,6 +117,11 @@ namespace ItemInteraction
             }
 
             EnsurePresenters();
+        }
+
+        private void OnEnable()
+        {
+            lockInteractions = false;
         }
 
         private void EnsurePresenters()
@@ -122,22 +151,149 @@ namespace ItemInteraction
 
         private void Update()
         {
+            ResolveGameplayCamera();
             EnsurePresenters();
 
             if (lockInteractions)
             {
-                promptPresenter.Hide();
+                ClearFocus();
                 return;
             }
 
             if (IsInspectionOpen)
             {
+                ClearFocus();
                 HandleInspectionState();
+                return;
+            }
+
+            if (HasExternalInteractionBusy())
+            {
+                ClearFocus();
                 return;
             }
 
             UpdateFocus();
             HandlePromptInput();
+        }
+
+        private bool HasExternalInteractionBusy()
+        {
+            ResolveStoryUiReferences();
+
+            if (openInspectionRoutine != null)
+            {
+                return true;
+            }
+
+            for (var index = 0; index < externalBusyBehaviours.Count; index++)
+            {
+                var behaviour = externalBusyBehaviours[index];
+                if (behaviour == null)
+                {
+                    continue;
+                }
+
+                if (!IsRelevantBusyBehaviour(behaviour))
+                {
+                    continue;
+                }
+
+                if (TryGetBooleanProperty(behaviour, "IsOpen", out var isOpen) && isOpen)
+                {
+                    return true;
+                }
+
+                if (TryGetBooleanProperty(behaviour, "IsVisible", out var isVisible) && isVisible)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsRelevantBusyBehaviour(MonoBehaviour behaviour)
+        {
+            if (behaviour == null)
+            {
+                return false;
+            }
+
+            var behaviourScene = behaviour.gameObject.scene;
+            if (behaviourScene.IsValid() && behaviourScene == gameObject.scene)
+            {
+                return true;
+            }
+
+            return behaviour.transform.IsChildOf(transform);
+        }
+
+        private void ResolveStoryUiReferences()
+        {
+            if (Time.unscaledTime < nextStoryUiResolveTime && externalBusyBehaviours.Count > 0)
+            {
+                return;
+            }
+
+            nextStoryUiResolveTime = Time.unscaledTime + 0.25f;
+
+            externalBusyBehaviours.Clear();
+            uiBuffer.Clear();
+
+            var allBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < allBehaviours.Length; index++)
+            {
+                var behaviour = allBehaviours[index];
+                if (behaviour == null)
+                {
+                    continue;
+                }
+
+                uiBuffer.Add(behaviour);
+            }
+
+            CollectBehavioursByTypeNames(BusyOpenTypeNames);
+            CollectBehavioursByTypeNames(BusyVisibleTypeNames);
+        }
+
+        private void CollectBehavioursByTypeNames(IReadOnlyList<string> typeNames)
+        {
+            for (var typeIndex = 0; typeIndex < typeNames.Count; typeIndex++)
+            {
+                var typeName = typeNames[typeIndex];
+                for (var behaviourIndex = 0; behaviourIndex < uiBuffer.Count; behaviourIndex++)
+                {
+                    var behaviour = uiBuffer[behaviourIndex];
+                    if (behaviour == null || behaviour.GetType().FullName != typeName)
+                    {
+                        continue;
+                    }
+
+                    if (!externalBusyBehaviours.Contains(behaviour))
+                    {
+                        externalBusyBehaviours.Add(behaviour);
+                    }
+                }
+            }
+        }
+
+        private static bool TryGetBooleanProperty(MonoBehaviour behaviour, string propertyName, out bool value)
+        {
+            value = false;
+            if (behaviour == null)
+            {
+                return false;
+            }
+
+            var property = behaviour.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+            if (property == null || property.PropertyType != typeof(bool))
+            {
+                return false;
+            }
+
+            value = (bool)property.GetValue(behaviour);
+            return true;
         }
 
         private void HandleInspectionState()
@@ -155,6 +311,7 @@ namespace ItemInteraction
 
         private void UpdateFocus()
         {
+            ResolveGameplayCamera();
             if (gameplayCamera == null)
             {
                 return;
@@ -346,7 +503,7 @@ namespace ItemInteraction
             nextPlayerResolveTime = Time.time + 0.5f;
 
             var playerObj = GameObject.FindGameObjectWithTag("Player");
-            cachedPlayerTransform = playerObj != null ? playerObj.transform : null;
+            cachedPlayerTransform = playerObj != null ? playerObj.transform : ResolvePlayerTransformFromRuntimeBehaviours();
             return cachedPlayerTransform;
         }
 
@@ -358,7 +515,85 @@ namespace ItemInteraction
             }
 
             var colliderTransform = collider.transform;
-            return colliderTransform == playerTransform || colliderTransform.IsChildOf(playerTransform);
+            if (colliderTransform == playerTransform || colliderTransform.IsChildOf(playerTransform))
+            {
+                return true;
+            }
+
+            return HasPlayerRuntimeMarker(colliderTransform);
+        }
+
+        private static Transform ResolvePlayerTransformFromRuntimeBehaviours()
+        {
+            var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+            Transform fallback = null;
+            for (var index = 0; index < behaviours.Length; index++)
+            {
+                var behaviour = behaviours[index];
+                if (behaviour == null)
+                {
+                    continue;
+                }
+
+                var type = behaviour.GetType();
+                if (type.Name == "CorePlayerManager")
+                {
+                    var isOwnerProperty = type.GetProperty("IsOwner", BindingFlags.Instance | BindingFlags.Public);
+                    var isOwner = isOwnerProperty != null && isOwnerProperty.PropertyType == typeof(bool) && (bool)isOwnerProperty.GetValue(behaviour);
+                    if (!isOwner)
+                    {
+                        fallback ??= behaviour.transform;
+                        continue;
+                    }
+
+                    var movementProperty = type.GetProperty("CoreMovement", BindingFlags.Instance | BindingFlags.Public);
+                    if (movementProperty?.GetValue(behaviour) is Component movementComponent)
+                    {
+                        return movementComponent.transform;
+                    }
+
+                    return behaviour.transform;
+                }
+
+                if (type.Name == "CoreMovement")
+                {
+                    fallback ??= behaviour.transform;
+                }
+            }
+
+            return fallback;
+        }
+
+        private static bool HasPlayerRuntimeMarker(Transform target)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            var behaviours = target.GetComponentsInParent<MonoBehaviour>(true);
+            for (var index = 0; index < behaviours.Length; index++)
+            {
+                var behaviour = behaviours[index];
+                if (behaviour == null)
+                {
+                    continue;
+                }
+
+                var type = behaviour.GetType();
+                if (type.Name == "CoreMovement")
+                {
+                    return true;
+                }
+
+                if (type.Name == "CorePlayerManager")
+                {
+                    var isOwnerProperty = type.GetProperty("IsOwner", BindingFlags.Instance | BindingFlags.Public);
+                    return isOwnerProperty == null || isOwnerProperty.PropertyType != typeof(bool) || (bool)isOwnerProperty.GetValue(behaviour);
+                }
+            }
+
+            return false;
         }
 
         private static bool AreRelatedInteractables(InteractableItem first, InteractableItem second)
@@ -479,6 +714,33 @@ namespace ItemInteraction
         {
             gameplayCamera = Camera.main;
             inputSource = GetComponent<InteractionInputSource>();
+        }
+
+        private void ResolveGameplayCamera()
+        {
+            if (gameplayCamera != null && gameplayCamera.isActiveAndEnabled && gameplayCamera.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            gameplayCamera = Camera.main;
+            if (gameplayCamera != null && gameplayCamera.isActiveAndEnabled && gameplayCamera.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            var cameras = Camera.allCameras;
+            for (var index = 0; index < cameras.Length; index++)
+            {
+                var candidate = cameras[index];
+                if (candidate == null || !candidate.isActiveAndEnabled || !candidate.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                gameplayCamera = candidate;
+                return;
+            }
         }
     }
 }

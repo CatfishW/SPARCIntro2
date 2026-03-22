@@ -53,9 +53,11 @@
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/Character/Parts.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/UI/ViewModel.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/Control/DemoControl.cs" />
+    <Compile Include="Assets/ScifiOfficeLite/Scripts/DemoFirstPersonController.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/UI/PartsUI.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/Control/UIControl.cs" />
+    <Compile Include="Assets/ScifiOfficeLite/Scripts/DemoDoor.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/UI/ButtonAnimation.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/Character/PartsItem.cs" />
     <Compile Include="Assets/Core/Art/3D Casual Character/Demo/Scripts/UI/AnimationUI.cs" />

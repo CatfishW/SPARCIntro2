@@ -1,0 +1,467 @@
+{
+  "total": 51,
+  "ok": 51,
+  "failed": 0,
+  "failures": [],
+  "results": [
+    {
+      "index": 1,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_3536f6c87bbb",
+      "ok": true,
+      "size": 96044,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_3536f6c87bbb.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 2,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_32148783a043",
+      "ok": true,
+      "size": 314924,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_32148783a043.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 3,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_1daed67f74a4",
+      "ok": true,
+      "size": 395564,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_1daed67f74a4.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 4,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_97f0287d1ef8",
+      "ok": true,
+      "size": 230444,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_97f0287d1ef8.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 5,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_303d93df8f79",
+      "ok": true,
+      "size": 188204,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_303d93df8f79.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 6,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_19c4acfae2dc",
+      "ok": true,
+      "size": 257324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_19c4acfae2dc.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 7,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_459a144a48e4",
+      "ok": true,
+      "size": 169004,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_459a144a48e4.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 8,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_0b034fbef69e",
+      "ok": true,
+      "size": 145964,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_0b034fbef69e.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 9,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_581e1b0bc54b",
+      "ok": true,
+      "size": 161324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_581e1b0bc54b.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 10,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_c80c2a44563e",
+      "ok": true,
+      "size": 345644,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_c80c2a44563e.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 11,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_e9aca5879f05",
+      "ok": true,
+      "size": 180524,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_e9aca5879f05.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 12,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_77c914b457f9",
+      "ok": true,
+      "size": 138284,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_77c914b457f9.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 13,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_ce005116a0cf",
+      "ok": true,
+      "size": 253484,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_ce005116a0cf.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 14,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_c0bed438f67c",
+      "ok": true,
+      "size": 284204,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_c0bed438f67c.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 15,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_5281d337b28d",
+      "ok": true,
+      "size": 257324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_5281d337b28d.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 16,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_f2c1be53c9e9",
+      "ok": true,
+      "size": 165164,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_f2c1be53c9e9.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 17,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_f86be5ea6d7e",
+      "ok": true,
+      "size": 218924,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_f86be5ea6d7e.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 18,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_8fd029525b85",
+      "ok": true,
+      "size": 126764,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_8fd029525b85.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 19,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_309b50f0cc16",
+      "ok": true,
+      "size": 238124,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_309b50f0cc16.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 20,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_fc820ea133ea",
+      "ok": true,
+      "size": 322604,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_fc820ea133ea.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 21,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_6a621b8e2a42",
+      "ok": true,
+      "size": 199724,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_6a621b8e2a42.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 22,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_11a7b8e6766a",
+      "ok": true,
+      "size": 188204,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_11a7b8e6766a.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 23,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_e1b0e46e8aac",
+      "ok": true,
+      "size": 130604,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_e1b0e46e8aac.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 24,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_85142365a888",
+      "ok": true,
+      "size": 211244,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_85142365a888.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 25,
+      "speaker": "Nia Park",
+      "key": "nia_park_a9092a1263ca",
+      "ok": true,
+      "size": 299564,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_a9092a1263ca.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 26,
+      "speaker": "Nia Park",
+      "key": "nia_park_43668aa80924",
+      "ok": true,
+      "size": 276524,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_43668aa80924.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 27,
+      "speaker": "Nia Park",
+      "key": "nia_park_c4ee93a471d2",
+      "ok": true,
+      "size": 299564,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_c4ee93a471d2.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 28,
+      "speaker": "Nia Park",
+      "key": "nia_park_e96dfcb3c951",
+      "ok": true,
+      "size": 138284,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_e96dfcb3c951.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 29,
+      "speaker": "Nia Park",
+      "key": "nia_park_9601e2bc6d5d",
+      "ok": true,
+      "size": 199724,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_9601e2bc6d5d.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 30,
+      "speaker": "Nia Park",
+      "key": "nia_park_c35b13c412ad",
+      "ok": true,
+      "size": 215084,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_c35b13c412ad.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 31,
+      "speaker": "Nia Park",
+      "key": "nia_park_a94a251889e4",
+      "ok": true,
+      "size": 330284,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_a94a251889e4.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 32,
+      "speaker": "Nia Park",
+      "key": "nia_park_eda0978d75c0",
+      "ok": true,
+      "size": 61484,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_eda0978d75c0.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 33,
+      "speaker": "Nia Park",
+      "key": "nia_park_d05c3ec40b32",
+      "ok": true,
+      "size": 218924,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_d05c3ec40b32.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 34,
+      "speaker": "Nia Park",
+      "key": "nia_park_6e77b5fd116b",
+      "ok": true,
+      "size": 92204,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_6e77b5fd116b.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 35,
+      "speaker": "Nia Park",
+      "key": "nia_park_03b048e440e6",
+      "ok": true,
+      "size": 153644,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_03b048e440e6.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 36,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_04742694a220",
+      "ok": true,
+      "size": 276524,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_04742694a220.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 37,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_0e399d4b1436",
+      "ok": true,
+      "size": 199724,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_0e399d4b1436.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 38,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_9f5b8368299e",
+      "ok": true,
+      "size": 115244,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_9f5b8368299e.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 39,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_8ceab20e4585",
+      "ok": true,
+      "size": 276524,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_8ceab20e4585.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 40,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_33a4e51f4b39",
+      "ok": true,
+      "size": 176684,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_33a4e51f4b39.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 41,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_b45d68e064a5",
+      "ok": true,
+      "size": 353324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_b45d68e064a5.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 42,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_9df1e40963b6",
+      "ok": true,
+      "size": 268844,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_9df1e40963b6.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 43,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_b7edd29c44cf",
+      "ok": true,
+      "size": 161324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_b7edd29c44cf.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 44,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_d8369558bf1e",
+      "ok": true,
+      "size": 188204,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_d8369558bf1e.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 45,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_66920b6bc8e6",
+      "ok": true,
+      "size": 234284,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_66920b6bc8e6.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 46,
+      "speaker": "Theo Mercer",
+      "key": "theo_mercer_37500eb88139",
+      "ok": true,
+      "size": 215084,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_37500eb88139.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 47,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_6bae483eb06f",
+      "ok": true,
+      "size": 134444,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_6bae483eb06f.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 48,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_472a51fe8450",
+      "ok": true,
+      "size": 161324,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_472a51fe8450.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 49,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_cf2180173e93",
+      "ok": true,
+      "size": 157484,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_cf2180173e93.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 50,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_81d0a984ffc9",
+      "ok": true,
+      "size": 138284,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_81d0a984ffc9.wav",
+      "stderr_tail": ""
+    },
+    {
+      "index": 51,
+      "speaker": "Dr. Mira Sato",
+      "key": "dr_mira_sato_3ee533bfb6c3",
+      "ok": true,
+      "size": 249644,
+      "stdout_tail": "  Progress: 10%\n  Progress: 100%\n\u2713 Saved: /Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_3ee533bfb6c3.wav",
+      "stderr_tail": ""
+    }
+  ]
+}

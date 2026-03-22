@@ -1,6 +1,7 @@
 using ModularStoryFlow.Runtime.Events;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -9,10 +10,14 @@ namespace Blocks.Gameplay.Core.Story
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(CanvasScaler))]
     [RequireComponent(typeof(GraphicRaycaster))]
+    [RequireComponent(typeof(AudioSource))]
     public sealed class BedroomStorySubtitlePresenter : MonoBehaviour
     {
         private const float FadeDurationSeconds = 0.16f;
         private const float TypewriterCharactersPerSecond = 54f;
+        private const int PlayerSpeechBlipClipCount = 6;
+        private const float PlayerSpeechBlipCooldownSeconds = 0.028f;
+        private const string CapSpeakerName = "CAP";
 
         private CanvasGroup canvasGroup;
         private RectTransform bandRect;
@@ -20,8 +25,16 @@ namespace Blocks.Gameplay.Core.Story
         private Text bodyText;
         private Image divider;
         private Image background;
+        private AudioSource playerVoiceSource;
+        private AudioClip[] playerSpeechBlipClips;
         private bool visible;
+        private bool playPlayerSpeechBlips;
+        private bool playCapSpeechBlips;
         private float autoCloseRemainingSeconds = -1f;
+        private float playerSpeechBlipCooldownRemaining;
+        private int playerSpeechCharactersSinceLastBlip;
+        private int lastVisibleCharacterCount;
+        private int nextPlayerSpeechClipIndex;
         private readonly BedroomStorySubtitleTypewriter typewriter = new BedroomStorySubtitleTypewriter();
 
         public bool IsVisible => visible;
@@ -34,7 +47,7 @@ namespace Blocks.Gameplay.Core.Story
 
         private void Update()
         {
-            Tick(Time.deltaTime);
+            Tick(Time.unscaledDeltaTime);
         }
 
         public void Tick(float deltaTime)
@@ -62,8 +75,10 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            var previousVisibleCount = bodyText.text != null ? bodyText.text.Length : 0;
             typewriter.Advance(deltaTime, TypewriterCharactersPerSecond);
             bodyText.text = typewriter.VisibleText;
+            TickPlayerSpeechBlips(deltaTime, previousVisibleCount, bodyText.text != null ? bodyText.text.Length : 0);
         }
 
         public void Present(StoryDialogueRequest request)
@@ -74,6 +89,11 @@ namespace Blocks.Gameplay.Core.Story
             bodyText.text = typewriter.VisibleText;
             visible = !string.IsNullOrWhiteSpace(typewriter.FullText);
             bandRect.gameObject.SetActive(visible);
+            playPlayerSpeechBlips = visible && string.Equals(speakerText.text, "You", StringComparison.OrdinalIgnoreCase);
+            playCapSpeechBlips = visible && string.Equals(speakerText.text, CapSpeakerName, StringComparison.OrdinalIgnoreCase);
+            playerSpeechBlipCooldownRemaining = 0f;
+            playerSpeechCharactersSinceLastBlip = 0;
+            lastVisibleCharacterCount = 0;
             autoCloseRemainingSeconds = visible && request != null && request.AutoAdvance
                 ? Mathf.Max(0f, request.AutoAdvanceDelaySeconds)
                 : -1f;
@@ -84,9 +104,19 @@ namespace Blocks.Gameplay.Core.Story
             visible = false;
             autoCloseRemainingSeconds = -1f;
             typewriter.Clear();
+            playPlayerSpeechBlips = false;
+            playCapSpeechBlips = false;
+            playerSpeechBlipCooldownRemaining = 0f;
+            playerSpeechCharactersSinceLastBlip = 0;
+            lastVisibleCharacterCount = 0;
             if (bodyText != null)
             {
                 bodyText.text = string.Empty;
+            }
+
+            if (playerVoiceSource != null)
+            {
+                playerVoiceSource.Stop();
             }
         }
 
@@ -98,8 +128,18 @@ namespace Blocks.Gameplay.Core.Story
             canvasGroup.alpha = 0f;
             bandRect.gameObject.SetActive(false);
             typewriter.Clear();
+            playPlayerSpeechBlips = false;
+            playCapSpeechBlips = false;
+            playerSpeechBlipCooldownRemaining = 0f;
+            playerSpeechCharactersSinceLastBlip = 0;
+            lastVisibleCharacterCount = 0;
             speakerText.text = string.Empty;
             bodyText.text = string.Empty;
+
+            if (playerVoiceSource != null)
+            {
+                playerVoiceSource.Stop();
+            }
         }
 
         private void EnsureUi()
@@ -126,6 +166,13 @@ namespace Blocks.Gameplay.Core.Story
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
+
+            playerVoiceSource = GetComponent<AudioSource>();
+            playerVoiceSource.playOnAwake = false;
+            playerVoiceSource.loop = false;
+            playerVoiceSource.spatialBlend = 0f;
+            playerVoiceSource.volume = 0.16f;
+            EnsurePlayerSpeechBlipClips();
 
             bandRect = BedroomStoryUiFactory.CreateUiObject("SubtitleBand", transform).GetComponent<RectTransform>();
             bandRect.anchorMin = new Vector2(0.5f, 0f);
@@ -171,6 +218,100 @@ namespace Blocks.Gameplay.Core.Story
             bodyText.rectTransform.pivot = new Vector2(0.5f, 1f);
             bodyText.rectTransform.sizeDelta = new Vector2(860f, 88f);
             bodyText.rectTransform.anchoredPosition = new Vector2(0f, -68f);
+        }
+
+        private void TickPlayerSpeechBlips(float deltaTime, int previousVisibleCount, int currentVisibleCount)
+        {
+            if ((!playPlayerSpeechBlips && !playCapSpeechBlips) || playerVoiceSource == null || playerSpeechBlipClips == null || playerSpeechBlipClips.Length == 0)
+            {
+                lastVisibleCharacterCount = currentVisibleCount;
+                return;
+            }
+
+            if (playerSpeechBlipCooldownRemaining > 0f)
+            {
+                playerSpeechBlipCooldownRemaining = Mathf.Max(0f, playerSpeechBlipCooldownRemaining - deltaTime);
+            }
+
+            if (currentVisibleCount <= previousVisibleCount || string.IsNullOrEmpty(typewriter.FullText))
+            {
+                lastVisibleCharacterCount = currentVisibleCount;
+                return;
+            }
+
+            for (var index = previousVisibleCount; index < currentVisibleCount && index < typewriter.FullText.Length; index++)
+            {
+                var character = typewriter.FullText[index];
+                if (!char.IsLetterOrDigit(character))
+                {
+                    continue;
+                }
+
+                playerSpeechCharactersSinceLastBlip++;
+                if (playerSpeechCharactersSinceLastBlip < 2 || playerSpeechBlipCooldownRemaining > 0f)
+                {
+                    continue;
+                }
+
+                PlayNextPlayerSpeechBlip();
+                playerSpeechCharactersSinceLastBlip = 0;
+                playerSpeechBlipCooldownRemaining = PlayerSpeechBlipCooldownSeconds;
+            }
+
+            lastVisibleCharacterCount = currentVisibleCount;
+        }
+
+        private void PlayNextPlayerSpeechBlip()
+        {
+            if (playerSpeechBlipClips == null || playerSpeechBlipClips.Length == 0 || playerVoiceSource == null)
+            {
+                return;
+            }
+
+            var clip = playerSpeechBlipClips[nextPlayerSpeechClipIndex % playerSpeechBlipClips.Length];
+            nextPlayerSpeechClipIndex = (nextPlayerSpeechClipIndex + 1) % playerSpeechBlipClips.Length;
+            if (clip != null)
+            {
+                playerVoiceSource.PlayOneShot(clip, 1f);
+            }
+        }
+
+        private void EnsurePlayerSpeechBlipClips()
+        {
+            if (playerSpeechBlipClips != null && playerSpeechBlipClips.Length == PlayerSpeechBlipClipCount)
+            {
+                return;
+            }
+
+            playerSpeechBlipClips = new AudioClip[PlayerSpeechBlipClipCount];
+            for (var index = 0; index < playerSpeechBlipClips.Length; index++)
+            {
+                playerSpeechBlipClips[index] = CreatePlayerSpeechBlipClip(index);
+            }
+        }
+
+        private static AudioClip CreatePlayerSpeechBlipClip(int variantIndex)
+        {
+            const int sampleRate = 22050;
+            const float durationSeconds = 0.048f;
+            var sampleCount = Mathf.CeilToInt(sampleRate * durationSeconds);
+            var samples = new float[sampleCount];
+            var baseFrequency = 410f + (variantIndex * 32f);
+
+            for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
+            {
+                var time = sampleIndex / (float)sampleRate;
+                var normalized = sampleIndex / Mathf.Max(1f, sampleCount - 1f);
+                var envelope = Mathf.Sin(normalized * Mathf.PI);
+                var wobble = Mathf.Sin(time * Mathf.PI * (3.5f + (variantIndex * 0.35f))) * 12f;
+                var sine = Mathf.Sin((baseFrequency + wobble) * time * Mathf.PI * 2f);
+                var overtone = Mathf.Sin((baseFrequency * 2.02f) * time * Mathf.PI * 2f) * 0.26f;
+                samples[sampleIndex] = (sine + overtone) * envelope * 0.18f;
+            }
+
+            var clip = AudioClip.Create($"PlayerSpeechBlip_{variantIndex}", sampleCount, 1, sampleRate, false);
+            clip.SetData(samples, 0);
+            return clip;
         }
     }
 }

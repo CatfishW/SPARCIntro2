@@ -1,8 +1,8 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Blocks.Gameplay.Platformer.csproj" />
-  <Project Path="Blocks.Gameplay.Shooter.Editor.csproj" />
   <Project Path="Blocks.Gameplay.Core.csproj" />
+  <Project Path="Blocks.Gameplay.Shooter.Editor.csproj" />
   <Project Path="Blocks.Sessions.Common.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="ModularStoryFlow.Runtime.Channels.csproj" />
@@ -13,9 +13,9 @@
   <Project Path="Blocks.Gameplay.Core.Editor.csproj" />
   <Project Path="ModularStoryFlow.Runtime.Player.csproj" />
   <Project Path="Blocks.Gameplay.Shooter.csproj" />
+  <Project Path="Blocks.Gameplay.Core.Story.Editor.csproj" />
   <Project Path="Blocks.Sessions.csproj" />
   <Project Path="ModularStoryFlow.Runtime.Bridges.csproj" />
-  <Project Path="Blocks.Gameplay.Core.Story.Editor.csproj" />
   <Project Path="ItemInteractionSystem.Editor.csproj" />
   <Project Path="Blocks.Common.csproj" />
 </Solution>

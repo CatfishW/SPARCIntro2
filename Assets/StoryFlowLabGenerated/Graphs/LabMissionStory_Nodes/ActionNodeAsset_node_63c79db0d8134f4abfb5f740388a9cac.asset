@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a232169b007d478ebe2aab232c60958, type: 3}
+  m_Name: ActionNodeAsset_node_63c79db0d8134f4abfb5f740388a9cac
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.ActionNodeAsset
+  nodeId: node_63c79db0d8134f4abfb5f740388a9cac
+  editorPosition:
+    serializedVersion: 2
+    x: 2560
+    y: 120
+    width: 280
+    height: 220
+  notes: 
+  actions:
+  - {fileID: 11400000, guid: 93f052d4457364d9eb40079232855fe5, type: 2}

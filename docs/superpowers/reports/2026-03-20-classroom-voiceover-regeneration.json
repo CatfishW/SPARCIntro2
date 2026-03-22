@@ -1,0 +1,415 @@
+{
+  "total": 51,
+  "ok": 51,
+  "failed": 0,
+  "results": [
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Alright team, big science day.",
+      "key": "dr_mira_sato_3536f6c87bbb",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_3536f6c87bbb.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "In the lab next door, one of you will ride a tiny rocket through the digestive system.",
+      "key": "dr_mira_sato_32148783a043",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_32148783a043.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Great question. We enter through the mouth, move down the food tube, pass the stomach, and reach the small intestine.",
+      "key": "dr_mira_sato_1daed67f74a4",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_1daed67f74a4.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "What matters is knowing where it gets risky, and what to do next.",
+      "key": "dr_mira_sato_97f0287d1ef8",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_97f0287d1ef8.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Bravery helps, but following safety rules matters more.",
+      "key": "dr_mira_sato_303d93df8f79",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_303d93df8f79.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Talk to classmates and check room clues, then volunteer with real facts.",
+      "key": "dr_mira_sato_19c4acfae2dc",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_19c4acfae2dc.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "It is unusual, but we control every step.",
+      "key": "dr_mira_sato_459a144a48e4",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_459a144a48e4.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Being nervous is okay. Learn the facts first.",
+      "key": "dr_mira_sato_0b034fbef69e",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_0b034fbef69e.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "You need a little more evidence before I open the lab door.",
+      "key": "dr_mira_sato_581e1b0bc54b",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_581e1b0bc54b.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Talk with Nia or Theo, read the board, check my desk notes, open the shelf atlas, and check the wall clock.",
+      "key": "dr_mira_sato_c80c2a44563e",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_c80c2a44563e.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Nice work. If you are ready, choose Volunteer.",
+      "key": "dr_mira_sato_e9aca5879f05",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_e9aca5879f05.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Lab door is ready. Let's go.",
+      "key": "dr_mira_sato_77c914b457f9",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_77c914b457f9.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Mouth entry is the easy part. The throat handoff is the risky part.",
+      "key": "dr_mira_sato_ce005116a0cf",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_ce005116a0cf.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "The rocket must go into the food tube. If it goes into the airway, mission over.",
+      "key": "dr_mira_sato_c0bed438f67c",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_c0bed438f67c.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Then speed matters. We can handle stomach acid only if we keep moving.",
+      "key": "dr_mira_sato_5281d337b28d",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_5281d337b28d.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "No blind volunteering. Talk to me first.",
+      "key": "dr_mira_sato_f2c1be53c9e9",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_f2c1be53c9e9.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Not yet. Bring me more evidence from the room and classmates.",
+      "key": "dr_mira_sato_f86be5ea6d7e",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_f86be5ea6d7e.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "You already committed. Use the door.",
+      "key": "dr_mira_sato_8fd029525b85",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_8fd029525b85.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "In the lab, you shrink, board the mini rocket, and enter through the mouth.",
+      "key": "dr_mira_sato_309b50f0cc16",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_309b50f0cc16.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Stay out of the airway, cross the stomach quickly, then reach the small intestine to study absorption.",
+      "key": "dr_mira_sato_fc820ea133ea",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_fc820ea133ea.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "That's the core lesson: be precise, not flashy.",
+      "key": "dr_mira_sato_6a621b8e2a42",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_6a621b8e2a42.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "That answer matters only if you still choose this clearly.",
+      "key": "dr_mira_sato_11a7b8e6766a",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_11a7b8e6766a.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Take a breath and choose when you are ready.",
+      "key": "dr_mira_sato_e1b0e46e8aac",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_e1b0e46e8aac.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Lab door. Final briefing in one minute, then launch.",
+      "key": "dr_mira_sato_85142365a888",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_85142365a888.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "I know the diagrams, but it feels weird to map a real body.",
+      "key": "nia_park_a9092a1263ca",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_a9092a1263ca.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Exactly. It's a real person, not just a school diagram.",
+      "key": "nia_park_43668aa80924",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_43668aa80924.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Thanks. People forget this feels scary, not just like homework.",
+      "key": "nia_park_c4ee93a471d2",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_c4ee93a471d2.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "That is not how science works... I think.",
+      "key": "nia_park_e96dfcb3c951",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_e96dfcb3c951.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Stomach acid is still the part that scares me.",
+      "key": "nia_park_9601e2bc6d5d",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_9601e2bc6d5d.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "The stomach has a mucus shield. We stay safe by moving fast.",
+      "key": "nia_park_c35b13c412ad",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_c35b13c412ad.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Team reminder: respect acid, respect timing.",
+      "key": "nia_park_a94a251889e4",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_a94a251889e4.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "That actually helps.",
+      "key": "nia_park_eda0978d75c0",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_eda0978d75c0.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Once you reach the small intestine, the real science starts.",
+      "key": "nia_park_d05c3ec40b32",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_d05c3ec40b32.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Please do not make that real.",
+      "key": "nia_park_6e77b5fd116b",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_6e77b5fd116b.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Nia Park",
+      "text": "Still, good joke. Thanks for the laugh.",
+      "key": "nia_park_03b048e440e6",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/nia_park_03b048e440e6.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "So the plan is to get swallowed on purpose for class?",
+      "key": "theo_mercer_04742694a220",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_04742694a220.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "Irresponsible and memorable. My specialty.",
+      "key": "theo_mercer_0e399d4b1436",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_0e399d4b1436.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "Ouch. Fair point.",
+      "key": "theo_mercer_9f5b8368299e",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_9f5b8368299e.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "Good question. That is the right worry.",
+      "key": "theo_mercer_8ceab20e4585",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_8ceab20e4585.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "That is why the epiglottis matters.",
+      "key": "theo_mercer_33a4e51f4b39",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_33a4e51f4b39.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "When you swallow, the epiglottis helps block the airway and sends us to the food tube. Miss that, mission over.",
+      "key": "theo_mercer_b45d68e064a5",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_b45d68e064a5.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "I still think 'learning by swallowing' is a terrible slogan.",
+      "key": "theo_mercer_9df1e40963b6",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_9df1e40963b6.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "True. Jokes are how I calm down.",
+      "key": "theo_mercer_b7edd29c44cf",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_b7edd29c44cf.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "But the throat rule is serious. Wrong tube means mission over.",
+      "key": "theo_mercer_d8369558bf1e",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_d8369558bf1e.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "Breathing and swallowing use the same space, which is bad design.",
+      "key": "theo_mercer_66920b6bc8e6",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_66920b6bc8e6.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Theo Mercer",
+      "text": "Epiglottis guards the airway. The food tube is our only lane.",
+      "key": "theo_mercer_37500eb88139",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/theo_mercer_37500eb88139.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Because you keep asking smart questions.",
+      "key": "dr_mira_sato_6bae483eb06f",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_6bae483eb06f.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Because you stepped up and stayed to learn the risks.",
+      "key": "dr_mira_sato_472a51fe8450",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_472a51fe8450.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Because you are scared but still thinking clearly.",
+      "key": "dr_mira_sato_cf2180173e93",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_cf2180173e93.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Because you asked the right question at the right time.",
+      "key": "dr_mira_sato_81d0a984ffc9",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_81d0a984ffc9.wav",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "speaker": "Dr. Mira Sato",
+      "text": "Good. Keep that empathy. It makes science safer and kinder.",
+      "key": "dr_mira_sato_3ee533bfb6c3",
+      "path": "/Users/zladwu/My project/Assets/Core/Resources/Audio/Story/Classroom/dr_mira_sato_3ee533bfb6c3.wav",
+      "ok": true,
+      "error": ""
+    }
+  ]
+}

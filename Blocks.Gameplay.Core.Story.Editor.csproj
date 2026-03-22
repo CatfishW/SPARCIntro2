@@ -48,11 +48,16 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.3.6f1-arm64/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Core/Scripts/Editor/Story/LabStoryGraphBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Story/StoryGraphRepairMenu.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Story/BedroomStoryPulsePlayableAsset.cs" />
+    <Compile Include="Assets/Core/Scripts/Editor/Story/ClassroomStoryInstaller.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Story/BedroomStoryAssetBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Story/BedroomStoryInstaller.cs" />
+    <Compile Include="Assets/Core/Scripts/Editor/Story/LabStoryAssetBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Story/BedroomStoryGraphBuilder.cs" />
+    <Compile Include="Assets/Core/Scripts/Editor/Story/LabPersistentVerificationTests.cs" />
+    <Compile Include="Assets/Core/Scripts/Editor/Story/LabStoryInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Core/Scripts/Editor/Story/Blocks.Gameplay.Core.Story.Editor.asmdef" />

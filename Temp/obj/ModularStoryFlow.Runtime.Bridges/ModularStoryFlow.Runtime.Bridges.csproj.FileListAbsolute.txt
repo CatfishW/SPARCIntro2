@@ -1,9 +1,0 @@
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Bridges.deps.json
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Bridges.dll
-/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Bridges.pdb
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularStoryFlow.Runtime.Bridges.csproj.AssemblyReference.cache
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularStoryFlow.Runtime.Bridges.GeneratedMSBuildEditorConfig.editorconfig
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularStoryFlow.Runtime.Bridges.csproj.CoreCompileInputs.cache
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularS.23F0DE18.Up2Date
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularStoryFlow.Runtime.Bridges.dll
-/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Bridges/ModularStoryFlow.Runtime.Bridges.pdb

@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5114b2086df6f4e63b8120b0d5533b05, type: 3}
   m_Name: StoryGraphRegistry
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Integration.StoryGraphRegistry
-  graphs:
-  - {fileID: 11400000, guid: b35cbd30e8a794963acd468cc68b29a8, type: 2}
+  graphs: []

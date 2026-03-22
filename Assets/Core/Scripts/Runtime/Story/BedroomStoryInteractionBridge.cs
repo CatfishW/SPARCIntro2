@@ -223,6 +223,12 @@ namespace Blocks.Gameplay.Core.Story
                 enteranceDoorInteractable.OptionTriggered += HandleDoorOptionTriggered;
             }
 
+            if (laptopInteractable != null)
+            {
+                laptopInteractable.OptionTriggered -= HandleLaptopOptionTriggered;
+                laptopInteractable.OptionTriggered += HandleLaptopOptionTriggered;
+            }
+
             if (laptopDesktopSystem != null)
             {
                 laptopDesktopSystem.Opened -= HandleLaptopOpened;
@@ -240,6 +246,11 @@ namespace Blocks.Gameplay.Core.Story
             if (enteranceDoorInteractable != null)
             {
                 enteranceDoorInteractable.OptionTriggered -= HandleDoorOptionTriggered;
+            }
+
+            if (laptopInteractable != null)
+            {
+                laptopInteractable.OptionTriggered -= HandleLaptopOptionTriggered;
             }
 
             if (laptopDesktopSystem != null)
@@ -629,6 +640,26 @@ namespace Blocks.Gameplay.Core.Story
         private void HandleLaptopReminderViewed()
         {
             MarkLaptopResolved();
+        }
+
+        private void HandleLaptopOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != laptopInteractable)
+            {
+                return;
+            }
+
+            if (!string.Equals(invocation.OptionId, LaptopPromptOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (laptopDesktopSystem == null)
+            {
+                laptopDesktopSystem = FindFirstObjectByType<LaptopDesktopSystem>(FindObjectsInactive.Include);
+            }
+
+            laptopDesktopSystem?.Open();
         }
 
         private void HandleGraphNotification(StoryGraphNotification notification)

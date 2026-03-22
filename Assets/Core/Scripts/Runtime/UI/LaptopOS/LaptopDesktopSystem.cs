@@ -1111,9 +1111,12 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             var root = CreatePanelRoot();
             root.Add(CreateSectionHeader("Music", "Low-key tracks for thinking, moving, or ignoring the clock."));
 
+            var bodyScroll = CreateScrollPane("laptop-static-scroll", "laptop-static-scroll__content");
+            root.Add(bodyScroll);
+
             var player = new VisualElement();
             player.AddToClassList("laptop-music-player");
-            root.Add(player);
+            bodyScroll.Add(player);
 
             var album = new Button(() => ShowNotification("Album Art", "Late Study cover opened in Quick Look.", 2.2f));
             album.text = string.Empty;
@@ -1277,9 +1280,12 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             var root = CreatePanelRoot();
             root.Add(CreateSectionHeader("Settings", "Small adjustments. Nothing that ruins the vibe."));
 
+            var bodyScroll = CreateScrollPane("laptop-static-scroll", "laptop-static-scroll__content");
+            root.Add(bodyScroll);
+
             var settingsGrid = new VisualElement();
             settingsGrid.AddToClassList("laptop-settings-grid");
-            root.Add(settingsGrid);
+            bodyScroll.Add(settingsGrid);
 
             settingsGrid.Add(CreateSettingsSection("Focus Mode", "Reduce noise and hide extra badges.", new[]
             {
@@ -1310,13 +1316,16 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             var root = CreatePanelRoot();
             root.Add(CreateSectionHeader("Arcade", "A couple of tiny distractions hidden inside the laptop."));
 
+            var bodyScroll = CreateScrollPane("laptop-static-scroll", "laptop-static-scroll__content");
+            root.Add(bodyScroll);
+
             var tabs = new VisualElement();
             tabs.AddToClassList("laptop-tab-strip");
-            root.Add(tabs);
+            bodyScroll.Add(tabs);
 
             var gameHost = new VisualElement();
             gameHost.AddToClassList("laptop-arcade-host");
-            root.Add(gameHost);
+            bodyScroll.Add(gameHost);
 
             Button snakeTab = null;
             Button memoryTab = null;
@@ -1772,6 +1781,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
             UpdateWindowStageVisibility();
             RefreshDesktopLayering();
+            UpdateReminderCard();
         }
 
         private void CloseWindow(LaptopWindow window)
@@ -1790,6 +1800,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
             UpdateWindowStageVisibility();
             RefreshDesktopLayering();
+            UpdateReminderCard();
         }
 
         private void ShowWindow(LaptopWindow window)
@@ -1807,6 +1818,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             ClampWindowToViewport(window);
             UpdateWindowStageVisibility();
             RefreshDesktopLayering();
+            UpdateReminderCard();
             BringWindowToFront(window);
         }
 
@@ -2027,7 +2039,8 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return;
             }
 
-            reminderCard.style.display = hasViewedClassReminder ? DisplayStyle.None : DisplayStyle.Flex;
+            var hasVisibleWindow = openWindows.Values.Any(window => window?.Root != null && window.Root.style.display != DisplayStyle.None);
+            reminderCard.style.display = (!hasViewedClassReminder && !hasVisibleWindow) ? DisplayStyle.Flex : DisplayStyle.None;
             reminderOpenButton?.SetEnabled(!hasViewedClassReminder);
             RefreshDockBadges();
         }
@@ -2134,13 +2147,13 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return new Rect(120f, 80f, 760f, 520f);
             }
 
-            var width = Mathf.Clamp(viewportWidth * 0.62f, 620f, 860f);
-            var height = Mathf.Clamp(viewportHeight * 0.78f, 420f, 620f);
-            width = Mathf.Min(width, viewportWidth - 36f);
-            height = Mathf.Min(height, viewportHeight - 36f);
+            var width = Mathf.Clamp(viewportWidth * 0.74f, 720f, 1180f);
+            var height = Mathf.Clamp(viewportHeight * 0.84f, 520f, 860f);
+            width = Mathf.Min(width, viewportWidth - 24f);
+            height = Mathf.Min(height, viewportHeight - 24f);
 
             var left = Mathf.Max(14f, (viewportWidth - width) * 0.5f);
-            var top = Mathf.Max(16f, Mathf.Min(52f, (viewportHeight - height) * 0.16f));
+            var top = Mathf.Max(12f, Mathf.Min(44f, (viewportHeight - height) * 0.1f));
             return new Rect(left, top, width, height);
         }
 
@@ -2151,8 +2164,13 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return;
             }
 
-            var width = Mathf.Min(Mathf.Max(460f, window.Root.resolvedStyle.width), Mathf.Max(460f, viewportWidth - 28f));
-            var height = Mathf.Min(Mathf.Max(360f, window.Root.resolvedStyle.height), Mathf.Max(360f, viewportHeight - 28f));
+            var minWidth = Mathf.Min(560f, Mathf.Max(340f, viewportWidth - 28f));
+            var minHeight = Mathf.Min(440f, Mathf.Max(280f, viewportHeight - 28f));
+            var maxWidth = Mathf.Max(minWidth, viewportWidth - 20f);
+            var maxHeight = Mathf.Max(minHeight, viewportHeight - 20f);
+
+            var width = Mathf.Clamp(window.Root.resolvedStyle.width, minWidth, maxWidth);
+            var height = Mathf.Clamp(window.Root.resolvedStyle.height, minHeight, maxHeight);
             var left = Mathf.Clamp(GetLeft(window.Root), 14f, Mathf.Max(14f, viewportWidth - width - 14f));
             var top = Mathf.Clamp(GetTop(window.Root), 14f, Mathf.Max(14f, viewportHeight - height - 14f));
 

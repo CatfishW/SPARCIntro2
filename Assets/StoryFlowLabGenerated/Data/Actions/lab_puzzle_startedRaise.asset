@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea263453e302c4557ae625583d4fab16, type: 3}
   m_Name: lab_puzzle_startedRaise
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Actions.StoryRaiseSignalActionAsset
-  signal: {fileID: 11400000, guid: a5b77430b02814558b4b10ad7997d019, type: 2}
-  payload: puzzle-started
+  signal: {fileID: 0}
+  payload: 

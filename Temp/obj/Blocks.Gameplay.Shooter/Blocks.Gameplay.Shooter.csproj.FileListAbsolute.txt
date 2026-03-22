@@ -1,9 +1,0 @@
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Shooter.deps.json
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Shooter.dll
-/Users/zladwu/My project/Temp/bin/Debug/Blocks.Gameplay.Shooter.pdb
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.Gameplay.Shooter.csproj.AssemblyReference.cache
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.Gameplay.Shooter.GeneratedMSBuildEditorConfig.editorconfig
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.Gameplay.Shooter.csproj.CoreCompileInputs.cache
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.G.C20024E9.Up2Date
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.Gameplay.Shooter.dll
-/Users/zladwu/My project/Temp/obj/Blocks.Gameplay.Shooter/Blocks.Gameplay.Shooter.pdb

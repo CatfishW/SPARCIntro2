@@ -12,36 +12,42 @@ namespace ItemInteraction
     public class InteractionPromptPresenter : MonoBehaviour
     {
         private const int ButtonSlotCount = 4;
-        private const float TitleHeight = 22f;
-        private const float TitleUnderlineWidth = 108f;
-        private const float TitleUnderlineHeight = 2f;
-        private const float TitleUnderlineGap = 7f;
+        private const float TitleHeight = 24f;
+        private const float TitleUnderlineWidth = 144f;
+        private const float TitleUnderlineHeight = 4f;
+        private const float TitleUnderlineGap = 6f;
         private const float TitleToRowsGap = 12f;
-        private const float RowHeight = 30f;
+        private const float RowHeight = 28f;
         private const float RowSpacing = 8f;
+        private const float CardPadding = 16f;
 
-        private static readonly Color TitleColor = new Color(0.97f, 0.98f, 1f, 0.98f);
-        private static readonly Color TitleUnderlineColor = new Color(0.21f, 0.69f, 1f, 0.95f);
-        private static readonly Color ConnectorColor = new Color(1f, 1f, 1f, 0.96f);
-        private static readonly Color HintPlateColor = new Color(0.05f, 0.13f, 0.22f, 0.92f);
-        private static readonly Color HintPlateHighlightColor = new Color(0.17f, 0.54f, 0.90f, 0.95f);
-        private static readonly Color HintTextColor = new Color(0.95f, 0.98f, 1f, 0.96f);
-        private static readonly Color HintTextHighlightColor = new Color(0.03f, 0.07f, 0.12f, 1f);
-        private static readonly Color ActionFillColor = new Color(0.04f, 0.18f, 0.31f, 0.88f);
-        private static readonly Color ActionFillHighlightColor = new Color(0.08f, 0.32f, 0.57f, 0.96f);
-        private static readonly Color ActionFillDisabledColor = new Color(0.04f, 0.10f, 0.16f, 0.52f);
-        private static readonly Color ActionAccentColor = new Color(0.25f, 0.77f, 1f, 1f);
-        private static readonly Color ActionLabelColor = new Color(0.94f, 0.97f, 1f, 0.98f);
-        private static readonly Color DisabledLabelColor = new Color(0.73f, 0.80f, 0.88f, 0.56f);
+        private static readonly Color TitleColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color TitleUnderlineColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color ConnectorColor = new Color(1f, 1f, 1f, 0.98f);
+        private static readonly Color PromptBorderColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color PromptShadowColor = new Color(0.05f, 0.08f, 0.11f, 0.42f);
+        private static readonly Color PromptBackdropColor = new Color(0.97f, 0.94f, 0.89f, 0.65f); // Increased transparency
+        private static readonly Color HintPlateColor = new Color(1f, 0.84f, 0.16f, 1f);
+        private static readonly Color HintPlateHighlightColor = new Color(1f, 0.9f, 0.35f, 1f);
+        private static readonly Color HintTextColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color HintTextHighlightColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color ActionFillColor = new Color(0.98f, 0.95f, 0.9f, 0.92f);
+        private static readonly Color ActionFillHighlightColor = new Color(0.91f, 0.97f, 1f, 0.98f);
+        private static readonly Color ActionFillDisabledColor = new Color(0.87f, 0.86f, 0.84f, 0.75f);
+        private static readonly Color ActionAccentColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color ActionLabelColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+        private static readonly Color DisabledLabelColor = new Color(0.32f, 0.32f, 0.34f, 0.55f);
 
         [Header("Layout")]
-        [SerializeField, Min(180f)] private float promptWidth = 224f;
+        [SerializeField, Min(180f)] private float promptWidth = 244f;
         [SerializeField, Min(48f)] private float connectorHorizontalOffset = 110f;
-        [SerializeField] private float promptVerticalOffset = -12f;
+        [SerializeField] private float promptVerticalOffset = -8f;
+        [SerializeField] private float visualAnchorVerticalOffset = -132f;
+        [SerializeField] private float capPromptExtraVerticalOffset = -20f;
         [SerializeField, Min(0f)] private float screenMargin = 48f;
 
         [Header("Animation")]
-        [SerializeField, Min(0.01f)] private float panelFadeDuration = 0.12f;
+        [SerializeField, Min(0.01f)] private float panelFadeDuration = 0.18f;
         [SerializeField, Min(0.01f)] private float positionSmoothing = 20f;
         [SerializeField, Range(0f, 0.08f)] private float panelSpawnScaleOffset = 0.028f;
 
@@ -53,6 +59,9 @@ namespace ItemInteraction
         private Image connectorSegmentB;
         private RectTransform promptRoot;
         private CanvasGroup promptGroup;
+        private Image promptShadow;
+        private Image promptBorder;
+        private Image promptBackdrop;
         private Text titleText;
         private Image titleUnderline;
         private PromptRow[] rows;
@@ -151,8 +160,11 @@ namespace ItemInteraction
                 return;
             }
 
-            var promptHeight = LayoutPrompt(visibleCount, itemCanvasPoint);
-            var promptPosition = ResolvePromptPosition(itemCanvasPoint, promptHeight);
+            var visualAnchorPoint = itemCanvasPoint + new Vector2(0f, visualAnchorVerticalOffset + ResolvePerItemVerticalOffset(item));
+            visualAnchorPoint.y = Mathf.Max(visualAnchorPoint.y, canvasRect.rect.yMin + screenMargin + 24f);
+
+            var promptHeight = LayoutPrompt(visibleCount, visualAnchorPoint);
+            var promptPosition = ResolvePromptPosition(visualAnchorPoint, promptHeight);
 
             if (!hasSmoothedPromptPosition)
             {
@@ -174,7 +186,7 @@ namespace ItemInteraction
             var eased = 1f - Mathf.Pow(1f - panelT, 3f);
 
             var connectorPoint = GetConnectorPoint();
-            UpdateConnector(itemCanvasPoint, connectorPoint, eased);
+            UpdateConnector(visualAnchorPoint, connectorPoint, eased);
 
             UpdatePromptVisibility(eased);
         }
@@ -262,8 +274,13 @@ namespace ItemInteraction
             ResetRuntimeState();
 
             canvas = GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                return;
+            }
+
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 500;
+            canvas.sortingOrder = 670;
 
             if (!TryGetComponent<CanvasScaler>(out var scaler))
             {
@@ -285,6 +302,13 @@ namespace ItemInteraction
             canvasRect.anchorMax = Vector2.one;
             canvasRect.offsetMin = Vector2.zero;
             canvasRect.offsetMax = Vector2.zero;
+
+            var canvasGraphic = canvas.GetComponent<Graphic>();
+            if (canvasGraphic != null)
+            {
+                canvasGraphic.raycastTarget = false;
+                canvasGraphic.color = new Color(0f, 0f, 0f, 0f);
+            }
 
             BuildPrompt();
 
@@ -313,6 +337,7 @@ namespace ItemInteraction
 
             var promptObject = RuntimeUiFactory.CreateUiObject("PromptRoot", transform);
             promptRoot = promptObject.GetComponent<RectTransform>();
+            promptRoot.SetAsLastSibling();
             promptRoot.anchorMin = new Vector2(0.5f, 0.5f);
             promptRoot.anchorMax = new Vector2(0.5f, 0.5f);
             promptRoot.pivot = new Vector2(0f, 0.5f);
@@ -321,7 +346,16 @@ namespace ItemInteraction
             promptGroup = promptObject.AddComponent<CanvasGroup>();
             promptGroup.alpha = 0f;
 
-            titleText = RuntimeUiFactory.CreateText("Title", promptRoot, 18, TextAnchor.MiddleLeft);
+            promptShadow = RuntimeUiFactory.CreateImage("PromptShadow", promptRoot, PromptShadowColor);
+            promptShadow.raycastTarget = false;
+
+            promptBorder = RuntimeUiFactory.CreateImage("PromptBorder", promptRoot, PromptBorderColor);
+            promptBorder.raycastTarget = false;
+
+            promptBackdrop = RuntimeUiFactory.CreateImage("PromptBackdrop", promptRoot, PromptBackdropColor);
+            promptBackdrop.raycastTarget = false;
+
+            titleText = RuntimeUiFactory.CreateText("Title", promptRoot, 20, TextAnchor.MiddleLeft);
             titleText.rectTransform.anchorMin = new Vector2(0f, 1f);
             titleText.rectTransform.anchorMax = new Vector2(1f, 1f);
             titleText.rectTransform.pivot = new Vector2(0.5f, 1f);
@@ -343,28 +377,39 @@ namespace ItemInteraction
 
         private float LayoutPrompt(int visibleCount, Vector2 itemCanvasPoint)
         {
+            var topOffset = 6f;
             var promptHeight =
+                CardPadding +
+                topOffset +
                 TitleHeight +
                 TitleUnderlineGap +
                 TitleUnderlineHeight +
                 TitleToRowsGap +
                 (visibleCount * RowHeight) +
-                (Mathf.Max(visibleCount - 1, 0) * RowSpacing);
+                (Mathf.Max(visibleCount - 1, 0) * RowSpacing) +
+                CardPadding;
 
             promptRoot.sizeDelta = new Vector2(promptWidth, promptHeight);
 
             currentPromptOnRight = ResolvePromptSide(itemCanvasPoint);
             promptRoot.pivot = new Vector2(currentPromptOnRight ? 0f : 1f, 0.5f);
 
+            LayoutCard(promptHeight);
+
             titleText.alignment = currentPromptOnRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
+            titleText.rectTransform.anchorMin = new Vector2(0f, 1f);
+            titleText.rectTransform.anchorMax = new Vector2(1f, 1f);
+            titleText.rectTransform.pivot = new Vector2(0.5f, 1f);
+            titleText.rectTransform.sizeDelta = new Vector2(-CardPadding * 2f, TitleHeight);
+            titleText.rectTransform.anchoredPosition = new Vector2(0f, -(CardPadding + 6f));
 
             titleUnderline.rectTransform.anchorMin = new Vector2(currentPromptOnRight ? 0f : 1f, 1f);
             titleUnderline.rectTransform.anchorMax = titleUnderline.rectTransform.anchorMin;
             titleUnderline.rectTransform.pivot = new Vector2(currentPromptOnRight ? 0f : 1f, 1f);
             titleUnderline.rectTransform.sizeDelta = new Vector2(TitleUnderlineWidth, TitleUnderlineHeight);
-            titleUnderline.rectTransform.anchoredPosition = new Vector2(0f, -(TitleHeight + TitleUnderlineGap));
+            titleUnderline.rectTransform.anchoredPosition = new Vector2(currentPromptOnRight ? CardPadding : -CardPadding, -(CardPadding + TitleHeight + TitleUnderlineGap + 6f));
 
-            var cursor = TitleHeight + TitleUnderlineGap + TitleUnderlineHeight + TitleToRowsGap;
+            var cursor = CardPadding + TitleHeight + TitleUnderlineGap + TitleUnderlineHeight + TitleToRowsGap + 6f;
             foreach (var row in rows)
             {
                 if (!row.IsActive)
@@ -372,11 +417,44 @@ namespace ItemInteraction
                     continue;
                 }
 
-                row.ConfigureLayout(promptWidth, cursor, !currentPromptOnRight);
+                row.ConfigureLayout(promptWidth - (CardPadding * 2f), CardPadding, cursor, !currentPromptOnRight);
                 cursor += RowHeight + RowSpacing;
             }
 
             return promptHeight;
+        }
+
+        private void LayoutCard(float promptHeight)
+        {
+            if (promptShadow != null)
+            {
+                var shadowRect = promptShadow.rectTransform;
+                shadowRect.anchorMin = Vector2.zero;
+                shadowRect.anchorMax = Vector2.one;
+                shadowRect.offsetMin = new Vector2(8f, -8f);
+                shadowRect.offsetMax = new Vector2(8f, -8f);
+            }
+
+            if (promptBorder != null)
+            {
+                var borderRect = promptBorder.rectTransform;
+                borderRect.anchorMin = Vector2.zero;
+                borderRect.anchorMax = Vector2.one;
+                borderRect.offsetMin = Vector2.zero;
+                borderRect.offsetMax = Vector2.zero;
+            }
+
+            if (promptBackdrop != null)
+            {
+                var backdropRect = promptBackdrop.rectTransform;
+                backdropRect.anchorMin = Vector2.zero;
+                backdropRect.anchorMax = Vector2.one;
+                backdropRect.offsetMin = new Vector2(3f, 3f);
+                backdropRect.offsetMax = new Vector2(-3f, -3f);
+                promptBackdrop.type = Image.Type.Sliced;
+                promptBackdrop.color = PromptBackdropColor;
+            }
+
         }
 
         private Vector2 ResolvePromptPosition(Vector2 itemCanvasPoint, float promptHeight)
@@ -412,6 +490,24 @@ namespace ItemInteraction
             }
 
             return itemCanvasPoint.x <= 0f;
+        }
+
+        private float ResolvePerItemVerticalOffset(InteractableItem item)
+        {
+            if (item == null)
+            {
+                return 0f;
+            }
+
+            var displayName = item.displayName ?? string.Empty;
+            var storyId = item.storyId ?? string.Empty;
+            if (displayName.IndexOf("CAP", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                storyId.IndexOf("cap", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return capPromptExtraVerticalOffset;
+            }
+
+            return 0f;
         }
 
         private Vector2 GetConnectorPoint()
@@ -463,13 +559,19 @@ namespace ItemInteraction
             var direction = currentPromptOnRight ? 1f : -1f;
             var bend = startPoint + new Vector2(direction * Mathf.Max(26f, Mathf.Abs(delta.x) * 0.45f), delta.y * 0.24f);
 
-            ApplyConnectorSegment(connectorSegmentA.rectTransform, startPoint, bend, alpha);
-            ApplyConnectorSegment(connectorSegmentB.rectTransform, bend, endPoint, alpha);
+            var grownBend = Vector2.Lerp(startPoint, bend, alpha);
+            var grownEnd = alpha < 0.55f
+                ? grownBend
+                : Vector2.Lerp(grownBend, endPoint, (alpha - 0.55f) / 0.45f);
+
+            ApplyConnectorSegment(connectorSegmentA.rectTransform, startPoint, grownBend, alpha);
+            ApplyConnectorSegment(connectorSegmentB.rectTransform, grownBend, grownEnd, alpha);
 
             connectorDot.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             connectorDot.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             connectorDot.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             connectorDot.rectTransform.anchoredPosition = startPoint;
+            connectorDot.rectTransform.sizeDelta = Vector2.one * Mathf.Lerp(8f, 12f, alpha);
 
             var tint = ConnectorColor;
             tint.a *= alpha;
@@ -520,15 +622,16 @@ namespace ItemInteraction
                 return;
             }
 
-            var showPrompt = panelT > 0.001f;
+            var promptAlpha = Mathf.Clamp01((panelT - 0.58f) / 0.42f);
+            var showPrompt = promptAlpha > 0.001f;
             promptRoot.gameObject.SetActive(showPrompt);
-            promptGroup.alpha = panelT;
-            promptRoot.localScale = Vector3.one * Mathf.Lerp(1f - panelSpawnScaleOffset, 1f, panelT);
+            promptGroup.alpha = promptAlpha;
+            promptRoot.localScale = Vector3.one * Mathf.Lerp(1f - panelSpawnScaleOffset, 1f, promptAlpha);
         }
 
         private bool HasValidRuntimeState()
         {
-            if (canvas == null || canvasRect == null || connectorRoot == null || connectorDot == null || connectorSegmentA == null || connectorSegmentB == null || promptRoot == null || promptGroup == null || titleText == null || titleUnderline == null)
+            if (canvas == null || canvasRect == null || connectorRoot == null || connectorDot == null || connectorSegmentA == null || connectorSegmentB == null || promptRoot == null || promptGroup == null || promptShadow == null || promptBackdrop == null || titleText == null || titleUnderline == null)
             {
                 return false;
             }
@@ -567,6 +670,8 @@ namespace ItemInteraction
             connectorSegmentB = null;
             promptRoot = null;
             promptGroup = null;
+            promptShadow = null;
+            promptBackdrop = null;
             titleText = null;
             titleUnderline = null;
             rows = null;
@@ -613,13 +718,14 @@ namespace ItemInteraction
                 root.sizeDelta = new Vector2(0f, RowHeight);
 
                 hintRoot = RuntimeUiFactory.CreateUiObject("HintRoot", root).GetComponent<RectTransform>();
-                hintRoot.sizeDelta = new Vector2(28f, 28f);
+                hintRoot.sizeDelta = new Vector2(32f, 32f);
 
                 hintPlate = hintRoot.gameObject.AddComponent<Image>();
                 hintPlate.color = HintPlateColor;
                 hintPlate.raycastTarget = false;
+                hintPlate.type = Image.Type.Sliced;
 
-                hintText = RuntimeUiFactory.CreateText("HintText", hintRoot, 13, TextAnchor.MiddleCenter);
+                hintText = RuntimeUiFactory.CreateText("HintText", hintRoot, 14, TextAnchor.MiddleCenter);
                 hintText.rectTransform.anchorMin = Vector2.zero;
                 hintText.rectTransform.anchorMax = Vector2.one;
                 hintText.rectTransform.offsetMin = Vector2.zero;
@@ -633,11 +739,13 @@ namespace ItemInteraction
                 actionFill = actionRoot.gameObject.AddComponent<Image>();
                 actionFill.color = ActionFillColor;
                 actionFill.raycastTarget = false;
+                actionFill.type = Image.Type.Sliced;
 
                 actionAccent = RuntimeUiFactory.CreateImage("Accent", actionRoot, ActionAccentColor);
                 actionAccent.raycastTarget = false;
+                actionAccent.type = Image.Type.Sliced;
 
-                labelText = RuntimeUiFactory.CreateText("Label", actionRoot, 17, TextAnchor.MiddleLeft);
+                labelText = RuntimeUiFactory.CreateText("Label", actionRoot, 19, TextAnchor.MiddleLeft);
                 labelText.rectTransform.anchorMin = Vector2.zero;
                 labelText.rectTransform.anchorMax = Vector2.one;
                 labelText.color = ActionLabelColor;
@@ -647,10 +755,11 @@ namespace ItemInteraction
                 root.gameObject.SetActive(false);
             }
 
-            public void ConfigureLayout(float width, float cursor, bool mirror)
+            public void ConfigureLayout(float availableWidth, float leftInset, float cursor, bool mirror)
             {
+                // Set anchoredPosition.x = 0 so that sizeDelta uniformly pads the right AND left edges inside the parent, keeping the element centered correctly within the layout bounds!
                 root.anchoredPosition = new Vector2(0f, -cursor);
-                root.sizeDelta = new Vector2(0f, RowHeight);
+                root.sizeDelta = new Vector2(-leftInset * 2f, RowHeight);
 
                 hintRoot.anchorMin = new Vector2(mirror ? 1f : 0f, 0.5f);
                 hintRoot.anchorMax = hintRoot.anchorMin;
@@ -660,14 +769,16 @@ namespace ItemInteraction
                 actionRoot.anchorMin = new Vector2(0f, 0.5f);
                 actionRoot.anchorMax = new Vector2(1f, 0.5f);
                 actionRoot.pivot = new Vector2(0.5f, 0.5f);
-                actionRoot.offsetMin = new Vector2(mirror ? 0f : 38f, -14f);
-                actionRoot.offsetMax = new Vector2(mirror ? -38f : 0f, 14f);
+                actionRoot.offsetMin = new Vector2(mirror ? 0f : 40f, -RowHeight / 2f);
+                actionRoot.offsetMax = new Vector2(mirror ? -40f : 0f, RowHeight / 2f);
 
                 actionAccent.rectTransform.anchorMin = new Vector2(mirror ? 1f : 0f, 0f);
                 actionAccent.rectTransform.anchorMax = new Vector2(mirror ? 1f : 0f, 1f);
                 actionAccent.rectTransform.pivot = new Vector2(mirror ? 1f : 0f, 0.5f);
-                actionAccent.rectTransform.sizeDelta = new Vector2(5f, 0f);
+                actionAccent.rectTransform.sizeDelta = Vector2.zero;
                 actionAccent.rectTransform.anchoredPosition = Vector2.zero;
+                actionAccent.rectTransform.offsetMin = mirror ? new Vector2(-4f, 0f) : new Vector2(0f, 0f);
+                actionAccent.rectTransform.offsetMax = mirror ? new Vector2(0f, 0f) : new Vector2(4f, 0f);
 
                 labelText.alignment = mirror ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
                 labelText.rectTransform.offsetMin = new Vector2(14f, 0f);
@@ -691,9 +802,10 @@ namespace ItemInteraction
             {
                 if (!isEnabled)
                 {
-                    hintPlate.color = HintPlateColor * new Color(1f, 1f, 1f, 0.65f);
+                    hintPlate.color = HintPlateColor;
                     hintText.color = DisabledLabelColor;
                     actionFill.color = ActionFillDisabledColor;
+                    actionAccent.color = DisabledLabelColor;
                     labelText.color = DisabledLabelColor;
                     return;
                 }
@@ -701,7 +813,8 @@ namespace ItemInteraction
                 hintPlate.color = value ? HintPlateHighlightColor : HintPlateColor;
                 hintText.color = value ? HintTextHighlightColor : HintTextColor;
                 actionFill.color = value ? ActionFillHighlightColor : ActionFillColor;
-                labelText.color = ActionLabelColor;
+                actionAccent.color = ActionAccentColor;
+                labelText.color = value ? HintTextHighlightColor : ActionLabelColor;
             }
 
             public Vector3 GetHintAnchorWorldPosition()

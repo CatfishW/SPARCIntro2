@@ -48,6 +48,7 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.3.6f1-arm64/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabDoorController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/StatChangeEvent.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundRequestBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStorySignals.cs" />
@@ -67,7 +68,9 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterCustomizationPanel.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/JumpAbility.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/Interpolator.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabFinalCutsceneController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomBodyKnowledgeBookUi.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabCapNpcController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterRigUtility.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Interaction/CameraShakeBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreInputHandler.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreCameraController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/WalkAbility.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomStoryRuntimeBootstrap.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabCameraFocusController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/StoryNpcInteractionPayload.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CorePlayerManager.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundEmitter.cs" />
@@ -91,7 +95,10 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreAnimator.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStorySubtitlePresenter.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/NpcAnimationEventRelay.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabLightPuzzleUi.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStorySceneTransition.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Interaction/IInteractable.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabMechanicalArmController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/IntPairEvent.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/StoryNpcRegistry.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/StoryNpcAgent.cs" />
@@ -103,6 +110,7 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterCustomizationModelSwapper.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreMovement.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/MovementAbility/IMovementAbility.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStoryInteractionBridge.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomNpcFreeChatUi.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/GameManager.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Addons/VisualsAddon.cs" />
@@ -110,24 +118,34 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomStorySubtitlePresenter.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/GameplayKitInputSystem_Actions.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/AutomatedNetworkTransform.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryObjectivePresenter.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabObjectivePanelUi.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/ClassroomNpcAmbientController.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabShrinkSequenceController.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomStoryStageDefinitions.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Interaction/HitProcessor.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundGameObjectPool.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStoryRuntimeBootstrap.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/UI/LaptopOS/LaptopDesktopOpenRelay.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreDirector.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabPerformanceTuner.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Stats/StatsConfig.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomSceneIntroCutscene.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundMixer.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreCameraMode.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStoryPresentationState.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Networking/GameNetworkManager.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterCustomizationStorage.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/BoolEvent.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundHandle.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryVoiceLibrary.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabShrinkTimelinePlayableAsset.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomStoryMorningAmbience.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/NotificationEvent.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomCollisionBootstrapper.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterCustomizationBootstrap.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomPlayerControlLock.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStoryUiRoot.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/UI/LaptopOS/LaptopDesktopSystem.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/ModularInteractable.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/UlongEvent.cs" />
@@ -151,13 +169,19 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Interaction/ModificationSource.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/GameEvent.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryInteractionBridge.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryAmbientSoundscape.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabCapConversationDirector.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Addons/DoubleJumpAddon.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabBodyInspectionUi.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/GameEvents/Vector2Event.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryUiRoot.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStorySignals.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomNpcChatBubblePresenter.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryRuntimeVoiceCache.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomStoryChoicePresenter.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabSceneContext.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomStorySceneTransition.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStartIntroBriefingActionAsset.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundGameObject.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/ClassroomNpcActionExecutor.cs" />
   </ItemGroup>

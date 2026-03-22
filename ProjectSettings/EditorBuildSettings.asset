@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Core/TestScenes/ClassroomArrivalScene.unity
     guid: f36444e93ba5145c1934041d854c3292
+  - enabled: 1
+    path: Assets/LabScene.unity
+    guid: d9c7bdaef70214db8b32fb55c5263c30
+  - enabled: 1
+    path: Assets/Core/TestScenes/LabTransitionScene.unity
+    guid: 9c2229221d30ba6502cd7803b9bfbdfa
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

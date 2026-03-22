@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d329dfda60d4c5ab5e5e2490858703, type: 3}
   m_Name: intro_pathCanonicalSet
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Actions.StorySetVariableActionAsset
-  variable: {fileID: 0}
-  booleanValue: 0
+  variable: {fileID: 11400000, guid: a68f47db30ce44e3cbf676621bab037d, type: 2}
+  booleanValue: 1
   integerValue: 0
   floatValue: 0
   stringValue: 

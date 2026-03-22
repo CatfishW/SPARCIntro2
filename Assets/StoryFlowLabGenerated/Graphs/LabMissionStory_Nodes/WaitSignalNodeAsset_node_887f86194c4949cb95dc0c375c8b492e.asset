@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3317259ed41c4dd6972918e73c6a221, type: 3}
+  m_Name: WaitSignalNodeAsset_node_887f86194c4949cb95dc0c375c8b492e
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.WaitSignalNodeAsset
+  nodeId: node_887f86194c4949cb95dc0c375c8b492e
+  editorPosition:
+    serializedVersion: 2
+    x: 5120
+    y: 120
+    width: 280
+    height: 220
+  notes: 
+  signal: {fileID: 11400000, guid: d651882de43eb4c18a445c8ae4bdefc8, type: 2}

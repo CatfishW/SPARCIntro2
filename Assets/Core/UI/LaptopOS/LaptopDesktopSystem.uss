@@ -474,6 +474,17 @@
     border-bottom-width: 0;
 }
 
+.laptop-static-scroll {
+    margin-right: 0;
+}
+
+.laptop-static-scroll__content {
+    flex-direction: column;
+    min-width: 0;
+    padding-right: 4px;
+    padding-bottom: 8px;
+}
+
 .laptop-main-scroll,
 .laptop-card-grid-scroll,
 .laptop-photo-grid-scroll {
@@ -1151,6 +1162,7 @@
 }
 
 .laptop-music-player {
+    width: 100%;
     padding-left: 12px;
     padding-right: 12px;
     padding-top: 12px;
@@ -1295,6 +1307,7 @@
 }
 
 .laptop-settings-grid {
+    width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -1379,6 +1392,7 @@
 
 .laptop-tab-strip {
     flex-direction: row;
+    flex-wrap: wrap;
     margin-bottom: 14px;
 }
 
@@ -1395,6 +1409,7 @@
 }
 
 .laptop-arcade-host {
+    width: 100%;
     flex-direction: column;
 }
 
@@ -1417,6 +1432,7 @@
 
 .laptop-game-header {
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
@@ -1431,6 +1447,8 @@
 .laptop-game-header__subtitle {
     color: rgb(217, 224, 235);
     font-size: 12px;
+    margin-top: 4px;
+    width: 100%;
 }
 
 .laptop-game-score {
@@ -1444,7 +1462,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-content: flex-start;
-    width: 348px;
+    width: 100%;
+    max-width: 348px;
     margin-bottom: 12px;
 }
 
@@ -1483,7 +1502,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-content: flex-start;
-    width: 420px;
+    width: 100%;
+    max-width: 420px;
 }
 
 .laptop-memory-card {

@@ -213,7 +213,7 @@ MonoBehaviour:
   SlerpPosition: 0
   directionMode: 2
   moveSpeed: 3
-  sprintSpeed: 9
+  sprintSpeed: 5
   rotationSmoothTime: 0.1
   speedChangeRate: 15
   forceDecayRate: 5
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4416926081852918481}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93ca34c4c69514d8091901109c9bfdec, type: 3}
   m_Name: 
@@ -382,23 +382,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 0}
   componentController: {fileID: 7666903440408712975}
   targetRenderer: {fileID: 0}
-  materialSets:
-  - name: Blue
-    body: {fileID: 2100000, guid: 138f64fd3a5cc8d46ad707e6a9c154d5, type: 2}
-    arms: {fileID: 2100000, guid: aedca5bdcee2ef8458f81cd6a19a6b47, type: 2}
-    legs: {fileID: 2100000, guid: 4426c32d69bd7a647a0ae22c3bc8ca40, type: 2}
-  - name: Orange
-    body: {fileID: 2100000, guid: 9668957b5a79ab04bb6aaef9d93109f3, type: 2}
-    arms: {fileID: 2100000, guid: cd59790abdf4f244dac486f17d029764, type: 2}
-    legs: {fileID: 2100000, guid: c89fb9d4383f71547b80b6d91db3f693, type: 2}
-  - name: Red
-    body: {fileID: 2100000, guid: 8c65089c5c7dbd645998ed8b50e8ab69, type: 2}
-    arms: {fileID: 2100000, guid: b336e7bca312004468952eba3f52dab9, type: 2}
-    legs: {fileID: 2100000, guid: 9cdd6d3d02684f74c9d2a397f6a9e277, type: 2}
-  - name: White
-    body: {fileID: 2100000, guid: 43714b68324cc2c409d534d9874f2a2b, type: 2}
-    arms: {fileID: 2100000, guid: 0dd60f3d67ac4be4f878e4e514a93124, type: 2}
-    legs: {fileID: 2100000, guid: 7f447ca8d2cada9469697b930a6e5cd2, type: 2}
+  materialSets: []
   eliminatedVFX: {fileID: 1784979674055767841, guid: 97442867c93b8496c826100a3164b476, type: 3}
   soundDefPlayerEliminated: {fileID: 11400000, guid: f94375e27624be640bcec5f9f675346c, type: 2}
   useRagdollOnElimination: 0
@@ -646,7 +630,7 @@ MonoBehaviour:
       ParameterType: 4
   AnimatorParametersExpanded: 0
   coreMovement: {fileID: 7875331226141230548}
-  soundDefFootstep: {fileID: 0}
+  soundDefFootstep: {fileID: 11400000, guid: 0ac20e1c8db2ca94e99dc720070a8b23, type: 2}
 --- !u!1 &8338988566280778634
 GameObject:
   m_ObjectHideFlags: 0

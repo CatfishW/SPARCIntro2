@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 551a968d0e50443ca9436cb96dda524c, type: 3}
-  m_Name: lab.rocket.entered
+  m_Name: lab_rocket_entered
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Integration.StorySignalDefinition
-  signalId: lab.rocket.entered
+  signalId: 
   description: 

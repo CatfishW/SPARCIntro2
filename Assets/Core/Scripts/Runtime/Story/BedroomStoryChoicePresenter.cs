@@ -20,6 +20,8 @@ namespace Blocks.Gameplay.Core.Story
         private StoryChoiceRequest activeChoice;
         private ModularStoryFlow.Runtime.Channels.StoryChoiceSelectionChannel selectionChannel;
 
+        public bool IsVisible => panelRect != null && panelRect.gameObject.activeSelf && canvasGroup != null && canvasGroup.alpha > 0.001f;
+
         public void Configure(ModularStoryFlow.Runtime.Channels.StoryChoiceSelectionChannel channel)
         {
             selectionChannel = channel;

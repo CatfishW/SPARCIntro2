@@ -1,0 +1,30 @@
+Unity Editor version:    6000.3.6f1 (bbb010bdb8a3)
+Branch:                  6000.3/respin/6000.3.6f1-732c1ec89f18
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 26.3.1 (Build 25D2128)
+Darwin version:          25.3.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Date:                    2026-03-21T08:57:07Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-zladwu" at "2026-03-21T08:57:07.181001Z"
+Launching external process: /Applications/Unity/Hub/Editor/6000.3.6f1-arm64/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.3.6f1-arm64/Unity.app/Contents/MacOS/Unity
+-projectPath
+/Users/zladwu/My project
+-batchmode
+-runTests
+-testPlatform
+EditMode
+-testFilter
+Blocks.Gameplay.Core.Editor.Story.LabPersistentVerificationTests.CapTalkingSwapsMouthMaterial
+-logFile
+/Users/zladwu/My project/Logs/LabCapTalkingTest.log
+-quit
+Successfully changed project path to: /Users/zladwu/My project
+/Users/zladwu/My project
+[Package Manager] Server process was shutdown

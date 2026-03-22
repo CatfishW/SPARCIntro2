@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d8d6d85582141fe80d18b93222af7c, type: 3}
   m_Name: StoryVariableCatalog
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Variables.StoryVariableCatalog
-  variables:
-  - {fileID: 11400000, guid: 17bc3c84c4bab4fcda0fb52481153545, type: 2}
-  - {fileID: 11400000, guid: a68f47db30ce44e3cbf676621bab037d, type: 2}
-  - {fileID: 11400000, guid: f860646bce5c74407aabada4b6b1b6b2, type: 2}
+  variables: []

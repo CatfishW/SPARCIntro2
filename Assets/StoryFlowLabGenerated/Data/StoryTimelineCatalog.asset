@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d665300bc8984842a0f8d1bb5e16f90, type: 3}
   m_Name: StoryTimelineCatalog
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Integration.StoryTimelineCatalog
-  bindings: []
+  bindings:
+  - CueId: lab.shrink.cutscene
+    CueDisplayName: Lab Shrink Cutscene
+    PlayableAsset: {fileID: 11400000, guid: 3c0edcdac0f384e4eb41f71f77e8ea59, type: 2}

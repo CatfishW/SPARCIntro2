@@ -14,10 +14,28 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private CorePlayerManager localPlayerManager;
         [SerializeField] private ClassroomBodyKnowledgeQuizUi quizUi;
         [SerializeField] private ClassroomNpcChatBubblePresenter bubblePresenter;
+        [SerializeField] private SoundDef movementSound;
+        [SerializeField] private SoundDef reactionSound;
 
         [SerializeField, Min(0.1f)] private float danceDurationSeconds = 3.8f;
         [SerializeField, Min(0.1f)] private float lieDownDurationSeconds = 2.7f;
         [SerializeField, Min(0.1f)] private float followDurationSeconds = 8f;
+        [SerializeField, Range(0f, 1f)] private float actionSfxVolume = 0.36f;
+
+        private float lastActionSfxTime = -999f;
+
+        public void ConfigureAudio(SoundDef sharedMovementSound, SoundDef sharedReactionSound = null)
+        {
+            if (movementSound == null && sharedMovementSound != null)
+            {
+                movementSound = sharedMovementSound;
+            }
+
+            if (reactionSound == null && sharedReactionSound != null)
+            {
+                reactionSound = sharedReactionSound;
+            }
+        }
 
         public IEnumerator ExecuteActionsRoutine(StoryNpcAgent sourceNpc, IReadOnlyList<string> actions)
         {
@@ -100,6 +118,7 @@ namespace Blocks.Gameplay.Core.Story
             var startPosition = root.position;
             var startYaw = root.eulerAngles.y;
             var elapsed = 0f;
+            var nextStepSfxAt = 0f;
             while (elapsed < durationSeconds)
             {
                 elapsed += Time.deltaTime;
@@ -111,6 +130,13 @@ namespace Blocks.Gameplay.Core.Story
                 root.position = startPosition + (root.right * localOffset.x) + (root.forward * localOffset.z);
                 root.rotation = Quaternion.Euler(0f, startYaw + yaw, 0f);
                 SnapNpcToGround(npc);
+
+                if (elapsed >= nextStepSfxAt)
+                {
+                    PlayActionSfx(useReactionSound: false, -60f, 0.72f);
+                    nextStepSfxAt = elapsed + 0.38f;
+                }
+
                 yield return null;
             }
 
@@ -131,6 +157,7 @@ namespace Blocks.Gameplay.Core.Story
             var startPosition = root.position;
             const float duration = 0.56f;
             const float jumpHeight = 0.36f;
+            PlayActionSfx(useReactionSound: true, 180f, 0.78f);
             var elapsed = 0f;
             while (elapsed < duration)
             {
@@ -144,6 +171,7 @@ namespace Blocks.Gameplay.Core.Story
             root.position = startPosition;
             SnapNpcToGround(npc);
             SetNpcMotionEnabled(npc, true);
+            PlayActionSfx(useReactionSound: false, -120f, 0.58f);
         }
 
         private IEnumerator SurprisedRoutine(StoryNpcAgent npc)
@@ -153,6 +181,7 @@ namespace Blocks.Gameplay.Core.Story
                 bubblePresenter.ShowBubble(npc, "Whoa!", 1.6f, npc != null ? npc.NpcDisplayName : "NPC");
             }
 
+            PlayActionSfx(useReactionSound: true, 260f, 0.84f);
             yield return JumpRoutine(npc);
         }
 
@@ -168,6 +197,7 @@ namespace Blocks.Gameplay.Core.Story
             var sideRotation = startRotation * Quaternion.Euler(0f, 0f, 82f);
             var rotateInDuration = 0.28f;
             var elapsed = 0f;
+            PlayActionSfx(useReactionSound: true, -180f, 0.62f);
 
             while (elapsed < rotateInDuration)
             {
@@ -191,6 +221,7 @@ namespace Blocks.Gameplay.Core.Story
             root.rotation = startRotation;
             SnapNpcToGround(npc);
             SetNpcMotionEnabled(npc, true);
+            PlayActionSfx(useReactionSound: false, -220f, 0.5f);
         }
 
         private IEnumerator FollowPlayerRoutine(StoryNpcAgent npc, float durationSeconds)
@@ -209,6 +240,7 @@ namespace Blocks.Gameplay.Core.Story
             SetNpcMotionEnabled(npc, false);
             var elapsed = 0f;
             var speed = 1.55f;
+            var nextStepSfxAt = 0f;
             while (elapsed < durationSeconds)
             {
                 elapsed += Time.deltaTime;
@@ -243,6 +275,12 @@ namespace Blocks.Gameplay.Core.Story
                     }
                 }
 
+                if (distance > 0.35f && elapsed >= nextStepSfxAt)
+                {
+                    PlayActionSfx(useReactionSound: false, 120f, 0.68f);
+                    nextStepSfxAt = elapsed + 0.44f;
+                }
+
                 SnapNpcToGround(npc);
                 yield return null;
             }
@@ -260,6 +298,7 @@ namespace Blocks.Gameplay.Core.Story
             SetNpcMotionEnabled(source, false);
             var duration = 6f;
             var elapsed = 0f;
+            var nextStepSfxAt = 0f;
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
@@ -282,6 +321,13 @@ namespace Blocks.Gameplay.Core.Story
                     sourceRoot.rotation,
                     Quaternion.LookRotation(toTarget.normalized, Vector3.up),
                     Time.deltaTime * 10f);
+
+                if (elapsed >= nextStepSfxAt)
+                {
+                    PlayActionSfx(useReactionSound: false, 90f, 0.66f);
+                    nextStepSfxAt = elapsed + 0.4f;
+                }
+
                 SnapNpcToGround(source);
                 yield return null;
             }
@@ -312,6 +358,37 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             SetNpcMotionEnabled(source, true);
+        }
+
+        private void PlayActionSfx(bool useReactionSound, float pitchCents, float volumeScale)
+        {
+            var sound = useReactionSound && reactionSound != null
+                ? reactionSound
+                : movementSound;
+            if (sound == null)
+            {
+                return;
+            }
+
+            if (Time.time - lastActionSfxTime < 0.08f)
+            {
+                return;
+            }
+
+            lastActionSfxTime = Time.time;
+
+            var overrideData = new SoundEmitter.SoundDefOverrideData
+            {
+                BasePitchInCents = pitchCents,
+                VolumeScale = Mathf.Clamp(volumeScale, 0.1f, 1f),
+                BaseLowPassCutoff = useReactionSound ? 1800f : 1200f
+            };
+
+            CoreDirector.RequestAudio(sound)
+                .AttachedTo(transform)
+                .WithOverrides(overrideData)
+                .AsReserved(SoundEmitter.ReservedInfo.ReservedEmitterAndAudioSources)
+                .Play(actionSfxVolume);
         }
 
         private StoryNpcAgent ResolveNpcByToken(string token)

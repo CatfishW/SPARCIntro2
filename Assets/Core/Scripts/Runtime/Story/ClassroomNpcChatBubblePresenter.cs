@@ -21,9 +21,9 @@ namespace Blocks.Gameplay.Core.Story
         }
 
         [SerializeField] private Camera worldCamera;
-        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.26f, 0f);
+        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.85f, 0f);
         [SerializeField, Min(0.05f)] private float fadeDurationSeconds = 0.36f;
-        [SerializeField] private int sortingOrder = 580;
+        [SerializeField] private int sortingOrder = 625;
 
         private readonly Dictionary<int, BubbleView> activeBubbles = new Dictionary<int, BubbleView>();
         private Canvas canvas;
@@ -41,10 +41,7 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
-            if (worldCamera == null)
-            {
-                worldCamera = Camera.main;
-            }
+            worldCamera = ResolveWorldCamera();
 
             var now = Time.unscaledTime;
             var removal = ListPool<int>.Get();
@@ -107,17 +104,17 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
-            var followTarget = npc.Interactable != null && npc.Interactable.promptAnchor != null
-                ? npc.Interactable.promptAnchor
-                : npc.transform;
+            var followTarget = npc.transform;
+            var dynamicOffset = ResolveNpcOffset(npc, defaultOffset);
+            var sanitizedBody = SanitizeBubbleText(body);
 
             ShowBubble(
                 npc.GetInstanceID(),
                 followTarget,
                 speakerOverride ?? npc.NpcDisplayName,
-                body,
+                sanitizedBody,
                 durationSeconds,
-                defaultOffset);
+                dynamicOffset);
         }
 
         public void ShowBubble(int id, Transform followTarget, string speaker, string body, float durationSeconds, Vector3 worldOffset)
@@ -162,7 +159,7 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             var panelImage = panel.GetComponent<Image>();
-            panelImage.color = new Color(0f, 0f, 0f, 0.66f);
+            panelImage.color = new Color(0.03f, 0.05f, 0.08f, 0.52f);
             panelImage.raycastTarget = false;
 
             var speaker = CreateText(panel.transform, "Speaker", 14, FontStyle.Bold);
@@ -181,7 +178,10 @@ namespace Blocks.Gameplay.Core.Story
             body.rectTransform.offsetMax = new Vector2(-10f, -28f);
             body.alignment = TextAnchor.UpperLeft;
             body.horizontalOverflow = HorizontalWrapMode.Wrap;
-            body.verticalOverflow = VerticalWrapMode.Overflow;
+            body.verticalOverflow = VerticalWrapMode.Truncate;
+            body.resizeTextForBestFit = true;
+            body.resizeTextMinSize = 14;
+            body.resizeTextMaxSize = 18;
             body.color = Color.white;
 
             return new BubbleView
@@ -214,10 +214,7 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
-            if (worldCamera == null)
-            {
-                worldCamera = Camera.main;
-            }
+            worldCamera = ResolveWorldCamera();
 
             var canvasObject = new GameObject("ClassroomNpcBubbleCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasObject.transform.SetParent(transform, false);
@@ -247,11 +244,137 @@ namespace Blocks.Gameplay.Core.Story
             var go = new GameObject(name, typeof(RectTransform), typeof(Text));
             go.transform.SetParent(parent, false);
             var text = go.GetComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = ResolveBuiltinFont();
             text.fontSize = fontSize;
             text.fontStyle = style;
             text.raycastTarget = false;
             return text;
+        }
+
+        private Camera ResolveWorldCamera()
+        {
+            if (worldCamera != null && worldCamera.isActiveAndEnabled && worldCamera.gameObject.activeInHierarchy)
+            {
+                return worldCamera;
+            }
+
+            if (Camera.main != null && Camera.main.isActiveAndEnabled && Camera.main.gameObject.activeInHierarchy)
+            {
+                worldCamera = Camera.main;
+                return worldCamera;
+            }
+
+            var cameras = Camera.allCameras;
+            for (var index = 0; index < cameras.Length; index++)
+            {
+                var candidate = cameras[index];
+                if (candidate == null || !candidate.isActiveAndEnabled || !candidate.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                worldCamera = candidate;
+                return worldCamera;
+            }
+
+            worldCamera = null;
+            return null;
+        }
+
+        private static Font ResolveBuiltinFont()
+        {
+            Font font = null;
+            try
+            {
+                font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            if (font != null)
+            {
+                return font;
+            }
+
+            var osCandidates = new[] { "Helvetica Neue", "Arial Unicode MS", "Segoe UI", "Noto Sans" };
+            for (var index = 0; index < osCandidates.Length; index++)
+            {
+                try
+                {
+                    font = Font.CreateDynamicFontFromOSFont(osCandidates[index], 16);
+                    if (font != null)
+                    {
+                        return font;
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+
+            return Font.CreateDynamicFontFromOSFont("Sans Serif", 16);
+        }
+
+        private static string SanitizeBubbleText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return string.Empty;
+            }
+
+            var trimmed = text.Trim();
+            if (trimmed.Length <= 128)
+            {
+                return trimmed;
+            }
+
+            return trimmed.Substring(0, 125).TrimEnd() + "...";
+        }
+
+        private static Vector3 ResolveNpcOffset(StoryNpcAgent npc, Vector3 fallbackOffset)
+        {
+            if (npc == null)
+            {
+                return fallbackOffset;
+            }
+
+            var renderers = npc.GetComponentsInChildren<Renderer>(true);
+            if (renderers == null || renderers.Length == 0)
+            {
+                return fallbackOffset;
+            }
+
+            var hasBounds = false;
+            var bounds = default(Bounds);
+            for (var index = 0; index < renderers.Length; index++)
+            {
+                var renderer = renderers[index];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                if (!hasBounds)
+                {
+                    bounds = renderer.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
+            }
+
+            if (!hasBounds)
+            {
+                return fallbackOffset;
+            }
+
+            var height = Mathf.Max(0.6f, bounds.size.y);
+            return new Vector3(0f, height + 0.28f, 0f);
         }
 
         private static class ListPool<T>

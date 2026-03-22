@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfb80639bddb465da5d3baaf7f8ca2a, type: 3}
   m_Name: ShrinkReadyStateAction
   m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Actions.StorySetStateActionAsset
-  stateMachine: {fileID: 11400000, guid: 26463613d2cd0418c87d217544d7e410, type: 2}
-  stateId: ShrinkReady
+  stateMachine: {fileID: 0}
+  stateId: 

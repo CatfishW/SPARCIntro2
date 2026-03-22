@@ -44,6 +44,9 @@ namespace Blocks.Gameplay.Core
             [NonSerialized] public bool HasFreeFall;
             [NonSerialized] public float FeetOffset;
             [NonSerialized] public float BaseRootY;
+            [NonSerialized] public float CurrentForwardInput;
+            [NonSerialized] public float CurrentTurnInput;
+            [NonSerialized] public float MotionSeed;
         }
 
         [SerializeField] private AmbientNpcState teacher = new AmbientNpcState
@@ -79,12 +82,18 @@ namespace Blocks.Gameplay.Core
         [SerializeField, Min(0.2f)] private float destinationTolerance = 0.12f;
         [SerializeField, Min(0.1f)] private float personalSpaceRadius = 0.55f;
         [SerializeField, Min(0f)] private float avoidanceStrength = 0.95f;
+        [SerializeField, Min(0f)] private float wanderJitterStrength = 0.16f;
+        [SerializeField, Min(0.05f)] private float obstacleProbeRadius = 0.18f;
+        [SerializeField, Min(0.3f)] private float obstacleProbeHeight = 1.2f;
+        [SerializeField, Min(0.5f)] private float animationBlendSharpness = 8f;
+        [SerializeField] private LayerMask obstacleMask = ~0;
         [SerializeField] private bool syncAnimatorControllerFromPlayer = true;
         [SerializeField] private RuntimeAnimatorController fallbackSharedController;
 
         private AmbientNpcState[] cast;
         private ClassroomPlayerControlLock playerControlLock;
         private RuntimeAnimatorController sharedController;
+        private readonly Collider[] obstacleBuffer = new Collider[24];
 
         private void Awake()
         {
@@ -227,6 +236,9 @@ namespace Blocks.Gameplay.Core
             npc.HomePosition = npc.root.position;
             npc.TargetPosition = npc.root.position;
             npc.PauseUntilTime = 0f;
+            npc.CurrentForwardInput = 0f;
+            npc.CurrentTurnInput = 0f;
+            npc.MotionSeed = UnityEngine.Random.Range(0f, 100f);
 
             npc.FeetOffset = 0f;
             if (npc.Capsule != null)
@@ -284,13 +296,16 @@ namespace Blocks.Gameplay.Core
 
             var desiredDirection = toDestination / Mathf.Max(distance, 0.0001f);
             desiredDirection += ComputeAvoidance(npc) * avoidanceStrength;
+            desiredDirection += ComputeWanderJitter(npc) * wanderJitterStrength;
             desiredDirection.y = 0f;
             if (desiredDirection.sqrMagnitude > 1f)
             {
                 desiredDirection.Normalize();
             }
 
-            var moveDelta = desiredDirection * (npc.moveSpeed * Time.deltaTime);
+            var gaitFactor = 0.92f + (Mathf.Sin((Time.time * 0.9f) + npc.MotionSeed) * 0.12f);
+            var resolvedSpeed = npc.moveSpeed * Mathf.Max(0.65f, gaitFactor);
+            var moveDelta = desiredDirection * (resolvedSpeed * Time.deltaTime);
             if (moveDelta.magnitude > distance)
             {
                 moveDelta = toDestination;
@@ -298,11 +313,20 @@ namespace Blocks.Gameplay.Core
 
             var proposed = npc.root.position + moveDelta;
             proposed = ClampToFloorBounds(proposed);
-            npc.root.position = ProjectToGround(npc, proposed);
+            var groundedProposed = ProjectToGround(npc, proposed);
+            if (IsBlockedByEnvironment(npc, groundedProposed))
+            {
+                PickNextDestination(npc, immediate: false);
+                ApplyAnimator(npc, 0f, 0f);
+                EnsureGrounded(npc, keepHorizontalPosition: true);
+                return;
+            }
+
+            npc.root.position = groundedProposed;
 
             RotateTowards(npc, desiredDirection);
             var turnInput = Vector3.SignedAngle(npc.root.forward, desiredDirection, Vector3.up) / 90f;
-            var forwardInput = Mathf.Clamp(moveDelta.magnitude / Mathf.Max(Time.deltaTime, 0.0001f), 0f, npc.moveSpeed + 0.001f) / Mathf.Max(0.001f, npc.moveSpeed);
+            var forwardInput = Mathf.Clamp(moveDelta.magnitude / Mathf.Max(Time.deltaTime, 0.0001f), 0f, resolvedSpeed + 0.001f) / Mathf.Max(0.001f, resolvedSpeed);
             ApplyAnimator(npc, forwardInput, turnInput);
         }
 
@@ -413,24 +437,28 @@ namespace Blocks.Gameplay.Core
                 return;
             }
 
+            var blendT = 1f - Mathf.Exp(-Mathf.Max(0.1f, animationBlendSharpness) * Time.deltaTime);
+            npc.CurrentForwardInput = Mathf.Lerp(npc.CurrentForwardInput, Mathf.Clamp(forwardInput, 0f, 1f), blendT);
+            npc.CurrentTurnInput = Mathf.Lerp(npc.CurrentTurnInput, Mathf.Clamp(turnInput, -1f, 1f), blendT);
+
             if (npc.HasForward)
             {
-                npc.animator.SetFloat(npc.ForwardHash, Mathf.Clamp(forwardInput, 0f, 1f));
+                npc.animator.SetFloat(npc.ForwardHash, npc.CurrentForwardInput);
             }
 
             if (npc.HasSpeed)
             {
-                npc.animator.SetFloat(npc.SpeedHash, Mathf.Clamp01(forwardInput));
+                npc.animator.SetFloat(npc.SpeedHash, npc.CurrentForwardInput);
             }
 
             if (npc.HasMotionSpeed)
             {
-                npc.animator.SetFloat(npc.MotionSpeedHash, Mathf.Lerp(0.2f, 1f, Mathf.Clamp01(forwardInput)));
+                npc.animator.SetFloat(npc.MotionSpeedHash, Mathf.Lerp(0.2f, 1f, npc.CurrentForwardInput));
             }
 
             if (npc.HasTurn)
             {
-                npc.animator.SetFloat(npc.TurnHash, Mathf.Clamp(turnInput, -1f, 1f));
+                npc.animator.SetFloat(npc.TurnHash, npc.CurrentTurnInput);
             }
 
             if (npc.HasOnGround)
@@ -717,6 +745,90 @@ namespace Blocks.Gameplay.Core
             }
 
             return hasBounds;
+        }
+
+        private Vector3 ComputeWanderJitter(AmbientNpcState npc)
+        {
+            if (npc == null || npc.root == null)
+            {
+                return Vector3.zero;
+            }
+
+            var sampleX = Mathf.PerlinNoise(npc.MotionSeed + (Time.time * 0.22f), 0.13f) - 0.5f;
+            var sampleZ = Mathf.PerlinNoise(0.41f, npc.MotionSeed + (Time.time * 0.22f)) - 0.5f;
+            return new Vector3(sampleX, 0f, sampleZ);
+        }
+
+        private bool IsBlockedByEnvironment(AmbientNpcState npc, Vector3 worldPosition)
+        {
+            if (npc == null || npc.root == null)
+            {
+                return false;
+            }
+
+            var radius = Mathf.Max(0.06f, obstacleProbeRadius);
+            var probeHeight = Mathf.Max(obstacleProbeHeight, radius * 2f);
+            var bottom = worldPosition + (Vector3.up * radius);
+            var top = worldPosition + (Vector3.up * (probeHeight - radius));
+            var hitCount = Physics.OverlapCapsuleNonAlloc(
+                bottom,
+                top,
+                radius,
+                obstacleBuffer,
+                obstacleMask,
+                QueryTriggerInteraction.Ignore);
+
+            for (var index = 0; index < hitCount; index++)
+            {
+                var collider = obstacleBuffer[index];
+                if (collider == null)
+                {
+                    continue;
+                }
+
+                if (floorCollider != null && collider == floorCollider)
+                {
+                    continue;
+                }
+
+                if (collider.transform.IsChildOf(npc.root))
+                {
+                    continue;
+                }
+
+                if (IsNpcCollider(collider))
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsNpcCollider(Collider collider)
+        {
+            if (collider == null || cast == null)
+            {
+                return false;
+            }
+
+            for (var index = 0; index < cast.Length; index++)
+            {
+                var npc = cast[index];
+                if (npc?.root == null)
+                {
+                    continue;
+                }
+
+                if (collider.transform.IsChildOf(npc.root))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private AmbientNpcState ResolveNpcState(string npcId)
