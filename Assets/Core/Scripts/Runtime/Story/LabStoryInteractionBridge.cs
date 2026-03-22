@@ -163,6 +163,8 @@ namespace Blocks.Gameplay.Core.Story
             {
                 sceneContext.LightPuzzleUi.Solved -= HandlePuzzleSolved;
                 sceneContext.LightPuzzleUi.Solved += HandlePuzzleSolved;
+                sceneContext.LightPuzzleUi.AssistanceStateChanged -= HandlePuzzleAssistanceStateChanged;
+                sceneContext.LightPuzzleUi.AssistanceStateChanged += HandlePuzzleAssistanceStateChanged;
             }
 
             if (sceneContext?.ShrinkSequenceController != null)
@@ -197,6 +199,7 @@ namespace Blocks.Gameplay.Core.Story
             if (sceneContext?.LightPuzzleUi != null)
             {
                 sceneContext.LightPuzzleUi.Solved -= HandlePuzzleSolved;
+                sceneContext.LightPuzzleUi.AssistanceStateChanged -= HandlePuzzleAssistanceStateChanged;
             }
 
             if (sceneContext?.ShrinkSequenceController != null)
@@ -630,6 +633,11 @@ namespace Blocks.Gameplay.Core.Story
             ApplyScenePresentation();
         }
 
+        private void HandlePuzzleAssistanceStateChanged(int failedAttempts, bool assistUnlocked)
+        {
+            UpdateObjectivePanel();
+        }
+
         private void HandleShrinkCompleted()
         {
             if (shrinkCompleted)
@@ -819,6 +827,22 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             sceneContext.ObjectivePanelUi.ShowStage(stage, currentObjectiveText, title);
+            sceneContext.ObjectivePanelUi.SetHint(BuildObjectiveHint(stage));
+        }
+
+        private string BuildObjectiveHint(LabObjectivePanelUi.ObjectiveStage stage)
+        {
+            if (stage != LabObjectivePanelUi.ObjectiveStage.RouteLight || sceneContext?.LightPuzzleUi == null || puzzleSolved)
+            {
+                return string.Empty;
+            }
+
+            if (!sceneContext.LightPuzzleUi.CanRequestCapSolve)
+            {
+                return string.Empty;
+            }
+
+            return "Hint: Stuck? Ask CAP in Free chat to solve the light puzzle for you.";
         }
 
         private void RaiseSignal(string signalId, string payload)

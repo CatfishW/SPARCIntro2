@@ -1441,6 +1441,118 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5201423646680458952, guid: ea0853a3b2545524481b0c984f27afd1, type: 3}
   m_PrefabInstance: {fileID: 246909269}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &258027378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 258027380}
+  - component: {fileID: 258027379}
+  m_Layer: 0
+  m_Name: Spline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &258027379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258027378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineContainer
+  m_Spline:
+    m_EditModeType: 1
+    m_Knots: []
+    m_MetaData: []
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Splines:
+  - m_EditModeType: 1
+    m_Knots:
+    - Position:
+        x: 0
+        y: 0
+        z: 0
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.40190145
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.40190145
+      Rotation:
+        value:
+          x: 0.6389327
+          y: -0.5595696
+          z: 0.36164185
+          w: -0.38452828
+    - Position:
+        x: 3.5868511
+        y: 0.34823883
+        z: -1.7792435
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.40190145
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.40190145
+      Rotation:
+        value:
+          x: 0.6389327
+          y: -0.5595696
+          z: 0.36164188
+          w: -0.38452825
+    m_MetaData:
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Knots:
+    m_KnotsLink: []
+--- !u!4 &258027380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258027378}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.8134522, y: 1.5565513, z: 47.359287}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &280556979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3326,6 +3438,12 @@ MonoBehaviour:
   minimumActorScale: 0.08
   maximumActorScale: 2
   overlayColor: {r: 0.4, g: 0.92, b: 1, a: 1}
+  establishingShotFov: 62
+  orbitShotFov: 54
+  overheadShotFov: 49
+  heroShotFov: 44
+  handheldAmplitude: 0.03
+  handheldFrequency: 2.7
 --- !u!114 &632053283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7887,6 +8005,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8230934492147893346, guid: 64c1ca436cc9f024b948da169e23de04, type: 3}
   m_PrefabInstance: {fileID: 1162813637}
   m_PrefabAsset: {fileID: 0}
+--- !u!221 &1168712127
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: IDLE_LabDanceOverride
+  m_Controller: {fileID: 9100000, guid: ca22bb4a7be589c4193d5e7a1bb77b60, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: be63668f05539a4429d6747fc8920338, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: 226008c4d35031b43b05c98acbd90717, type: 3}
 --- !u!1001 &1172772640
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11541,8 +11670,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750034480}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06975647, y: 0, z: 0, w: 0.9975641}
-  m_LocalPosition: {x: 2.5, y: 2.1, z: 31.2}
+  m_LocalRotation: {x: 0.18734238, y: -0.38206542, z: 0.077907026, w: 0.9015872}
+  m_LocalPosition: {x: 4.346576, y: 2.635429, z: 43.20438}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13618,17 +13747,6 @@ MonoBehaviour:
     m_Bits: 251
   queryTriggerInteraction: 1
   lockInteractions: 0
---- !u!221 &1967389424
-AnimatorOverrideController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: IDLE_LabDanceOverride
-  m_Controller: {fileID: 9100000, guid: ca22bb4a7be589c4193d5e7a1bb77b60, type: 2}
-  m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: be63668f05539a4429d6747fc8920338, type: 2}
-    m_OverrideClip: {fileID: 1827226128182048838, guid: 226008c4d35031b43b05c98acbd90717, type: 3}
 --- !u!1001 &1981065323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14919,7 +15037,7 @@ MonoBehaviour:
   visualRoot: {fileID: 2038052288}
   idleController: {fileID: 9100000, guid: ca22bb4a7be589c4193d5e7a1bb77b60, type: 2}
   walkController: {fileID: 9100000, guid: 39c172c5be323d143939cfaad5599122, type: 2}
-  danceController: {fileID: 1967389424}
+  danceController: {fileID: 1168712127}
   danceClip: {fileID: 1827226128182048838, guid: 226008c4d35031b43b05c98acbd90717, type: 3}
   danceStateName: Dance_1
   conversationBoolName: Conversation
@@ -15488,3 +15606,4 @@ SceneRoots:
   - {fileID: 1391265717}
   - {fileID: 1213529508}
   - {fileID: 1082681603}
+  - {fileID: 258027380}

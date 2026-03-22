@@ -46,12 +46,15 @@ namespace Blocks.Gameplay.Core.Story
         private Label bodyLabel;
         private Label stepLabel;
         private Label checkLabel;
+        private VisualElement hintCard;
+        private Label hintLabel;
         private Coroutine transitionRoutine;
         private ObjectiveStage? lastStage;
         private bool compactMode;
         private bool built;
         private string lastTitle = string.Empty;
         private string lastBody = string.Empty;
+        private string currentHint = string.Empty;
 
         private void Awake()
         {
@@ -139,6 +142,13 @@ namespace Blocks.Gameplay.Core.Story
 
             compactMode = value;
             ApplyCompactVisualState();
+        }
+
+        public void SetHint(string hint)
+        {
+            EnsureUi();
+            currentHint = string.IsNullOrWhiteSpace(hint) ? string.Empty : hint.Trim();
+            ApplyHintVisualState();
         }
 
         private void EnsureUi()
@@ -336,8 +346,39 @@ namespace Blocks.Gameplay.Core.Story
             stepLabel.style.whiteSpace = WhiteSpace.Normal;
             stepCard.Add(stepLabel);
 
+            hintCard = new VisualElement { name = "lab-objective-hint-card" };
+            hintCard.style.marginTop = 7f;
+            hintCard.style.paddingLeft = 7f;
+            hintCard.style.paddingRight = 7f;
+            hintCard.style.paddingTop = 4f;
+            hintCard.style.paddingBottom = 4f;
+            hintCard.style.backgroundColor = new Color(0.16f, 0.25f, 0.35f, 0.94f);
+            hintCard.style.borderTopLeftRadius = 9f;
+            hintCard.style.borderTopRightRadius = 9f;
+            hintCard.style.borderBottomLeftRadius = 9f;
+            hintCard.style.borderBottomRightRadius = 9f;
+            hintCard.style.borderLeftWidth = 2f;
+            hintCard.style.borderRightWidth = 2f;
+            hintCard.style.borderTopWidth = 2f;
+            hintCard.style.borderBottomWidth = 2f;
+            hintCard.style.borderLeftColor = new Color(0.03f, 0.05f, 0.08f, 1f);
+            hintCard.style.borderRightColor = new Color(0.03f, 0.05f, 0.08f, 1f);
+            hintCard.style.borderTopColor = new Color(0.03f, 0.05f, 0.08f, 1f);
+            hintCard.style.borderBottomColor = new Color(0.03f, 0.05f, 0.08f, 1f);
+            hintCard.style.display = DisplayStyle.None;
+            card.Add(hintCard);
+
+            hintLabel = new Label();
+            hintLabel.style.color = new Color(0.87f, 0.97f, 1f, 1f);
+            hintLabel.style.fontSize = 10f;
+            hintLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            hintLabel.style.whiteSpace = WhiteSpace.Normal;
+            hintLabel.style.maxWidth = 214f;
+            hintCard.Add(hintLabel);
+
             root.Add(overlay);
             ApplyCompactVisualState();
+            ApplyHintVisualState();
             built = true;
         }
 
@@ -376,6 +417,23 @@ namespace Blocks.Gameplay.Core.Story
             bodyLabel.style.color = new Color(0.04f, 0.05f, 0.08f, 1f);
             stepLabel.style.fontSize = compactMode ? 10f : 11f;
             stepLabel.style.color = new Color(0.04f, 0.05f, 0.08f, 1f);
+
+            if (hintCard != null)
+            {
+                hintCard.style.marginTop = compactMode ? 5f : 7f;
+                hintCard.style.paddingLeft = compactMode ? 6f : 7f;
+                hintCard.style.paddingRight = compactMode ? 6f : 7f;
+                hintCard.style.paddingTop = compactMode ? 3f : 4f;
+                hintCard.style.paddingBottom = compactMode ? 3f : 4f;
+            }
+
+            if (hintLabel != null)
+            {
+                hintLabel.style.fontSize = compactMode ? 9f : 10f;
+                hintLabel.style.maxWidth = compactMode ? 178f : 214f;
+            }
+
+            ApplyHintVisualState();
         }
 
         private UIDocument ResolveUiDocument()
@@ -505,6 +563,7 @@ namespace Blocks.Gameplay.Core.Story
                 checkLabel.text = "✓";
                 checkLabel.style.color = new Color(0.08f, 0.09f, 0.12f, 1f);
                 card.style.backgroundColor = compactMode ? new Color(0.14f, 0.28f, 0.19f, 0.72f) : new Color(0.92f, 0.96f, 0.9f, 0.985f);
+                ApplyHintVisualState();
                 return;
             }
 
@@ -519,6 +578,19 @@ namespace Blocks.Gameplay.Core.Story
             card.style.translate = new Translate(0f, 0f, 0f);
             card.style.scale = new Scale(Vector2.one);
             ApplyCompactVisualState();
+            ApplyHintVisualState();
+        }
+
+        private void ApplyHintVisualState()
+        {
+            if (hintCard == null || hintLabel == null)
+            {
+                return;
+            }
+
+            var hasHint = !string.IsNullOrWhiteSpace(currentHint);
+            hintCard.style.display = hasHint ? DisplayStyle.Flex : DisplayStyle.None;
+            hintLabel.text = hasHint ? currentHint : string.Empty;
         }
 
         private static int ResolveCurrentIndex(ObjectiveStage stage)

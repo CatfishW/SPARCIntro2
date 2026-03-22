@@ -33,7 +33,7 @@ namespace Blocks.Gameplay.Core.Story
             "Always output exactly this format:\n" +
             "SAY: <what CAP says>\n" +
             "ACTIONS: <comma-separated actions or none>\n" +
-            "Allowed actions: open_door,dance,jump,surprised,follow_player,stop_following,none.";
+            "Allowed actions: open_door,dance,jump,surprised,follow_player,stop_following,solve_puzzle,none.";
         [SerializeField, Min(2f)] private float llmRequestTimeoutSeconds = 30f;
         [SerializeField, Min(8)] private int llmFreeChatMaxTokens = 132;
 
@@ -503,6 +503,8 @@ namespace Blocks.Gameplay.Core.Story
             prompt.AppendLine("Use ACTIONS: dance if the player asks CAP to dance.");
             prompt.AppendLine("Use ACTIONS: follow_player if the player asks CAP to follow.");
             prompt.AppendLine("Use ACTIONS: stop_following if the player asks CAP to stop following or wait.");
+            prompt.Append("Puzzle assist status: ").AppendLine(BuildPuzzleAssistStatusLine());
+            prompt.AppendLine("Use ACTIONS: solve_puzzle only when the player asks CAP to solve the light puzzle.");
             return prompt.ToString();
         }
 
@@ -545,6 +547,10 @@ namespace Blocks.Gameplay.Core.Story
                         capController?.SetManualFollowOverride(false);
                         break;
 
+                    case "solve_puzzle":
+                        yield return TrySolvePuzzleWithCapRoutine();
+                        break;
+
                     default:
                         genericActions.Add(action);
                         break;
@@ -556,6 +562,48 @@ namespace Blocks.Gameplay.Core.Story
             if (genericActions.Count > 0 && npcActionExecutor != null)
             {
                 yield return npcActionExecutor.ExecuteActionsRoutine(capNpc, genericActions);
+            }
+        }
+
+        private IEnumerator TrySolvePuzzleWithCapRoutine()
+        {
+            ResolveReferences();
+            var puzzleUi = sceneContext?.LightPuzzleUi;
+            if (puzzleUi == null || !puzzleReady || puzzleSolved)
+            {
+                const string notReadyLine = "The puzzle stage is not active yet. Let's follow the mission step first.";
+                yield return SpeakRoutine("CAP", notReadyLine, ResolveDialogueDurationSeconds(notReadyLine, 1.8f, 2.8f));
+                yield break;
+            }
+
+            if (!puzzleUi.CanRequestCapSolve)
+            {
+                var remaining = Mathf.Max(0, 2 - puzzleUi.FailedAttempts);
+                var lockLine = remaining > 0
+                    ? $"I can take over after two failed tries. You need {remaining} more."
+                    : "I can take over now. Ask me again and I'll route it.";
+                yield return SpeakRoutine("CAP", lockLine, ResolveDialogueDurationSeconds(lockLine, 1.8f, 2.8f));
+                yield break;
+            }
+
+            puzzleUi.Open();
+            if (!puzzleUi.IsOpen)
+            {
+                const string openFailLine = "I couldn't open the routing board right now. Try using the machine once, then ask me again.";
+                yield return SpeakRoutine("CAP", openFailLine, ResolveDialogueDurationSeconds(openFailLine, 1.8f, 3f));
+                yield break;
+            }
+
+            if (puzzleUi.TrySolveByCap())
+            {
+                const string solvedLine = "Routing complete. I solved all flow levels for you.";
+                yield return SpeakRoutine("CAP", solvedLine, ResolveDialogueDurationSeconds(solvedLine, 1.8f, 2.8f));
+                yield return new WaitForSecondsRealtime(0.2f);
+            }
+            else
+            {
+                const string deniedLine = "I still need two failed attempts before I can auto-solve.";
+                yield return SpeakRoutine("CAP", deniedLine, ResolveDialogueDurationSeconds(deniedLine, 1.8f, 2.8f));
             }
         }
 
@@ -620,6 +668,14 @@ namespace Blocks.Gameplay.Core.Story
                 inferred.Add("stop_following");
             }
 
+            var asksToSolvePuzzle =
+                (text.Contains("solve") || text.Contains("fix") || text.Contains("complete") || text.Contains("do it for me")) &&
+                (text.Contains("puzzle") || text.Contains("light") || text.Contains("route"));
+            if (asksToSolvePuzzle)
+            {
+                inferred.Add("solve_puzzle");
+            }
+
             return inferred;
         }
 
@@ -661,6 +717,7 @@ namespace Blocks.Gameplay.Core.Story
                 "surprised" or "surprise" => "surprised",
                 "follow_player" or "follow_me" or "follow" or "come_with_me" or "follow_player_short" => "follow_player",
                 "stop_following" or "stop_follow" or "stop" or "wait_here" or "stay_here" => "stop_following",
+                "solve_puzzle" or "solve_light_puzzle" or "solve_the_puzzle" or "route_light" or "complete_puzzle" => "solve_puzzle",
                 _ => token
             };
         }
@@ -693,6 +750,27 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return "stay ready for CAP's next instruction";
+        }
+
+        private string BuildPuzzleAssistStatusLine()
+        {
+            if (!puzzleReady || puzzleSolved)
+            {
+                return "not needed right now";
+            }
+
+            var puzzleUi = sceneContext?.LightPuzzleUi;
+            if (puzzleUi == null)
+            {
+                return "unavailable because puzzle UI is not found";
+            }
+
+            if (puzzleUi.CanRequestCapSolve)
+            {
+                return "unlocked (player failed at least twice)";
+            }
+
+            return $"locked (failed attempts: {puzzleUi.FailedAttempts}/2)";
         }
 
         private string BuildStageGreeting()
