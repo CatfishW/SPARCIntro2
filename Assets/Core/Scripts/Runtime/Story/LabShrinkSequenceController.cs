@@ -30,19 +30,22 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private Transform shrinkPlayerAnchor;
         [SerializeField, Min(0.05f)] private float minimumActorScale = 0.08f;
         [SerializeField, Min(0.05f)] private float maximumActorScale = 2f;
-        [SerializeField] private Color overlayColor = new Color(0.4f, 0.92f, 1f, 1f);
+        [SerializeField] private Color overlayColor = new Color(0.22f, 0.16f, 0.1f, 1f);
+        [SerializeField] private string overlayTextureResourcePath = "Story/Generated/LabShrinkEnergyTexture";
+        [SerializeField] private string sweepTextureResourcePath = "Story/Generated/LabShrinkSweepTexture";
+        [SerializeField] private string particleTextureResourcePath = "Story/Generated/LabShrinkParticleTexture";
         [SerializeField, Min(20f)] private float establishingShotFov = 62f;
         [SerializeField, Min(20f)] private float orbitShotFov = 54f;
         [SerializeField, Min(20f)] private float overheadShotFov = 49f;
         [SerializeField, Min(20f)] private float heroShotFov = 44f;
         [SerializeField, Min(0f)] private float handheldAmplitude = 0.03f;
         [SerializeField, Min(0f)] private float handheldFrequency = 2.7f;
-        [SerializeField, Min(0.15f)] private float postShrinkCameraDistance = 0.72f;
-        [SerializeField, Min(0.05f)] private float postShrinkCameraHeight = 0.26f;
-        [SerializeField, Min(0f)] private float postShrinkLookHeight = 0.18f;
-        [SerializeField, Min(25f)] private float postShrinkGameplayFov = 57f;
-        [SerializeField] private Color playerShrinkVfxColor = new Color(0.52f, 0.91f, 1f, 0.92f);
-        [SerializeField] private Color capShrinkVfxColor = new Color(1f, 0.83f, 0.33f, 0.9f);
+        [SerializeField, Min(0.15f)] private float postShrinkCameraDistance = 0.56f;
+        [SerializeField, Min(0.03f)] private float postShrinkCameraHeight = 0.09f;
+        [SerializeField, Min(0f)] private float postShrinkLookHeight = 0.06f;
+        [SerializeField, Min(25f)] private float postShrinkGameplayFov = 60f;
+        [SerializeField] private Color playerShrinkVfxColor = new Color(1f, 0.76f, 0.39f, 0.92f);
+        [SerializeField] private Color capShrinkVfxColor = new Color(0.82f, 0.93f, 0.67f, 0.9f);
 
         private Canvas overlayCanvas;
         private CanvasGroup overlayGroup;
@@ -51,6 +54,9 @@ namespace Blocks.Gameplay.Core.Story
         private Image overlayGlowImage;
         private Image overlaySweepImage;
         private RectTransform overlaySweepRect;
+        private Sprite overlayPanelSprite;
+        private Sprite overlaySweepSprite;
+        private Material runtimeParticleMaterial;
         private Text messageText;
         private Text detailText;
         private Coroutine activeRoutine;
@@ -129,6 +135,24 @@ namespace Blocks.Gameplay.Core.Story
                 Destroy(shrinkTimelinePlayable);
                 shrinkTimelinePlayable = null;
                 ownsRuntimeTimelinePlayable = false;
+            }
+
+            if (overlayPanelSprite != null)
+            {
+                Destroy(overlayPanelSprite);
+                overlayPanelSprite = null;
+            }
+
+            if (overlaySweepSprite != null)
+            {
+                Destroy(overlaySweepSprite);
+                overlaySweepSprite = null;
+            }
+
+            if (runtimeParticleMaterial != null)
+            {
+                Destroy(runtimeParticleMaterial);
+                runtimeParticleMaterial = null;
             }
 
             if (ReferenceEquals(ActiveInstance, this))
@@ -690,7 +714,16 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             var playerPoint = playerTransform.position;
-            var lookTarget = ResolveCameraFocusPoint() + (Vector3.up * Mathf.Max(0.04f, postShrinkLookHeight));
+            var playerHeight = ResolveActorCameraHeight(playerTransform);
+            var lookHeight = Mathf.Max(0.03f, postShrinkLookHeight + (playerHeight * 0.45f));
+            var lookTarget = playerPoint + (Vector3.up * lookHeight);
+            if (capRoot != null)
+            {
+                var capHeight = ResolveActorCameraHeight(capRoot);
+                var capTarget = capRoot.position + (Vector3.up * Mathf.Max(0.03f, capHeight * 0.5f));
+                lookTarget = Vector3.Lerp(lookTarget, capTarget, 0.33f);
+            }
+
             var retreatDirection = capRoot != null
                 ? Vector3.ProjectOnPlane(playerPoint - capRoot.position, Vector3.up)
                 : Vector3.ProjectOnPlane(gameplayCameraStartPosition - playerPoint, Vector3.up);
@@ -706,7 +739,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             retreatDirection.Normalize();
-            position = playerPoint + (retreatDirection * Mathf.Max(0.15f, postShrinkCameraDistance)) + (Vector3.up * Mathf.Max(0.02f, postShrinkCameraHeight));
+            position = playerPoint + (retreatDirection * Mathf.Max(0.12f, postShrinkCameraDistance)) + (Vector3.up * Mathf.Max(0.02f, postShrinkCameraHeight));
             var lookDirection = lookTarget - position;
             if (lookDirection.sqrMagnitude < 0.0001f)
             {
@@ -715,6 +748,16 @@ namespace Blocks.Gameplay.Core.Story
 
             rotation = Quaternion.LookRotation(lookDirection.normalized, Vector3.up);
             return true;
+        }
+
+        private static float ResolveActorCameraHeight(Transform actor)
+        {
+            if (actor != null && TryComputeCombinedHeight(actor, out var measured))
+            {
+                return Mathf.Clamp(measured, 0.04f, 0.35f);
+            }
+
+            return 0.12f;
         }
 
         private void UpdateCinematicCameraShot(float normalizedTime)
@@ -893,7 +936,8 @@ namespace Blocks.Gameplay.Core.Story
             var panel = new GameObject("FlashPanel", typeof(RectTransform), typeof(Image));
             panel.transform.SetParent(canvasObject.transform, false);
             overlayPanelImage = panel.GetComponent<Image>();
-            overlayPanelImage.color = overlayColor;
+            overlayPanelImage.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, 0.24f);
+            TryApplyOverlayTexture(overlayPanelImage, overlayTextureResourcePath, ref overlayPanelSprite);
             var panelRect = panel.GetComponent<RectTransform>();
             panelRect.anchorMin = Vector2.zero;
             panelRect.anchorMax = Vector2.one;
@@ -903,7 +947,7 @@ namespace Blocks.Gameplay.Core.Story
             var vignetteObject = new GameObject("EdgeVignette", typeof(RectTransform), typeof(Image));
             vignetteObject.transform.SetParent(panel.transform, false);
             overlayVignetteImage = vignetteObject.GetComponent<Image>();
-            overlayVignetteImage.color = new Color(0.01f, 0.03f, 0.05f, 0.32f);
+            overlayVignetteImage.color = new Color(0.05f, 0.03f, 0.02f, 0.44f);
             overlayVignetteImage.raycastTarget = false;
             var vignetteRect = vignetteObject.GetComponent<RectTransform>();
             vignetteRect.anchorMin = Vector2.zero;
@@ -914,7 +958,8 @@ namespace Blocks.Gameplay.Core.Story
             var sweepObject = new GameObject("IonSweep", typeof(RectTransform), typeof(Image));
             sweepObject.transform.SetParent(panel.transform, false);
             overlaySweepImage = sweepObject.GetComponent<Image>();
-            overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, 0.1f);
+            overlaySweepImage.color = new Color(0.97f, 0.83f, 0.5f, 0.12f);
+            TryApplyOverlayTexture(overlaySweepImage, sweepTextureResourcePath, ref overlaySweepSprite);
             overlaySweepImage.raycastTarget = false;
             overlaySweepRect = sweepObject.GetComponent<RectTransform>();
             overlaySweepRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -927,7 +972,11 @@ namespace Blocks.Gameplay.Core.Story
             var glowObject = new GameObject("CenterGlow", typeof(RectTransform), typeof(Image));
             glowObject.transform.SetParent(panel.transform, false);
             overlayGlowImage = glowObject.GetComponent<Image>();
-            overlayGlowImage.color = new Color(0.55f, 0.96f, 1f, 0.2f);
+            overlayGlowImage.color = new Color(0.99f, 0.73f, 0.36f, 0.2f);
+            if (overlayPanelSprite != null)
+            {
+                overlayGlowImage.sprite = overlayPanelSprite;
+            }
             overlayGlowImage.raycastTarget = false;
             var glowRect = glowObject.GetComponent<RectTransform>();
             glowRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -945,7 +994,7 @@ namespace Blocks.Gameplay.Core.Story
             messageText.fontStyle = FontStyle.Bold;
             messageText.color = Color.white;
             var messageOutline = messageObject.AddComponent<Outline>();
-            messageOutline.effectColor = new Color(0.04f, 0.2f, 0.28f, 0.95f);
+            messageOutline.effectColor = new Color(0.2f, 0.09f, 0.03f, 0.95f);
             messageOutline.effectDistance = new Vector2(2f, -2f);
             var messageRect = messageObject.GetComponent<RectTransform>();
             messageRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -960,13 +1009,97 @@ namespace Blocks.Gameplay.Core.Story
             detailText.alignment = TextAnchor.MiddleCenter;
             detailText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             detailText.fontSize = 28;
-            detailText.color = new Color(0.9f, 0.98f, 1f, 1f);
+            detailText.color = new Color(1f, 0.93f, 0.82f, 1f);
             var detailRect = detailObject.GetComponent<RectTransform>();
             detailRect.anchorMin = new Vector2(0.5f, 0.5f);
             detailRect.anchorMax = new Vector2(0.5f, 0.5f);
             detailRect.pivot = new Vector2(0.5f, 0.5f);
             detailRect.sizeDelta = new Vector2(1180f, 100f);
             detailRect.anchoredPosition = new Vector2(0f, -64f);
+        }
+
+        private void TryApplyOverlayTexture(Image image, string resourcePath, ref Sprite runtimeSprite)
+        {
+            if (image == null || string.IsNullOrWhiteSpace(resourcePath))
+            {
+                return;
+            }
+
+            var texture = Resources.Load<Texture2D>(resourcePath.Trim());
+            if (texture == null)
+            {
+                return;
+            }
+
+            if (runtimeSprite != null)
+            {
+                Destroy(runtimeSprite);
+                runtimeSprite = null;
+            }
+
+            runtimeSprite = Sprite.Create(
+                texture,
+                new Rect(0f, 0f, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f),
+                100f);
+            image.sprite = runtimeSprite;
+            image.type = Image.Type.Simple;
+            image.preserveAspect = false;
+        }
+
+        private void ApplyParticleTexture(ParticleSystem particleSystem)
+        {
+            if (particleSystem == null)
+            {
+                return;
+            }
+
+            var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+            if (renderer == null)
+            {
+                return;
+            }
+
+            var material = ResolveOrCreateParticleMaterial();
+            if (material != null)
+            {
+                renderer.sharedMaterial = material;
+            }
+        }
+
+        private Material ResolveOrCreateParticleMaterial()
+        {
+            if (runtimeParticleMaterial != null)
+            {
+                return runtimeParticleMaterial;
+            }
+
+            var shader = Shader.Find("Particles/Additive");
+            if (shader == null)
+            {
+                return null;
+            }
+
+            var material = new Material(shader)
+            {
+                name = "LabShrinkRuntimeParticleMaterial"
+            };
+
+            var particleTexture = string.IsNullOrWhiteSpace(particleTextureResourcePath)
+                ? null
+                : Resources.Load<Texture2D>(particleTextureResourcePath.Trim());
+            if (particleTexture != null)
+            {
+                material.SetTexture("_MainTex", particleTexture);
+            }
+
+            if (material.HasProperty("_TintColor"))
+            {
+                material.SetColor("_TintColor", Color.white);
+            }
+
+            runtimeParticleMaterial = material;
+            return runtimeParticleMaterial;
         }
 
         private void SetOverlayAlpha(float alpha)
@@ -977,23 +1110,23 @@ namespace Blocks.Gameplay.Core.Story
 
             if (overlayPanelImage != null)
             {
-                overlayPanelImage.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, Mathf.Lerp(0.05f, 0.28f, clamped));
+                overlayPanelImage.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, Mathf.Lerp(0.04f, 0.24f, clamped));
             }
 
             if (overlayVignetteImage != null)
             {
-                overlayVignetteImage.color = new Color(0.01f, 0.03f, 0.05f, Mathf.Lerp(0.08f, 0.36f, clamped));
+                overlayVignetteImage.color = new Color(0.05f, 0.03f, 0.02f, Mathf.Lerp(0.1f, 0.44f, clamped));
             }
 
             if (overlayGlowImage != null)
             {
-                overlayGlowImage.color = new Color(0.55f, 0.96f, 1f, Mathf.Lerp(0.02f, 0.24f, clamped));
+                overlayGlowImage.color = new Color(0.99f, 0.73f, 0.36f, Mathf.Lerp(0.02f, 0.2f, clamped));
             }
 
             if (overlaySweepImage != null)
             {
-                var sweepAlpha = Mathf.Lerp(0.01f, 0.16f, clamped);
-                overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, sweepAlpha);
+                var sweepAlpha = Mathf.Lerp(0.01f, 0.14f, clamped);
+                overlaySweepImage.color = new Color(0.97f, 0.83f, 0.5f, sweepAlpha);
             }
         }
 
@@ -1009,7 +1142,7 @@ namespace Blocks.Gameplay.Core.Story
             if (overlaySweepImage != null)
             {
                 var pulse = 0.55f + (Mathf.Sin(normalizedTime * Mathf.PI * 9f) * 0.45f);
-                overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, Mathf.Clamp01(intensity * pulse * 0.22f));
+                overlaySweepImage.color = new Color(0.97f, 0.83f, 0.5f, Mathf.Clamp01(intensity * pulse * 0.2f));
             }
 
             if (overlayGlowImage != null)
@@ -1033,7 +1166,10 @@ namespace Blocks.Gameplay.Core.Story
 
             playerShrinkParticles = CreateShrinkParticleSystem("PlayerShrinkParticles", shrinkVfxRoot, playerShrinkVfxColor, 0.22f, 26f);
             capShrinkParticles = CreateShrinkParticleSystem("CapShrinkParticles", shrinkVfxRoot, capShrinkVfxColor, 0.2f, 22f);
-            centerShrinkParticles = CreateShrinkParticleSystem("CenterCompressionParticles", shrinkVfxRoot, new Color(0.64f, 0.95f, 1f, 0.84f), 0.3f, 34f);
+            centerShrinkParticles = CreateShrinkParticleSystem("CenterCompressionParticles", shrinkVfxRoot, new Color(0.99f, 0.79f, 0.44f, 0.84f), 0.3f, 34f);
+            ApplyParticleTexture(playerShrinkParticles);
+            ApplyParticleTexture(capShrinkParticles);
+            ApplyParticleTexture(centerShrinkParticles);
         }
 
         private static ParticleSystem CreateShrinkParticleSystem(string objectName, Transform parent, Color color, float radius, float baseEmission)
@@ -1167,11 +1303,6 @@ namespace Blocks.Gameplay.Core.Story
 
             var shape = particleSystem.shape;
             shape.radius = Mathf.Max(0.05f, radius);
-
-            var main = particleSystem.main;
-            var minSpeed = Mathf.Lerp(0.05f, 0.14f, energy);
-            var maxSpeed = Mathf.Lerp(0.22f, 0.52f, energy);
-            main.startSpeed = new ParticleSystem.MinMaxCurve(minSpeed, maxSpeed);
         }
 
         private static void PlayParticle(ParticleSystem particleSystem)

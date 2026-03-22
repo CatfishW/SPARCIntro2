@@ -1,0 +1,17 @@
+{
+  "base_colors": [
+    "#b5651d",
+    "#d4a017",
+    "#8b4513"
+  ],
+  "accent_colors": [
+    "#7acba5",
+    "#4a8c6e"
+  ],
+  "noise_octaves": 5,
+  "swirl_strength": 1.2,
+  "grain_amount": 0.35,
+  "vignette_strength": 0.65,
+  "streak_density": 0.45,
+  "pulse_contrast": 0.7
+}
