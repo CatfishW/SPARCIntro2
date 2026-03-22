@@ -110,6 +110,19 @@ namespace Blocks.Gameplay.Core.Story
                 uiDocument = gameObject.AddComponent<UIDocument>();
             }
 
+            if (uiDocument == null)
+            {
+                return;
+            }
+
+            if (!uiDocument.gameObject.activeSelf)
+            {
+                uiDocument.gameObject.SetActive(true);
+            }
+
+            uiDocument.enabled = true;
+            uiDocument.sortingOrder = Mathf.Max(uiDocument.sortingOrder, 690);
+
             if (uiDocument.panelSettings == null)
             {
                 if (panelSettings != null)
@@ -140,6 +153,13 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             var root = uiDocument.rootVisualElement;
+            if (root == null)
+            {
+                // UI Toolkit may not have created the panel yet during early lifecycle (Awake).
+                // Open/HideImmediate will retry building on later frames.
+                return;
+            }
+
             root.Clear();
             root.style.flexGrow = 1f;
             root.style.position = Position.Absolute;
