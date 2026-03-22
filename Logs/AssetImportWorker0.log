@@ -1460,3 +1460,11 @@ Memory consumption went from 201.5 MB to 189.6 MB.
 Total: 17.268833 ms (FindLiveObjects: 0.828125 ms CreateObjectMapping: 0.280083 ms MarkObjects: 9.557000 ms  DeleteObjects: 6.603250 ms)
 
 Prepare: number of updated asset objects reloaded= 0
+========================================================================
+Received Import Request.
+  Time since last request: 329.784230 seconds.
+  path: Assets/StoryFlowLabGenerated/Data/Actions/ShrinkReadyStateAction.asset
+  artifactKey: Guid(0165a91c81ca64241bf551f5e303bebb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/StoryFlowLabGenerated/Data/Actions/ShrinkReadyStateAction.asset using Guid(0165a91c81ca64241bf551f5e303bebb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'f003d14868c72a10365f1cf43399c278') in 0.045517875 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 1
+
