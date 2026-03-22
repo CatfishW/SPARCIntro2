@@ -45,6 +45,11 @@ namespace Blocks.Gameplay.Core.Customization
                 interactableItem = GetComponent<InteractableItem>();
             }
 
+            if (interactableItem != null)
+            {
+                interactableItem.OptionTriggered -= HandleOptionTriggered;
+            }
+
             var option = interactableItem != null ? interactableItem.FindOption(optionId) : null;
             if (option != null)
             {
@@ -109,6 +114,8 @@ namespace Blocks.Gameplay.Core.Customization
             EnsurePrimaryOptionFirst(option);
             option.onInvoked.RemoveListener(HandleInvoked);
             option.onInvoked.AddListener(HandleInvoked);
+            interactableItem.OptionTriggered -= HandleOptionTriggered;
+            interactableItem.OptionTriggered += HandleOptionTriggered;
         }
 
         private void HandleInvoked()
@@ -119,6 +126,21 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 customizationPanel.Show();
             }
+        }
+
+        private void HandleOptionTriggered(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != interactableItem)
+            {
+                return;
+            }
+
+            if (!string.Equals(invocation.OptionId, optionId, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            HandleInvoked();
         }
 
         private void ResolveDependencies()

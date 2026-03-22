@@ -36,6 +36,7 @@ namespace Blocks.Gameplay.Core.Story
         private Quaternion targetCameraRotation;
         private int cachedCameraCullingMask;
         private bool cullingMaskOverridden;
+        private bool localPlayerBodyHidden;
         private readonly List<Renderer> disabledPlayerRenderers = new List<Renderer>(12);
         private readonly List<ColliderPair> ignoredColliderPairs = new List<ColliderPair>(24);
         private readonly RaycastHit[] cameraOcclusionHits = new RaycastHit[24];
@@ -140,6 +141,7 @@ namespace Blocks.Gameplay.Core.Story
                 currentConversationTarget = currentSpeaker;
             }
 
+            MaintainConversationVisibility();
             ComputeConversationCameraPose(currentSpeaker, forceFallbackToCurrentCamera: false);
         }
 
@@ -560,64 +562,93 @@ namespace Blocks.Gameplay.Core.Story
 
             cachedCameraCullingMask = gameplayCamera.cullingMask;
             cullingMaskOverridden = false;
+            localPlayerBodyHidden = false;
             disabledPlayerRenderers.Clear();
-
-            var requestedLayer = LayerMask.NameToLayer(playerCullingLayerName);
-            if (requestedLayer >= 0)
-            {
-                var bit = 1 << requestedLayer;
-                if ((gameplayCamera.cullingMask & bit) != 0)
-                {
-                    gameplayCamera.cullingMask &= ~bit;
-                    cullingMaskOverridden = true;
-                }
-            }
-
-            if (!hideLocalPlayerBodyInConversation)
-            {
-                return;
-            }
-
-            CollectLocalPlayerRenderers(disabledPlayerRenderers);
-            for (var index = 0; index < disabledPlayerRenderers.Count; index++)
-            {
-                var renderer = disabledPlayerRenderers[index];
-                if (renderer == null || !renderer.enabled)
-                {
-                    continue;
-                }
-
-                renderer.enabled = false;
-            }
+            MaintainConversationVisibility();
         }
 
         private void RestoreConversationVisibility()
         {
-            if (gameplayCamera != null && cullingMaskOverridden)
-            {
-                gameplayCamera.cullingMask = cachedCameraCullingMask;
-                cullingMaskOverridden = false;
-            }
-
-            for (var index = 0; index < disabledPlayerRenderers.Count; index++)
-            {
-                var renderer = disabledPlayerRenderers[index];
-                if (renderer != null)
-                {
-                    renderer.enabled = true;
-                }
-            }
-
-            disabledPlayerRenderers.Clear();
+            SetLocalPlayerBodyHidden(false, force: true);
         }
 
         private void MaintainConversationVisibility()
         {
-            if (!conversationActive || !hideLocalPlayerBodyInConversation)
+            if (!conversationActive)
             {
+                SetLocalPlayerBodyHidden(false, force: false);
                 return;
             }
 
+            var shouldHide = ShouldHideLocalPlayerBodyForCurrentSpeaker();
+            SetLocalPlayerBodyHidden(shouldHide, force: false);
+        }
+
+        private bool ShouldHideLocalPlayerBodyForCurrentSpeaker()
+        {
+            if (!hideLocalPlayerBodyInConversation)
+            {
+                return false;
+            }
+
+            if (currentSpeaker == null)
+            {
+                return false;
+            }
+
+            return !IsCurrentSpeakerLocalPlayer();
+        }
+
+        private bool IsCurrentSpeakerLocalPlayer()
+        {
+            if (localPlayerManager == null || currentSpeaker == null)
+            {
+                return false;
+            }
+
+            var localRoot = localPlayerManager.transform;
+            return currentSpeaker == localRoot ||
+                   currentSpeaker.IsChildOf(localRoot) ||
+                   localRoot.IsChildOf(currentSpeaker);
+        }
+
+        private void SetLocalPlayerBodyHidden(bool shouldHide, bool force)
+        {
+            if (!force && shouldHide == localPlayerBodyHidden)
+            {
+                if (shouldHide)
+                {
+                    EnsurePlayerRenderersHidden();
+                }
+
+                return;
+            }
+
+            if (shouldHide)
+            {
+                HidePlayerLayerInCamera();
+                EnsurePlayerRenderersHidden();
+            }
+            else
+            {
+                RestorePlayerLayerInCamera();
+                for (var index = 0; index < disabledPlayerRenderers.Count; index++)
+                {
+                    var renderer = disabledPlayerRenderers[index];
+                    if (renderer != null)
+                    {
+                        renderer.enabled = true;
+                    }
+                }
+
+                disabledPlayerRenderers.Clear();
+            }
+
+            localPlayerBodyHidden = shouldHide;
+        }
+
+        private void EnsurePlayerRenderersHidden()
+        {
             if (disabledPlayerRenderers.Count == 0)
             {
                 CollectLocalPlayerRenderers(disabledPlayerRenderers);
@@ -626,16 +657,45 @@ namespace Blocks.Gameplay.Core.Story
             for (var index = 0; index < disabledPlayerRenderers.Count; index++)
             {
                 var renderer = disabledPlayerRenderers[index];
-                if (renderer == null)
-                {
-                    continue;
-                }
-
-                if (renderer.enabled)
+                if (renderer != null && renderer.enabled)
                 {
                     renderer.enabled = false;
                 }
             }
+        }
+
+        private void HidePlayerLayerInCamera()
+        {
+            if (gameplayCamera == null)
+            {
+                return;
+            }
+
+            var requestedLayer = LayerMask.NameToLayer(playerCullingLayerName);
+            if (requestedLayer < 0)
+            {
+                return;
+            }
+
+            var bit = 1 << requestedLayer;
+            if ((gameplayCamera.cullingMask & bit) == 0)
+            {
+                return;
+            }
+
+            gameplayCamera.cullingMask &= ~bit;
+            cullingMaskOverridden = true;
+        }
+
+        private void RestorePlayerLayerInCamera()
+        {
+            if (gameplayCamera == null || !cullingMaskOverridden)
+            {
+                return;
+            }
+
+            gameplayCamera.cullingMask = cachedCameraCullingMask;
+            cullingMaskOverridden = false;
         }
 
         private void CollectLocalPlayerRenderers(List<Renderer> target)

@@ -10,6 +10,7 @@ namespace Blocks.Gameplay.Core.Story
     public sealed class ClassroomBodyKnowledgeBookUi : MonoBehaviour
     {
         [SerializeField] private ClassroomPlayerControlLock controlLock;
+        [SerializeField] private ClassroomStoryObjectivePresenter objectivePresenter;
         [SerializeField] private UIDocument uiDocument;
         [SerializeField] private PanelSettings panelSettings;
         [SerializeField] private bool closeOnEscape = true;
@@ -94,6 +95,7 @@ namespace Blocks.Gameplay.Core.Story
             ApplyPage();
             overlay.style.display = DisplayStyle.Flex;
             IsOpen = true;
+            SetObjectiveSuppressed(true);
             controlLock?.Acquire(unlockCursor: true);
         }
 
@@ -116,6 +118,7 @@ namespace Blocks.Gameplay.Core.Story
             overlay.style.display = DisplayStyle.None;
             IsOpen = false;
             controlLock?.Release();
+            SetObjectiveSuppressed(false);
             Closed?.Invoke();
         }
 
@@ -133,6 +136,8 @@ namespace Blocks.Gameplay.Core.Story
             {
                 controlLock?.Release();
             }
+
+            SetObjectiveSuppressed(false);
         }
 
         private void EnsureBuilt()
@@ -181,20 +186,28 @@ namespace Blocks.Gameplay.Core.Story
                 name = "classroom-book-frame"
             };
 
-            bookFrame.style.width = new Length(84f, LengthUnit.Percent);
-            bookFrame.style.maxWidth = 1280f;
-            bookFrame.style.height = new Length(74f, LengthUnit.Percent);
-            bookFrame.style.maxHeight = 760f;
+            bookFrame.style.width = new Length(86f, LengthUnit.Percent);
+            bookFrame.style.maxWidth = 1340f;
+            bookFrame.style.height = new Length(76f, LengthUnit.Percent);
+            bookFrame.style.maxHeight = 780f;
             bookFrame.style.flexDirection = FlexDirection.Row;
-            bookFrame.style.paddingLeft = 24f;
-            bookFrame.style.paddingRight = 24f;
-            bookFrame.style.paddingTop = 18f;
-            bookFrame.style.paddingBottom = 18f;
-            bookFrame.style.backgroundColor = new Color(0.93f, 0.86f, 0.72f, 0.98f);
-            bookFrame.style.borderTopLeftRadius = 12f;
-            bookFrame.style.borderTopRightRadius = 12f;
-            bookFrame.style.borderBottomLeftRadius = 12f;
-            bookFrame.style.borderBottomRightRadius = 12f;
+            bookFrame.style.paddingLeft = 18f;
+            bookFrame.style.paddingRight = 18f;
+            bookFrame.style.paddingTop = 16f;
+            bookFrame.style.paddingBottom = 16f;
+            bookFrame.style.backgroundColor = new Color(0.95f, 0.9f, 0.8f, 0.99f);
+            bookFrame.style.borderLeftWidth = 4f;
+            bookFrame.style.borderRightWidth = 4f;
+            bookFrame.style.borderTopWidth = 4f;
+            bookFrame.style.borderBottomWidth = 4f;
+            bookFrame.style.borderLeftColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            bookFrame.style.borderRightColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            bookFrame.style.borderTopColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            bookFrame.style.borderBottomColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            bookFrame.style.borderTopLeftRadius = 2f;
+            bookFrame.style.borderTopRightRadius = 2f;
+            bookFrame.style.borderBottomLeftRadius = 2f;
+            bookFrame.style.borderBottomRightRadius = 2f;
 
             var leftPage = CreatePage("left-page");
             var rightPage = CreatePage("right-page");
@@ -208,20 +221,27 @@ namespace Blocks.Gameplay.Core.Story
             rightImage.style.height = 210f;
             rightImage.style.marginTop = 12f;
             rightImage.style.marginBottom = 6f;
-            rightImage.style.borderTopLeftRadius = 8f;
-            rightImage.style.borderTopRightRadius = 8f;
-            rightImage.style.borderBottomLeftRadius = 8f;
-            rightImage.style.borderBottomRightRadius = 8f;
-            rightImage.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
-            rightImage.style.backgroundColor = new Color(0.79f, 0.72f, 0.58f, 1f);
+            rightImage.style.borderTopLeftRadius = 2f;
+            rightImage.style.borderTopRightRadius = 2f;
+            rightImage.style.borderBottomLeftRadius = 2f;
+            rightImage.style.borderBottomRightRadius = 2f;
+            rightImage.style.backgroundColor = new Color(0.87f, 0.79f, 0.64f, 1f);
+            rightImage.style.borderLeftWidth = 3f;
+            rightImage.style.borderRightWidth = 3f;
+            rightImage.style.borderTopWidth = 3f;
+            rightImage.style.borderBottomWidth = 3f;
+            rightImage.style.borderLeftColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            rightImage.style.borderRightColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            rightImage.style.borderTopColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+            rightImage.style.borderBottomColor = new Color(0.05f, 0.05f, 0.05f, 1f);
 
             imageFallback = new Label("Image unavailable")
             {
                 name = "image-fallback"
             };
             imageFallback.style.unityTextAlign = TextAnchor.MiddleCenter;
-            imageFallback.style.color = new Color(0.35f, 0.25f, 0.16f, 0.9f);
-            imageFallback.style.fontSize = 18f;
+            imageFallback.style.color = new Color(0.15f, 0.11f, 0.07f, 0.9f);
+            imageFallback.style.fontSize = 17f;
             imageFallback.style.paddingTop = 90f;
             rightImage.Add(imageFallback);
 
@@ -243,17 +263,17 @@ namespace Blocks.Gameplay.Core.Story
             footer.style.position = Position.Absolute;
             footer.style.left = 0f;
             footer.style.right = 0f;
-            footer.style.bottom = 22f;
-            footer.style.height = 38f;
+            footer.style.bottom = 16f;
+            footer.style.height = 48f;
             footer.style.flexDirection = FlexDirection.Row;
             footer.style.justifyContent = Justify.SpaceBetween;
             footer.style.alignItems = Align.Center;
-            footer.style.paddingLeft = 18f;
-            footer.style.paddingRight = 18f;
+            footer.style.paddingLeft = 12f;
+            footer.style.paddingRight = 12f;
 
-            previousButton = CreateButton("<<", ShowPreviousPage);
-            nextButton = CreateButton(">>", ShowNextPage);
-            closeButton = CreateButton("Close", Close);
+            previousButton = CreateButton("< PREV", ShowPreviousPage, new Color(0.49f, 0.7f, 0.96f, 1f), new Color(0.06f, 0.07f, 0.08f, 1f));
+            nextButton = CreateButton("NEXT >", ShowNextPage, new Color(0.53f, 0.88f, 0.56f, 1f), new Color(0.06f, 0.07f, 0.08f, 1f));
+            closeButton = CreateButton("CLOSE", Close, new Color(1f, 0.79f, 0.3f, 1f), new Color(0.06f, 0.07f, 0.08f, 1f));
 
             footer.Add(previousButton);
             footer.Add(closeButton);
@@ -279,6 +299,10 @@ namespace Blocks.Gameplay.Core.Story
             {
                 controlLock = FindFirstObjectByType<ClassroomPlayerControlLock>();
             }
+
+            objectivePresenter = objectivePresenter != null
+                ? objectivePresenter
+                : FindFirstObjectByType<ClassroomStoryObjectivePresenter>(FindObjectsInactive.Include);
         }
 
         private void EnsurePanelSettingsBound()
@@ -368,15 +392,23 @@ namespace Blocks.Gameplay.Core.Story
         {
             var page = new VisualElement { name = name };
             page.style.flexGrow = 1f;
-            page.style.paddingLeft = 18f;
-            page.style.paddingRight = 18f;
+            page.style.paddingLeft = 16f;
+            page.style.paddingRight = 16f;
             page.style.paddingTop = 14f;
             page.style.paddingBottom = 14f;
-            page.style.backgroundColor = new Color(0.96f, 0.9f, 0.78f, 1f);
-            page.style.borderTopLeftRadius = 8f;
-            page.style.borderTopRightRadius = 8f;
-            page.style.borderBottomLeftRadius = 8f;
-            page.style.borderBottomRightRadius = 8f;
+            page.style.backgroundColor = new Color(0.98f, 0.95f, 0.88f, 1f);
+            page.style.borderTopLeftRadius = 1f;
+            page.style.borderTopRightRadius = 1f;
+            page.style.borderBottomLeftRadius = 1f;
+            page.style.borderBottomRightRadius = 1f;
+            page.style.borderLeftWidth = 3f;
+            page.style.borderRightWidth = 3f;
+            page.style.borderTopWidth = 3f;
+            page.style.borderBottomWidth = 3f;
+            page.style.borderLeftColor = new Color(0.07f, 0.07f, 0.07f, 1f);
+            page.style.borderRightColor = new Color(0.07f, 0.07f, 0.07f, 1f);
+            page.style.borderTopColor = new Color(0.07f, 0.07f, 0.07f, 1f);
+            page.style.borderBottomColor = new Color(0.07f, 0.07f, 0.07f, 1f);
             page.style.overflow = Overflow.Hidden;
             return page;
         }
@@ -389,8 +421,8 @@ namespace Blocks.Gameplay.Core.Story
             };
 
             label.style.unityFontStyleAndWeight = FontStyle.Bold;
-            label.style.fontSize = 20f;
-            label.style.color = new Color(0.25f, 0.17f, 0.09f, 1f);
+            label.style.fontSize = 22f;
+            label.style.color = new Color(0.11f, 0.08f, 0.05f, 1f);
             label.style.marginBottom = 12f;
             label.style.unityTextAlign = TextAnchor.UpperLeft;
             label.style.whiteSpace = WhiteSpace.Normal;
@@ -408,8 +440,8 @@ namespace Blocks.Gameplay.Core.Story
             };
 
             label.style.whiteSpace = WhiteSpace.Normal;
-            label.style.fontSize = 18f;
-            label.style.color = new Color(0.24f, 0.18f, 0.12f, 1f);
+            label.style.fontSize = 17f;
+            label.style.color = new Color(0.15f, 0.11f, 0.07f, 1f);
             label.style.flexGrow = 1f;
             label.style.flexShrink = 1f;
             label.style.unityTextAlign = TextAnchor.UpperLeft;
@@ -420,31 +452,80 @@ namespace Blocks.Gameplay.Core.Story
         private static VisualElement CreateSpineDivider()
         {
             var divider = new VisualElement { name = "book-spine" };
-            divider.style.width = 12f;
-            divider.style.marginLeft = 12f;
-            divider.style.marginRight = 12f;
-            divider.style.backgroundColor = new Color(0.74f, 0.64f, 0.5f, 1f);
-            divider.style.borderTopLeftRadius = 4f;
-            divider.style.borderTopRightRadius = 4f;
-            divider.style.borderBottomLeftRadius = 4f;
-            divider.style.borderBottomRightRadius = 4f;
+            divider.style.width = 10f;
+            divider.style.marginLeft = 10f;
+            divider.style.marginRight = 10f;
+            divider.style.backgroundColor = new Color(0.08f, 0.08f, 0.08f, 1f);
             return divider;
         }
 
-        private static Button CreateButton(string label, Action onClicked)
+        private static Button CreateButton(string label, Action onClicked, Color fillColor, Color textColor)
         {
             var button = new Button(() => onClicked?.Invoke())
             {
                 text = label
             };
 
-            button.style.width = 138f;
-            button.style.height = 34f;
+            button.style.width = 172f;
+            button.style.height = 44f;
             button.style.unityTextAlign = TextAnchor.MiddleCenter;
-            button.style.fontSize = 18f;
-            button.style.backgroundColor = new Color(0.18f, 0.27f, 0.39f, 0.93f);
-            button.style.color = Color.white;
+            button.style.fontSize = 20f;
+            button.style.unityFontStyleAndWeight = FontStyle.Bold;
+            button.style.letterSpacing = 1.2f;
+            button.style.backgroundColor = fillColor;
+            button.style.color = textColor;
+            button.style.borderLeftWidth = 3f;
+            button.style.borderRightWidth = 3f;
+            button.style.borderTopWidth = 3f;
+            button.style.borderBottomWidth = 3f;
+            button.style.borderLeftColor = new Color(0.06f, 0.07f, 0.08f, 1f);
+            button.style.borderRightColor = new Color(0.06f, 0.07f, 0.08f, 1f);
+            button.style.borderTopColor = new Color(0.06f, 0.07f, 0.08f, 1f);
+            button.style.borderBottomColor = new Color(0.06f, 0.07f, 0.08f, 1f);
+            button.style.borderTopLeftRadius = 0f;
+            button.style.borderTopRightRadius = 0f;
+            button.style.borderBottomLeftRadius = 0f;
+            button.style.borderBottomRightRadius = 0f;
+
+            var hoverColor = Color.Lerp(fillColor, Color.white, 0.1f);
+            var pressedColor = Color.Lerp(fillColor, Color.black, 0.16f);
+            button.RegisterCallback<PointerEnterEvent>(_ =>
+            {
+                if (button.enabledSelf)
+                {
+                    button.style.backgroundColor = hoverColor;
+                }
+            });
+            button.RegisterCallback<PointerLeaveEvent>(_ =>
+            {
+                if (button.enabledSelf)
+                {
+                    button.style.backgroundColor = fillColor;
+                }
+            });
+            button.RegisterCallback<PointerDownEvent>(_ =>
+            {
+                if (button.enabledSelf)
+                {
+                    button.style.backgroundColor = pressedColor;
+                }
+            });
+            button.RegisterCallback<PointerUpEvent>(_ =>
+            {
+                if (button.enabledSelf)
+                {
+                    button.style.backgroundColor = hoverColor;
+                }
+            });
             return button;
+        }
+
+        private void SetObjectiveSuppressed(bool suppressed)
+        {
+            objectivePresenter = objectivePresenter != null
+                ? objectivePresenter
+                : FindFirstObjectByType<ClassroomStoryObjectivePresenter>(FindObjectsInactive.Include);
+            objectivePresenter?.SetSuppressed(suppressed);
         }
     }
 }

@@ -1604,7 +1604,7 @@ namespace Blocks.Gameplay.Core.Story
                 objectivePresenter.SetObjective(
                     "Next: Go To The Lab",
                     "Return to Dr. Mira and choose Proceed to Lab if needed.",
-                    "Use the classroom door to transition to LabMiniEntryScene.");
+                    "Use the classroom door to transition to LabScene.");
                 return;
             }
 

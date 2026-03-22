@@ -2427,8 +2427,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ef79303f92724adf93a087b5056f8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.ClassroomStorySceneTransition
-  targetScenePath: Assets/Core/TestScenes/LabMiniEntryScene.unity
-  targetSceneName: LabMiniEntryScene
+  targetScenePath: Assets/LabScene.unity
+  targetSceneName: LabScene
   fadeInDurationSeconds: 1.1
   fadeOutDurationSeconds: 0.45
   fadeColor: {r: 0, g: 0, b: 0, a: 1}

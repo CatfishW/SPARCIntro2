@@ -8,8 +8,8 @@ namespace Blocks.Gameplay.Core.Story
     [DisallowMultipleComponent]
     public sealed class ClassroomStorySceneTransition : MonoBehaviour
     {
-        [SerializeField] private string targetScenePath = "Assets/Core/TestScenes/LabMiniEntryScene.unity";
-        [SerializeField] private string targetSceneName = "LabMiniEntryScene";
+        [SerializeField] private string targetScenePath = "Assets/LabScene.unity";
+        [SerializeField] private string targetSceneName = "LabScene";
         [SerializeField, Min(0f)] private float fadeInDurationSeconds = 1.1f;
         [SerializeField, Min(0f)] private float fadeOutDurationSeconds = 0.45f;
         [SerializeField] private Color fadeColor = Color.black;

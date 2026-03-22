@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Blocks.Gameplay.Core;
 using ItemInteraction;
 using Unity.Netcode;
@@ -16,6 +17,8 @@ namespace Blocks.Gameplay.Core.Customization
     [RequireComponent(typeof(UIDocument))]
     public sealed class CharacterCustomizationPanel : MonoBehaviour
     {
+        private static readonly FieldInfo ParentUiField = typeof(UIDocument).GetField("m_ParentUI", BindingFlags.Instance | BindingFlags.NonPublic);
+
         [Header("Catalog")]
         [SerializeField] private CharacterCustomizationCatalog catalogOverride;
 
@@ -304,7 +307,18 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
+            EnsureDocumentCanRender();
+            m_UIDocument.sortingOrder = documentSortingOrder;
+
             m_Root = m_UIDocument.rootVisualElement;
+            if (m_Root == null)
+            {
+                // UI Toolkit can transiently report null root when panel settings are still being resolved.
+                m_UIDocument.enabled = false;
+                m_UIDocument.enabled = true;
+                m_Root = m_UIDocument.rootVisualElement;
+            }
+
             if (m_Root == null)
             {
                 Debug.LogError("[CharacterCustomizationPanel] UIDocument rootVisualElement is missing.", this);
@@ -385,6 +399,58 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             m_IsBuilt = true;
+        }
+
+        private void EnsureDocumentCanRender()
+        {
+            if (m_UIDocument == null)
+            {
+                return;
+            }
+
+            DetachFromParentDocument();
+
+            if (m_UIDocument.panelSettings != null)
+            {
+                return;
+            }
+
+            if (m_UIDocument.parentUI != null && m_UIDocument.parentUI.panelSettings != null)
+            {
+                m_UIDocument.panelSettings = m_UIDocument.parentUI.panelSettings;
+                return;
+            }
+
+            var documents = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int index = 0; index < documents.Length; index++)
+            {
+                var candidate = documents[index];
+                if (candidate == null || candidate == m_UIDocument || candidate.panelSettings == null)
+                {
+                    continue;
+                }
+
+                m_UIDocument.panelSettings = candidate.panelSettings;
+                return;
+            }
+
+            var runtimePanelSettings = ScriptableObject.CreateInstance<PanelSettings>();
+            runtimePanelSettings.name = "CharacterCustomizationRuntimePanelSettings";
+            runtimePanelSettings.hideFlags = HideFlags.DontSave;
+            m_UIDocument.panelSettings = runtimePanelSettings;
+        }
+
+        private void DetachFromParentDocument()
+        {
+            if (m_UIDocument == null || ParentUiField == null)
+            {
+                return;
+            }
+
+            if (ParentUiField.GetValue(m_UIDocument) != null)
+            {
+                ParentUiField.SetValue(m_UIDocument, null);
+            }
         }
 
         private void BuildHeader()

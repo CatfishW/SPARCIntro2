@@ -21,7 +21,7 @@ namespace Blocks.Gameplay.Core.Story
         }
 
         [SerializeField] private Camera worldCamera;
-        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.85f, 0f);
+        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.12f, 0f);
         [SerializeField, Min(0.05f)] private float fadeDurationSeconds = 0.36f;
         [SerializeField] private int sortingOrder = 625;
 
@@ -69,7 +69,16 @@ namespace Blocks.Gameplay.Core.Story
                         worldCamera.WorldToScreenPoint(worldPoint),
                         null,
                         out var localPoint);
-                    bubble.Root.anchoredPosition = localPoint;
+                    var canvasSize = canvasRect.rect.size;
+                    var halfCanvas = canvasSize * 0.5f;
+                    var bubbleRect = bubble.Root.rect;
+                    var maxX = halfCanvas.x - (bubbleRect.width * 0.5f) - 14f;
+                    var minX = -maxX;
+                    var minY = -halfCanvas.y + 14f;
+                    var maxY = halfCanvas.y - bubbleRect.height - 14f;
+                    bubble.Root.anchoredPosition = new Vector2(
+                        Mathf.Clamp(localPoint.x, minX, maxX),
+                        Mathf.Clamp(localPoint.y, minY, maxY));
                 }
 
                 if (now >= bubble.ExpireAt)
@@ -149,7 +158,18 @@ namespace Blocks.Gameplay.Core.Story
             rootRect.anchorMin = new Vector2(0.5f, 0.5f);
             rootRect.anchorMax = new Vector2(0.5f, 0.5f);
             rootRect.pivot = new Vector2(0.5f, 0f);
-            rootRect.sizeDelta = new Vector2(340f, 98f);
+            rootRect.sizeDelta = new Vector2(380f, 112f);
+
+            var drop = new GameObject("DropShadow", typeof(RectTransform), typeof(Image));
+            drop.transform.SetParent(root.transform, false);
+            var dropRect = drop.GetComponent<RectTransform>();
+            dropRect.anchorMin = Vector2.zero;
+            dropRect.anchorMax = Vector2.one;
+            dropRect.offsetMin = new Vector2(6f, -6f);
+            dropRect.offsetMax = new Vector2(6f, -6f);
+            var dropImage = drop.GetComponent<Image>();
+            dropImage.color = new Color(0.03f, 0.04f, 0.06f, 0.65f);
+            dropImage.raycastTarget = false;
 
             var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
             panel.transform.SetParent(root.transform, false);
@@ -159,30 +179,47 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             var panelImage = panel.GetComponent<Image>();
-            panelImage.color = new Color(0.03f, 0.05f, 0.08f, 0.52f);
+            panelImage.color = new Color(0.98f, 0.95f, 0.8f, 0.98f);
             panelImage.raycastTarget = false;
+            var panelBorder = panel.gameObject.AddComponent<Outline>();
+            panelBorder.effectColor = new Color(0.05f, 0.08f, 0.11f, 1f);
+            panelBorder.effectDistance = new Vector2(3f, -3f);
+            panelBorder.useGraphicAlpha = false;
+
+            var speakerRibbon = new GameObject("SpeakerRibbon", typeof(RectTransform), typeof(Image));
+            speakerRibbon.transform.SetParent(panel.transform, false);
+            var ribbonRect = speakerRibbon.GetComponent<RectTransform>();
+            ribbonRect.anchorMin = new Vector2(0f, 1f);
+            ribbonRect.anchorMax = new Vector2(0f, 1f);
+            ribbonRect.pivot = new Vector2(0f, 1f);
+            ribbonRect.anchoredPosition = new Vector2(10f, -8f);
+            ribbonRect.sizeDelta = new Vector2(158f, 30f);
+            var ribbonImage = speakerRibbon.GetComponent<Image>();
+            ribbonImage.color = new Color(0.04f, 0.06f, 0.08f, 1f);
+            ribbonImage.raycastTarget = false;
 
             var speaker = CreateText(panel.transform, "Speaker", 14, FontStyle.Bold);
             speaker.rectTransform.anchorMin = new Vector2(0f, 1f);
             speaker.rectTransform.anchorMax = new Vector2(1f, 1f);
             speaker.rectTransform.pivot = new Vector2(0.5f, 1f);
-            speaker.rectTransform.offsetMin = new Vector2(10f, -26f);
+            speaker.rectTransform.offsetMin = new Vector2(18f, -34f);
             speaker.rectTransform.offsetMax = new Vector2(-10f, -4f);
             speaker.alignment = TextAnchor.MiddleLeft;
-            speaker.color = new Color(0.91f, 0.96f, 1f, 0.98f);
+            speaker.fontSize = 14;
+            speaker.color = new Color(0.99f, 0.95f, 0.75f, 1f);
 
-            var body = CreateText(panel.transform, "Body", 18, FontStyle.Italic);
+            var body = CreateText(panel.transform, "Body", 17, FontStyle.Bold);
             body.rectTransform.anchorMin = new Vector2(0f, 0f);
             body.rectTransform.anchorMax = new Vector2(1f, 1f);
-            body.rectTransform.offsetMin = new Vector2(10f, 8f);
-            body.rectTransform.offsetMax = new Vector2(-10f, -28f);
+            body.rectTransform.offsetMin = new Vector2(12f, 10f);
+            body.rectTransform.offsetMax = new Vector2(-12f, -40f);
             body.alignment = TextAnchor.UpperLeft;
             body.horizontalOverflow = HorizontalWrapMode.Wrap;
             body.verticalOverflow = VerticalWrapMode.Truncate;
             body.resizeTextForBestFit = true;
             body.resizeTextMinSize = 14;
-            body.resizeTextMaxSize = 18;
-            body.color = Color.white;
+            body.resizeTextMaxSize = 17;
+            body.color = new Color(0.08f, 0.11f, 0.16f, 1f);
 
             return new BubbleView
             {
@@ -374,7 +411,8 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             var height = Mathf.Max(0.6f, bounds.size.y);
-            return new Vector3(0f, height + 0.28f, 0f);
+            var yOffset = Mathf.Clamp((height * 0.62f) + 0.04f, 0.76f, 1.18f);
+            return new Vector3(0f, yOffset, 0f);
         }
 
         private static class ListPool<T>
