@@ -50,6 +50,7 @@ namespace Blocks.Gameplay.Core.Story
         private Transform cachedPlayerTransform;
         private float nextPlayerResolveTime;
         private Coroutine openLightPuzzleRoutine;
+        private Coroutine autoShrinkRoutine;
 
         public void Configure(StoryFlowChannels storyChannels, LabStorySceneTransition transition)
         {
@@ -111,6 +112,17 @@ namespace Blocks.Gameplay.Core.Story
             UnregisterSceneHooks();
             UnregisterStoryChannels();
             UnregisterGlobalDialogueRelay();
+            if (openLightPuzzleRoutine != null)
+            {
+                StopCoroutine(openLightPuzzleRoutine);
+                openLightPuzzleRoutine = null;
+            }
+
+            if (autoShrinkRoutine != null)
+            {
+                StopCoroutine(autoShrinkRoutine);
+                autoShrinkRoutine = null;
+            }
         }
 
         private void LateUpdate()
@@ -631,6 +643,12 @@ namespace Blocks.Gameplay.Core.Story
             puzzleOpenRequestedByMachine = false;
             RaiseSignal(LabStorySignals.PuzzleSolved, "light-puzzle-solved");
             ApplyScenePresentation();
+            if (autoShrinkRoutine != null)
+            {
+                StopCoroutine(autoShrinkRoutine);
+            }
+
+            autoShrinkRoutine = StartCoroutine(AutoPlayShrinkAfterPuzzleSolvedRoutine());
         }
 
         private void HandlePuzzleAssistanceStateChanged(int failedAttempts, bool assistUnlocked)
@@ -677,6 +695,18 @@ namespace Blocks.Gameplay.Core.Story
 
             if (notification.Kind == StoryGraphNotificationKind.Started || notification.Kind == StoryGraphNotificationKind.Loaded)
             {
+                if (openLightPuzzleRoutine != null)
+                {
+                    StopCoroutine(openLightPuzzleRoutine);
+                    openLightPuzzleRoutine = null;
+                }
+
+                if (autoShrinkRoutine != null)
+                {
+                    StopCoroutine(autoShrinkRoutine);
+                    autoShrinkRoutine = null;
+                }
+
                 bodyInspectionReady = false;
                 puzzleReady = false;
                 shrinkReady = false;
@@ -697,6 +727,30 @@ namespace Blocks.Gameplay.Core.Story
                 sceneContext?.CapNpcController?.SetFollowPlayer(false);
                 ApplyScenePresentation();
             }
+        }
+
+        private IEnumerator AutoPlayShrinkAfterPuzzleSolvedRoutine()
+        {
+            sceneContext?.ResolveRuntimeReferences();
+            var puzzleUi = sceneContext?.LightPuzzleUi;
+            if (puzzleUi != null && puzzleUi.IsOpen)
+            {
+                yield return new WaitForSecondsRealtime(0.28f);
+                puzzleUi.Close();
+                yield return new WaitForSecondsRealtime(0.12f);
+                if (puzzleUi.IsOpen)
+                {
+                    puzzleUi.HideImmediate();
+                }
+            }
+
+            var shrinkController = sceneContext?.ShrinkSequenceController;
+            if (shrinkController != null && !shrinkCompleted && !shrinkController.IsPlaying)
+            {
+                shrinkController.PlaySequence();
+            }
+
+            autoShrinkRoutine = null;
         }
 
         private void HandleStateChanged(StoryStateChangedPayload payload)

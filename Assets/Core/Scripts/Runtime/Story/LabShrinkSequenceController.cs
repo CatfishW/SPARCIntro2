@@ -40,10 +40,10 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField, Min(20f)] private float heroShotFov = 44f;
         [SerializeField, Min(0f)] private float handheldAmplitude = 0.03f;
         [SerializeField, Min(0f)] private float handheldFrequency = 2.7f;
-        [SerializeField, Min(0.15f)] private float postShrinkCameraDistance = 0.56f;
-        [SerializeField, Min(0.03f)] private float postShrinkCameraHeight = 0.09f;
-        [SerializeField, Min(0f)] private float postShrinkLookHeight = 0.06f;
-        [SerializeField, Min(25f)] private float postShrinkGameplayFov = 60f;
+        [SerializeField, Min(0.15f)] private float postShrinkCameraDistance = 0.48f;
+        [SerializeField, Min(0.01f)] private float postShrinkCameraHeight = 0.045f;
+        [SerializeField, Min(0f)] private float postShrinkLookHeight = 0.02f;
+        [SerializeField, Min(25f)] private float postShrinkGameplayFov = 57f;
         [SerializeField] private Color playerShrinkVfxColor = new Color(1f, 0.76f, 0.39f, 0.92f);
         [SerializeField] private Color capShrinkVfxColor = new Color(0.82f, 0.93f, 0.67f, 0.9f);
 
@@ -715,13 +715,14 @@ namespace Blocks.Gameplay.Core.Story
 
             var playerPoint = playerTransform.position;
             var playerHeight = ResolveActorCameraHeight(playerTransform);
-            var lookHeight = Mathf.Max(0.03f, postShrinkLookHeight + (playerHeight * 0.45f));
+            var lookHeight = Mathf.Clamp(postShrinkLookHeight + (playerHeight * 0.22f), 0.02f, 0.085f);
             var lookTarget = playerPoint + (Vector3.up * lookHeight);
             if (capRoot != null)
             {
                 var capHeight = ResolveActorCameraHeight(capRoot);
-                var capTarget = capRoot.position + (Vector3.up * Mathf.Max(0.03f, capHeight * 0.5f));
-                lookTarget = Vector3.Lerp(lookTarget, capTarget, 0.33f);
+                var capTargetHeight = Mathf.Clamp(capHeight * 0.23f, 0.02f, 0.08f);
+                var capTarget = capRoot.position + (Vector3.up * capTargetHeight);
+                lookTarget = Vector3.Lerp(lookTarget, capTarget, 0.27f);
             }
 
             var retreatDirection = capRoot != null
@@ -739,7 +740,9 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             retreatDirection.Normalize();
-            position = playerPoint + (retreatDirection * Mathf.Max(0.12f, postShrinkCameraDistance)) + (Vector3.up * Mathf.Max(0.02f, postShrinkCameraHeight));
+            var resolvedCameraDistance = Mathf.Clamp(postShrinkCameraDistance, 0.24f, 1.35f);
+            var resolvedCameraHeight = Mathf.Clamp(postShrinkCameraHeight, 0.015f, 0.055f);
+            position = playerPoint + (retreatDirection * resolvedCameraDistance) + (Vector3.up * resolvedCameraHeight);
             var lookDirection = lookTarget - position;
             if (lookDirection.sqrMagnitude < 0.0001f)
             {
@@ -1064,6 +1067,7 @@ namespace Blocks.Gameplay.Core.Story
             if (material != null)
             {
                 renderer.sharedMaterial = material;
+                renderer.trailMaterial = material;
             }
         }
 
@@ -1074,7 +1078,13 @@ namespace Blocks.Gameplay.Core.Story
                 return runtimeParticleMaterial;
             }
 
-            var shader = Shader.Find("Particles/Additive");
+            var shader = FindFirstAvailableShader(
+                "Universal Render Pipeline/Particles/Unlit",
+                "Universal Render Pipeline/Unlit",
+                "Particles/Standard Unlit",
+                "Sprites/Default",
+                "Particles/Additive",
+                "Legacy Shaders/Particles/Additive");
             if (shader == null)
             {
                 return null;
@@ -1088,18 +1098,69 @@ namespace Blocks.Gameplay.Core.Story
             var particleTexture = string.IsNullOrWhiteSpace(particleTextureResourcePath)
                 ? null
                 : Resources.Load<Texture2D>(particleTextureResourcePath.Trim());
-            if (particleTexture != null)
-            {
-                material.SetTexture("_MainTex", particleTexture);
-            }
+            AssignTextureToParticleMaterial(material, particleTexture);
 
             if (material.HasProperty("_TintColor"))
             {
                 material.SetColor("_TintColor", Color.white);
             }
 
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", Color.white);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", Color.white);
+            }
+
             runtimeParticleMaterial = material;
             return runtimeParticleMaterial;
+        }
+
+        private static void AssignTextureToParticleMaterial(Material material, Texture2D texture)
+        {
+            if (material == null)
+            {
+                return;
+            }
+
+            var resolvedTexture = texture != null ? texture : Texture2D.whiteTexture;
+            if (material.HasProperty("_BaseMap"))
+            {
+                material.SetTexture("_BaseMap", resolvedTexture);
+            }
+
+            if (material.HasProperty("_MainTex"))
+            {
+                material.SetTexture("_MainTex", resolvedTexture);
+            }
+        }
+
+        private static Shader FindFirstAvailableShader(params string[] shaderNames)
+        {
+            if (shaderNames == null)
+            {
+                return null;
+            }
+
+            for (var index = 0; index < shaderNames.Length; index++)
+            {
+                var shaderName = shaderNames[index];
+                if (string.IsNullOrWhiteSpace(shaderName))
+                {
+                    continue;
+                }
+
+                var shader = Shader.Find(shaderName);
+                if (shader != null)
+                {
+                    return shader;
+                }
+            }
+
+            return null;
         }
 
         private void SetOverlayAlpha(float alpha)
@@ -1177,16 +1238,17 @@ namespace Blocks.Gameplay.Core.Story
             var particleObject = new GameObject(objectName, typeof(ParticleSystem));
             particleObject.transform.SetParent(parent, false);
             var particleSystem = particleObject.GetComponent<ParticleSystem>();
+            particleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = particleSystem.main;
             main.playOnAwake = false;
             main.loop = true;
-            main.duration = 1.4f;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.8f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(0.06f, 0.24f);
             main.startSize = new ParticleSystem.MinMaxCurve(0.02f, 0.085f);
             main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+            main.startColor = color;
             main.gravityModifier = 0f;
             main.maxParticles = 280;
             main.scalingMode = ParticleSystemScalingMode.Shape;
@@ -1239,6 +1301,7 @@ namespace Blocks.Gameplay.Core.Story
             var renderer = particleObject.GetComponent<ParticleSystemRenderer>();
             renderer.renderMode = ParticleSystemRenderMode.Billboard;
             renderer.sortMode = ParticleSystemSortMode.Distance;
+            renderer.alignment = ParticleSystemRenderSpace.Facing;
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
 
@@ -1303,6 +1366,17 @@ namespace Blocks.Gameplay.Core.Story
 
             var shape = particleSystem.shape;
             shape.radius = Mathf.Max(0.05f, radius);
+
+            var main = particleSystem.main;
+            main.startSpeedMultiplier = Mathf.Lerp(0.85f, 1.6f, Mathf.Clamp01(energy));
+            main.startSizeMultiplier = Mathf.Lerp(0.9f, 1.25f, Mathf.Clamp01(energy));
+
+            var noise = particleSystem.noise;
+            noise.strength = Mathf.Lerp(0.11f, 0.32f, Mathf.Clamp01(energy));
+            noise.frequency = Mathf.Lerp(0.55f, 1.35f, Mathf.Clamp01(energy));
+
+            var trails = particleSystem.trails;
+            trails.lifetime = Mathf.Lerp(0.12f, 0.24f, Mathf.Clamp01(energy));
         }
 
         private static void PlayParticle(ParticleSystem particleSystem)
