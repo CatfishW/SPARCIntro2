@@ -37,11 +37,20 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField, Min(20f)] private float heroShotFov = 44f;
         [SerializeField, Min(0f)] private float handheldAmplitude = 0.03f;
         [SerializeField, Min(0f)] private float handheldFrequency = 2.7f;
+        [SerializeField, Min(0.15f)] private float postShrinkCameraDistance = 0.72f;
+        [SerializeField, Min(0.05f)] private float postShrinkCameraHeight = 0.26f;
+        [SerializeField, Min(0f)] private float postShrinkLookHeight = 0.18f;
+        [SerializeField, Min(25f)] private float postShrinkGameplayFov = 57f;
+        [SerializeField] private Color playerShrinkVfxColor = new Color(0.52f, 0.91f, 1f, 0.92f);
+        [SerializeField] private Color capShrinkVfxColor = new Color(1f, 0.83f, 0.33f, 0.9f);
 
         private Canvas overlayCanvas;
         private CanvasGroup overlayGroup;
         private Image overlayPanelImage;
+        private Image overlayVignetteImage;
         private Image overlayGlowImage;
+        private Image overlaySweepImage;
+        private RectTransform overlaySweepRect;
         private Text messageText;
         private Text detailText;
         private Coroutine activeRoutine;
@@ -71,6 +80,10 @@ namespace Blocks.Gameplay.Core.Story
         private Vector3 gameplayCameraStartPosition;
         private Quaternion gameplayCameraStartRotation;
         private float gameplayCameraStartFov;
+        private Transform shrinkVfxRoot;
+        private ParticleSystem playerShrinkParticles;
+        private ParticleSystem capShrinkParticles;
+        private ParticleSystem centerShrinkParticles;
 
         public event Action Completed;
         public bool IsPlaying => activeRoutine != null;
@@ -100,6 +113,7 @@ namespace Blocks.Gameplay.Core.Story
             EndTimelineDrivenShrink(completed: false);
             controlLock?.ForceReleaseAll();
             interactionDirector?.SetInteractionsLocked(false);
+            StopShrinkVfx(immediate: true);
             SetOverlayAlpha(0f);
 
             if (ReferenceEquals(ActiveInstance, this))
@@ -148,6 +162,9 @@ namespace Blocks.Gameplay.Core.Story
             timelineCapDelay = Mathf.Clamp01(capDelay);
             timelineAnimationActive = true;
             ActivateCinematicCamera();
+            EnsureShrinkVfx();
+            UpdateShrinkVfx(0f);
+            PlayShrinkVfx();
 
             if (messageText != null)
             {
@@ -174,7 +191,10 @@ namespace Blocks.Gameplay.Core.Story
             var alphaIn = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.22f, t));
             var alphaOut = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.8f, 1f, t));
             var pulse = 0.88f + (Mathf.Sin(t * Mathf.PI * 8f) * 0.12f);
-            SetOverlayAlpha(alphaIn * alphaOut * pulse);
+            var overlayAlpha = alphaIn * alphaOut * pulse;
+            SetOverlayAlpha(overlayAlpha);
+            UpdateOverlayEffects(t, overlayAlpha);
+            UpdateShrinkVfx(t);
 
             if (messageText != null)
             {
@@ -225,7 +245,8 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             timelineAnimationActive = false;
-            DeactivateCinematicCamera();
+            DeactivateCinematicCamera(completed);
+            StopShrinkVfx(immediate: !completed);
 
             if (completed)
             {
@@ -241,6 +262,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             SetOverlayAlpha(0f);
+            UpdateOverlayEffects(0f, 0f);
         }
 
         private IEnumerator PlayRoutine()
@@ -632,7 +654,7 @@ namespace Blocks.Gameplay.Core.Story
             gameplayCamera.enabled = false;
         }
 
-        private void DeactivateCinematicCamera()
+        private void DeactivateCinematicCamera(bool completed)
         {
             if (cinematicCamera != null)
             {
@@ -641,10 +663,58 @@ namespace Blocks.Gameplay.Core.Story
 
             if (gameplayCamera != null)
             {
-                gameplayCamera.transform.position = gameplayCameraStartPosition;
-                gameplayCamera.transform.rotation = gameplayCameraStartRotation;
+                if (completed && TryResolvePostShrinkCameraPose(out var postPosition, out var postRotation))
+                {
+                    gameplayCamera.transform.SetPositionAndRotation(postPosition, postRotation);
+                    gameplayCamera.fieldOfView = Mathf.Clamp(postShrinkGameplayFov, 30f, 85f);
+                }
+                else
+                {
+                    gameplayCamera.transform.SetPositionAndRotation(gameplayCameraStartPosition, gameplayCameraStartRotation);
+                    gameplayCamera.fieldOfView = gameplayCameraStartFov;
+                }
+
                 gameplayCamera.enabled = gameplayCameraWasEnabled;
             }
+        }
+
+        private bool TryResolvePostShrinkCameraPose(out Vector3 position, out Quaternion rotation)
+        {
+            position = gameplayCameraStartPosition;
+            rotation = gameplayCameraStartRotation;
+
+            var playerTransform = localPlayerMovement != null ? localPlayerMovement.transform : shrinkPlayerAnchor;
+            if (playerTransform == null)
+            {
+                return false;
+            }
+
+            var playerPoint = playerTransform.position;
+            var lookTarget = ResolveCameraFocusPoint() + (Vector3.up * Mathf.Max(0.04f, postShrinkLookHeight));
+            var retreatDirection = capRoot != null
+                ? Vector3.ProjectOnPlane(playerPoint - capRoot.position, Vector3.up)
+                : Vector3.ProjectOnPlane(gameplayCameraStartPosition - playerPoint, Vector3.up);
+
+            if (retreatDirection.sqrMagnitude < 0.0001f)
+            {
+                retreatDirection = -Vector3.ProjectOnPlane(playerTransform.forward, Vector3.up);
+            }
+
+            if (retreatDirection.sqrMagnitude < 0.0001f)
+            {
+                retreatDirection = Vector3.back;
+            }
+
+            retreatDirection.Normalize();
+            position = playerPoint + (retreatDirection * Mathf.Max(0.15f, postShrinkCameraDistance)) + (Vector3.up * Mathf.Max(0.02f, postShrinkCameraHeight));
+            var lookDirection = lookTarget - position;
+            if (lookDirection.sqrMagnitude < 0.0001f)
+            {
+                lookDirection = Vector3.forward;
+            }
+
+            rotation = Quaternion.LookRotation(lookDirection.normalized, Vector3.up);
+            return true;
         }
 
         private void UpdateCinematicCameraShot(float normalizedTime)
@@ -830,6 +900,30 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
 
+            var vignetteObject = new GameObject("EdgeVignette", typeof(RectTransform), typeof(Image));
+            vignetteObject.transform.SetParent(panel.transform, false);
+            overlayVignetteImage = vignetteObject.GetComponent<Image>();
+            overlayVignetteImage.color = new Color(0.01f, 0.03f, 0.05f, 0.32f);
+            overlayVignetteImage.raycastTarget = false;
+            var vignetteRect = vignetteObject.GetComponent<RectTransform>();
+            vignetteRect.anchorMin = Vector2.zero;
+            vignetteRect.anchorMax = Vector2.one;
+            vignetteRect.offsetMin = Vector2.zero;
+            vignetteRect.offsetMax = Vector2.zero;
+
+            var sweepObject = new GameObject("IonSweep", typeof(RectTransform), typeof(Image));
+            sweepObject.transform.SetParent(panel.transform, false);
+            overlaySweepImage = sweepObject.GetComponent<Image>();
+            overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, 0.1f);
+            overlaySweepImage.raycastTarget = false;
+            overlaySweepRect = sweepObject.GetComponent<RectTransform>();
+            overlaySweepRect.anchorMin = new Vector2(0.5f, 0.5f);
+            overlaySweepRect.anchorMax = new Vector2(0.5f, 0.5f);
+            overlaySweepRect.pivot = new Vector2(0.5f, 0.5f);
+            overlaySweepRect.sizeDelta = new Vector2(1820f, 240f);
+            overlaySweepRect.anchoredPosition = new Vector2(-1180f, 0f);
+            overlaySweepRect.localRotation = Quaternion.Euler(0f, 0f, -18f);
+
             var glowObject = new GameObject("CenterGlow", typeof(RectTransform), typeof(Image));
             glowObject.transform.SetParent(panel.transform, false);
             overlayGlowImage = glowObject.GetComponent<Image>();
@@ -883,13 +977,219 @@ namespace Blocks.Gameplay.Core.Story
 
             if (overlayPanelImage != null)
             {
-                overlayPanelImage.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, Mathf.Lerp(0.34f, 0.92f, clamped));
+                overlayPanelImage.color = new Color(overlayColor.r, overlayColor.g, overlayColor.b, Mathf.Lerp(0.05f, 0.28f, clamped));
+            }
+
+            if (overlayVignetteImage != null)
+            {
+                overlayVignetteImage.color = new Color(0.01f, 0.03f, 0.05f, Mathf.Lerp(0.08f, 0.36f, clamped));
             }
 
             if (overlayGlowImage != null)
             {
-                overlayGlowImage.color = new Color(0.55f, 0.96f, 1f, Mathf.Lerp(0.05f, 0.42f, clamped));
+                overlayGlowImage.color = new Color(0.55f, 0.96f, 1f, Mathf.Lerp(0.02f, 0.24f, clamped));
             }
+
+            if (overlaySweepImage != null)
+            {
+                var sweepAlpha = Mathf.Lerp(0.01f, 0.16f, clamped);
+                overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, sweepAlpha);
+            }
+        }
+
+        private void UpdateOverlayEffects(float normalizedTime, float intensity)
+        {
+            if (overlaySweepRect != null)
+            {
+                var x = Mathf.Lerp(-1220f, 1220f, normalizedTime);
+                var y = Mathf.Sin(normalizedTime * Mathf.PI * 5f) * 22f;
+                overlaySweepRect.anchoredPosition = new Vector2(x, y);
+            }
+
+            if (overlaySweepImage != null)
+            {
+                var pulse = 0.55f + (Mathf.Sin(normalizedTime * Mathf.PI * 9f) * 0.45f);
+                overlaySweepImage.color = new Color(0.68f, 0.94f, 1f, Mathf.Clamp01(intensity * pulse * 0.22f));
+            }
+
+            if (overlayGlowImage != null)
+            {
+                var glowRect = overlayGlowImage.rectTransform;
+                var scale = Mathf.Lerp(0.85f, 1.18f, Mathf.Clamp01(intensity));
+                glowRect.sizeDelta = new Vector2(1020f * scale, 640f * scale);
+            }
+        }
+
+        private void EnsureShrinkVfx()
+        {
+            if (shrinkVfxRoot != null)
+            {
+                return;
+            }
+
+            var rootObject = new GameObject("LabShrinkVfxRig");
+            rootObject.transform.SetParent(transform, false);
+            shrinkVfxRoot = rootObject.transform;
+
+            playerShrinkParticles = CreateShrinkParticleSystem("PlayerShrinkParticles", shrinkVfxRoot, playerShrinkVfxColor, 0.22f, 26f);
+            capShrinkParticles = CreateShrinkParticleSystem("CapShrinkParticles", shrinkVfxRoot, capShrinkVfxColor, 0.2f, 22f);
+            centerShrinkParticles = CreateShrinkParticleSystem("CenterCompressionParticles", shrinkVfxRoot, new Color(0.64f, 0.95f, 1f, 0.84f), 0.3f, 34f);
+        }
+
+        private static ParticleSystem CreateShrinkParticleSystem(string objectName, Transform parent, Color color, float radius, float baseEmission)
+        {
+            var particleObject = new GameObject(objectName, typeof(ParticleSystem));
+            particleObject.transform.SetParent(parent, false);
+            var particleSystem = particleObject.GetComponent<ParticleSystem>();
+
+            var main = particleSystem.main;
+            main.playOnAwake = false;
+            main.loop = true;
+            main.duration = 1.4f;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.8f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.06f, 0.24f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.02f, 0.085f);
+            main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+            main.gravityModifier = 0f;
+            main.maxParticles = 280;
+            main.scalingMode = ParticleSystemScalingMode.Shape;
+
+            var emission = particleSystem.emission;
+            emission.enabled = true;
+            emission.rateOverTime = baseEmission;
+
+            var shape = particleSystem.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = radius;
+
+            var colorOverLifetime = particleSystem.colorOverLifetime;
+            colorOverLifetime.enabled = true;
+            var gradient = new Gradient();
+            gradient.SetKeys(
+                new[]
+                {
+                    new GradientColorKey(color, 0f),
+                    new GradientColorKey(Color.Lerp(color, Color.white, 0.18f), 0.45f),
+                    new GradientColorKey(color, 1f)
+                },
+                new[]
+                {
+                    new GradientAlphaKey(Mathf.Clamp01(color.a), 0f),
+                    new GradientAlphaKey(Mathf.Clamp01(color.a * 0.72f), 0.58f),
+                    new GradientAlphaKey(0f, 1f)
+                });
+            colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
+
+            var sizeOverLifetime = particleSystem.sizeOverLifetime;
+            sizeOverLifetime.enabled = true;
+            sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.EaseInOut(0f, 0.35f, 1f, 1.05f));
+
+            var noise = particleSystem.noise;
+            noise.enabled = true;
+            noise.strength = 0.16f;
+            noise.frequency = 0.7f;
+            noise.scrollSpeed = 0.15f;
+            noise.damping = true;
+
+            var trails = particleSystem.trails;
+            trails.enabled = true;
+            trails.ribbonCount = 1;
+            trails.ratio = 0.22f;
+            trails.lifetime = 0.18f;
+            trails.dieWithParticles = true;
+
+            var renderer = particleObject.GetComponent<ParticleSystemRenderer>();
+            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.sortMode = ParticleSystemSortMode.Distance;
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
+            return particleSystem;
+        }
+
+        private void PlayShrinkVfx()
+        {
+            PlayParticle(playerShrinkParticles);
+            PlayParticle(capShrinkParticles);
+            PlayParticle(centerShrinkParticles);
+        }
+
+        private void StopShrinkVfx(bool immediate)
+        {
+            StopParticle(playerShrinkParticles, immediate);
+            StopParticle(capShrinkParticles, immediate);
+            StopParticle(centerShrinkParticles, immediate);
+        }
+
+        private void UpdateShrinkVfx(float normalizedTime)
+        {
+            EnsureShrinkVfx();
+            var playerPoint = localPlayerMovement != null
+                ? localPlayerMovement.transform.position
+                : shrinkPlayerAnchor != null
+                    ? shrinkPlayerAnchor.position
+                    : transform.position;
+
+            if (playerShrinkParticles != null)
+            {
+                playerShrinkParticles.transform.position = playerPoint + (Vector3.up * 0.09f);
+            }
+
+            if (capShrinkParticles != null)
+            {
+                capShrinkParticles.transform.position = capRoot != null
+                    ? capRoot.position + (Vector3.up * 0.09f)
+                    : playerPoint + (Vector3.right * 0.18f) + (Vector3.up * 0.08f);
+            }
+
+            if (centerShrinkParticles != null)
+            {
+                centerShrinkParticles.transform.position = ResolveCameraFocusPoint() + (Vector3.up * 0.14f);
+            }
+
+            var energy = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.07f, 0.9f, normalizedTime));
+            SetEmissionAndShape(playerShrinkParticles, Mathf.Lerp(16f, 84f, energy), Mathf.Lerp(0.14f, 0.28f, energy), energy);
+            SetEmissionAndShape(capShrinkParticles, Mathf.Lerp(14f, 76f, energy), Mathf.Lerp(0.12f, 0.25f, energy), energy);
+            SetEmissionAndShape(centerShrinkParticles, Mathf.Lerp(20f, 102f, energy), Mathf.Lerp(0.18f, 0.38f, energy), energy);
+        }
+
+        private static void SetEmissionAndShape(ParticleSystem particleSystem, float emissionRate, float radius, float energy)
+        {
+            if (particleSystem == null)
+            {
+                return;
+            }
+
+            var emission = particleSystem.emission;
+            emission.rateOverTime = emissionRate;
+
+            var shape = particleSystem.shape;
+            shape.radius = Mathf.Max(0.05f, radius);
+
+            var main = particleSystem.main;
+            var minSpeed = Mathf.Lerp(0.05f, 0.14f, energy);
+            var maxSpeed = Mathf.Lerp(0.22f, 0.52f, energy);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(minSpeed, maxSpeed);
+        }
+
+        private static void PlayParticle(ParticleSystem particleSystem)
+        {
+            if (particleSystem != null && !particleSystem.isPlaying)
+            {
+                particleSystem.Play(true);
+            }
+        }
+
+        private static void StopParticle(ParticleSystem particleSystem, bool immediate)
+        {
+            if (particleSystem == null)
+            {
+                return;
+            }
+
+            particleSystem.Stop(true, immediate ? ParticleSystemStopBehavior.StopEmittingAndClear : ParticleSystemStopBehavior.StopEmitting);
         }
 
         private static bool TryResolveLocalPlayerMovement(out CoreMovement movement)
