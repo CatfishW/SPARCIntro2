@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64ec9fece76741fba15bea9cc6d65c3, type: 3}
+  m_Name: LabMissionStory
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.StoryGraphAsset
+  graphId: graph_c799b04bb1e34df6b7123e0a38a5aa57
+  entryNodeId: node_98e0712fbb2d4effb081ead0324ec095
+  nodes:
+  - {fileID: 11400000, guid: 7fc85f6207b9f471bae3a2f612cf7142, type: 2}
+  connections: []

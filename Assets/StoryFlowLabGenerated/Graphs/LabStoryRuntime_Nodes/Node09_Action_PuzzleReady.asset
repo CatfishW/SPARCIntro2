@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a232169b007d478ebe2aab232c60958, type: 3}
+  m_Name: Node09_Action_PuzzleReady
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.ActionNodeAsset
+  nodeId: node_5b2d0c09e4f54130b86f6d2e5990c009
+  editorPosition:
+    serializedVersion: 2
+    x: 100
+    y: 100
+    width: 300
+    height: 180
+  notes: 
+  actions:
+  - {fileID: 11400000, guid: ef3f81695ae2f40d199daa00d3a555ca, type: 2}
+  - {fileID: 11400000, guid: a5569edc3989f4e43a08aed950f4a236, type: 2}
