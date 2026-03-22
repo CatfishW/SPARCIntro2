@@ -127,6 +127,7 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/SoundGameObjectPool.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/LabStoryRuntimeBootstrap.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/UI/LaptopOS/LaptopDesktopOpenRelay.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/BedroomObjectivePanelUi.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CoreDirector.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/LabPerformanceTuner.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Stats/StatsConfig.cs" />

@@ -9,14 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1698647bb7cdd462083b00cb5736fe5a, type: 3}
-  m_Name: StartNodeAsset_node_07d89849b9394213b8546556c2556d8e
-  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.StartNodeAsset
-  nodeId: node_07d89849b9394213b8546556c2556d8e
+  m_Script: {fileID: 11500000, guid: 81c1285bab7b441148786827c4d85915, type: 3}
+  m_Name: DelayNodeAsset_node_31e5cf0ae22d4fe8ac4bc950a43c53fe
+  m_EditorClassIdentifier: ModularStoryFlow.Runtime.Core::ModularStoryFlow.Runtime.Graph.DelayNodeAsset
+  nodeId: node_31e5cf0ae22d4fe8ac4bc950a43c53fe
   editorPosition:
     serializedVersion: 2
-    x: 120
-    y: 200
+    x: 320
+    y: 120
     width: 280
     height: 220
   notes: 
+  seconds: 0.6

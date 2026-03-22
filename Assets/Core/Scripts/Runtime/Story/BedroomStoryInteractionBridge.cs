@@ -37,6 +37,7 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private CorePlayerManager localPlayerManager;
         [SerializeField] private LaptopDesktopSystem laptopDesktopSystem;
         [SerializeField] private BedroomStorySceneTransition sceneTransition;
+        [SerializeField] private BedroomObjectivePanelUi objectivePanel;
         [SerializeField] private bool laptopResolved;
         [SerializeField] private bool laptopObjectiveActive;
         [SerializeField] private bool laptopSignalSent;
@@ -140,6 +141,7 @@ namespace Blocks.Gameplay.Core.Story
         {
             laptopResolved = true;
             ApplyLaptopObjectiveVisuals();
+            UpdateObjectivePanel();
             TryRaisePendingLaptopSignal();
         }
 
@@ -147,6 +149,7 @@ namespace Blocks.Gameplay.Core.Story
         {
             doorReady = value;
             ApplyDoorState();
+            UpdateObjectivePanel();
         }
 
         public void ConfirmDoorInteraction()
@@ -172,6 +175,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             transitionCommitted = true;
+            UpdateObjectivePanel();
             sceneTransition?.RequestLoad();
         }
 
@@ -266,6 +270,14 @@ namespace Blocks.Gameplay.Core.Story
             interactionDirector = interactionDirector != null ? interactionDirector : FindFirstObjectByType<InteractionDirector>();
             laptopDesktopSystem = laptopDesktopSystem != null ? laptopDesktopSystem : FindFirstObjectByType<LaptopDesktopSystem>();
             sceneTransition = sceneTransition != null ? sceneTransition : GetComponent<BedroomStorySceneTransition>();
+            objectivePanel = objectivePanel != null
+                ? objectivePanel
+                : GetComponent<BedroomObjectivePanelUi>() ?? FindFirstObjectByType<BedroomObjectivePanelUi>(FindObjectsInactive.Include);
+            if (objectivePanel == null)
+            {
+                objectivePanel = gameObject.AddComponent<BedroomObjectivePanelUi>();
+            }
+
             ResolveRuntimeSceneReferences();
 
             laptopInteractable = EnsureInteractable(
@@ -384,6 +396,7 @@ namespace Blocks.Gameplay.Core.Story
             DisableNonStoryInteractables();
             ApplyDoorState();
             ApplyLaptopObjectiveVisuals();
+            UpdateObjectivePanel();
         }
 
         private void SyncLaptopResolutionFromUi()
@@ -548,6 +561,67 @@ namespace Blocks.Gameplay.Core.Story
             laptopInteractable.outline.SetVisible(shouldShowObjectiveHint || isFocused);
         }
 
+        private void UpdateObjectivePanel()
+        {
+            if (objectivePanel == null)
+            {
+                return;
+            }
+
+            if (transitionCommitted)
+            {
+                objectivePanel.ShowObjective(
+                    "Mission complete",
+                    "Heading to class...",
+                    2,
+                    2,
+                    true);
+                return;
+            }
+
+            if (doorReady)
+            {
+                objectivePanel.ShowObjective(
+                    "Leave apartment",
+                    "Use the entrance door to go to class.",
+                    2,
+                    2,
+                    false);
+                return;
+            }
+
+            if (laptopResolved)
+            {
+                objectivePanel.ShowObjective(
+                    "Get to the door",
+                    "Walk to the entrance door when you're ready.",
+                    2,
+                    2,
+                    false);
+                return;
+            }
+
+            if (laptopObjectiveActive)
+            {
+                objectivePanel.ShowObjective(
+                    "Check laptop reminder",
+                    laptopSessionOpen
+                        ? "Review the reminder, then close the laptop."
+                        : "Open the laptop and read your class reminder.",
+                    1,
+                    2,
+                    false);
+                return;
+            }
+
+            objectivePanel.ShowObjective(
+                "Morning routine",
+                "Check the laptop before leaving the bedroom.",
+                1,
+                2,
+                false);
+        }
+
         private void ApplyLaptopControlState()
         {
             if (laptopDesktopSystem != null && laptopDesktopSystem.IsOpen)
@@ -684,6 +758,7 @@ namespace Blocks.Gameplay.Core.Story
                 laptopWaitSignalNodeEntered = false;
                 ApplyDoorState();
                 ApplyLaptopObjectiveVisuals();
+                UpdateObjectivePanel();
                 TryRaisePendingLaptopSignal();
             }
         }
@@ -735,6 +810,7 @@ namespace Blocks.Gameplay.Core.Story
 
             ApplyDoorState();
             ApplyLaptopObjectiveVisuals();
+            UpdateObjectivePanel();
             TryRaisePendingLaptopSignal();
 
             if (string.Equals(payload.NextStateId, "TransitionCommitted", StringComparison.Ordinal))

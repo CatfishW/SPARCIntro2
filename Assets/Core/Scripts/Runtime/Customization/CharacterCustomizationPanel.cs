@@ -24,7 +24,7 @@ namespace Blocks.Gameplay.Core.Customization
         [SerializeField] private int previewLayer = 31;
         [SerializeField] private float previewFieldOfView = 24f;
         [SerializeField] private float previewSpinSpeed = 12f;
-        [SerializeField] private Color previewClearColor = new Color(0.05f, 0.06f, 0.08f, 1f);
+        [SerializeField] private Color previewClearColor = new Color(0.1f, 0.09f, 0.08f, 1f);
 
         [Header("Input")]
         [SerializeField] private bool lockPlayerMovementWhileOpen = true;
@@ -246,14 +246,23 @@ namespace Blocks.Gameplay.Core.Customization
                 CharacterCustomizationStorage.SaveSelectedPresetId(m_SelectedPreset.id);
             }
 
-            if (!TryApplyPresetLocally(m_SelectedPreset) && !requestedThroughAddon && m_LocalPlayerState == null)
+            var appliedLocally = TryApplyPresetLocally(m_SelectedPreset);
+            if (!appliedLocally && !requestedThroughAddon)
             {
                 UpdateStatus("Unable to apply preset: local player reference is missing.");
                 return;
             }
 
             m_AppliedPreset = m_SelectedPreset;
-            UpdateStatus();
+            if (!appliedLocally && requestedThroughAddon)
+            {
+                UpdateStatus("Preset synced. It will appear as soon as the local player rig is available.");
+            }
+            else
+            {
+                UpdateStatus();
+            }
+
             UpdateActionsState();
         }
 
@@ -322,7 +331,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_Overlay.style.flexDirection = FlexDirection.Column;
             m_Overlay.style.justifyContent = Justify.Center;
             m_Overlay.style.alignItems = Align.Center;
-            m_Overlay.style.backgroundColor = new Color(0.01f, 0.02f, 0.05f, 0.8f);
+            m_Overlay.style.backgroundColor = new Color(0.03f, 0.02f, 0.015f, 0.74f);
             m_Overlay.style.paddingLeft = 32f;
             m_Overlay.style.paddingRight = 32f;
             m_Overlay.style.paddingTop = 32f;
@@ -332,12 +341,12 @@ namespace Blocks.Gameplay.Core.Customization
             m_Root.Add(m_Overlay);
 
             m_Window = new VisualElement();
-            m_Window.style.width = new Length(86f, LengthUnit.Percent);
-            m_Window.style.height = new Length(84f, LengthUnit.Percent);
-            m_Window.style.maxWidth = 1420f;
-            m_Window.style.maxHeight = 860f;
+            m_Window.style.width = new Length(82f, LengthUnit.Percent);
+            m_Window.style.height = new Length(80f, LengthUnit.Percent);
+            m_Window.style.maxWidth = 1320f;
+            m_Window.style.maxHeight = 820f;
             m_Window.style.flexDirection = FlexDirection.Column;
-            m_Window.style.backgroundColor = new Color(0.04f, 0.06f, 0.1f, 0.98f);
+            m_Window.style.backgroundColor = new Color(0.085f, 0.075f, 0.065f, 0.975f);
             m_Window.style.borderTopLeftRadius = 24f;
             m_Window.style.borderTopRightRadius = 24f;
             m_Window.style.borderBottomLeftRadius = 24f;
@@ -346,10 +355,10 @@ namespace Blocks.Gameplay.Core.Customization
             m_Window.style.borderRightWidth = 1f;
             m_Window.style.borderTopWidth = 1f;
             m_Window.style.borderBottomWidth = 1f;
-            m_Window.style.borderLeftColor = new Color(0.47f, 0.68f, 1f, 0.32f);
-            m_Window.style.borderRightColor = new Color(0.47f, 0.68f, 1f, 0.32f);
-            m_Window.style.borderTopColor = new Color(0.47f, 0.68f, 1f, 0.32f);
-            m_Window.style.borderBottomColor = new Color(0.47f, 0.68f, 1f, 0.32f);
+            m_Window.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
+            m_Window.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
+            m_Window.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
+            m_Window.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
             m_Window.style.paddingLeft = 24f;
             m_Window.style.paddingRight = 24f;
             m_Window.style.paddingTop = 20f;
@@ -397,16 +406,16 @@ namespace Blocks.Gameplay.Core.Customization
             m_TitleLabel = new Label("Change Character");
             m_TitleLabel.style.fontSize = 26f;
             m_TitleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            m_TitleLabel.style.color = new Color(0.97f, 0.98f, 1f, 1f);
+            m_TitleLabel.style.color = new Color(0.99f, 0.96f, 0.9f, 1f);
             m_TitleLabel.style.marginBottom = 4f;
             titleGroup.Add(m_TitleLabel);
 
             m_StatusLabel = new Label("Select a preset and apply it to your player.");
             m_StatusLabel.style.fontSize = 13f;
-            m_StatusLabel.style.color = new Color(0.82f, 0.9f, 1f, 0.9f);
+            m_StatusLabel.style.color = new Color(0.95f, 0.88f, 0.78f, 0.92f);
             titleGroup.Add(m_StatusLabel);
 
-            m_CloseButton = CreateActionButton("Close", Hide, new Color(0.42f, 0.46f, 0.52f, 1f));
+            m_CloseButton = CreateActionButton("Close", Hide, new Color(0.34f, 0.38f, 0.43f, 1f));
             m_CloseButton.style.minWidth = 120f;
             m_Header.Add(m_CloseButton);
         }
@@ -426,7 +435,7 @@ namespace Blocks.Gameplay.Core.Customization
         private void BuildSidebar()
         {
             m_LeftPane = new VisualElement();
-            m_LeftPane.style.width = 420f;
+            m_LeftPane.style.width = 360f;
             m_LeftPane.style.flexShrink = 0f;
             m_LeftPane.style.flexDirection = FlexDirection.Column;
             m_LeftPane.style.paddingRight = 14f;
@@ -442,16 +451,16 @@ namespace Blocks.Gameplay.Core.Customization
             m_SearchField.style.borderTopRightRadius = 10f;
             m_SearchField.style.borderBottomLeftRadius = 10f;
             m_SearchField.style.borderBottomRightRadius = 10f;
-            m_SearchField.style.backgroundColor = new Color(0.10f, 0.12f, 0.16f, 0.96f);
-            m_SearchField.style.color = new Color(0.94f, 0.97f, 1f, 1f);
+            m_SearchField.style.backgroundColor = new Color(0.15f, 0.14f, 0.12f, 0.97f);
+            m_SearchField.style.color = new Color(0.98f, 0.93f, 0.86f, 1f);
             m_SearchField.style.borderLeftWidth = 1f;
             m_SearchField.style.borderRightWidth = 1f;
             m_SearchField.style.borderTopWidth = 1f;
             m_SearchField.style.borderBottomWidth = 1f;
-            m_SearchField.style.borderLeftColor = new Color(1f, 1f, 1f, 0.14f);
-            m_SearchField.style.borderRightColor = new Color(1f, 1f, 1f, 0.14f);
-            m_SearchField.style.borderTopColor = new Color(1f, 1f, 1f, 0.14f);
-            m_SearchField.style.borderBottomColor = new Color(1f, 1f, 1f, 0.14f);
+            m_SearchField.style.borderLeftColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
+            m_SearchField.style.borderRightColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
+            m_SearchField.style.borderTopColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
+            m_SearchField.style.borderBottomColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
             m_SearchField.style.paddingLeft = 8f;
             m_SearchField.style.paddingRight = 8f;
             m_SearchField.tooltip = "Search presets by name or id";
@@ -465,7 +474,7 @@ namespace Blocks.Gameplay.Core.Customization
             if (searchInput != null)
             {
                 searchInput.style.backgroundColor = Color.clear;
-                searchInput.style.color = new Color(0.94f, 0.97f, 1f, 1f);
+                searchInput.style.color = new Color(0.98f, 0.93f, 0.86f, 1f);
                 searchInput.style.unityFontStyleAndWeight = FontStyle.Normal;
             }
 
@@ -473,7 +482,7 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 selectionType = SelectionType.Single,
                 virtualizationMethod = CollectionVirtualizationMethod.FixedHeight,
-                fixedItemHeight = 58f,
+                fixedItemHeight = 64f,
                 showBoundCollectionSize = false,
                 showFoldoutHeader = false,
                 reorderable = false,
@@ -485,15 +494,15 @@ namespace Blocks.Gameplay.Core.Customization
             m_ListView.style.borderTopRightRadius = 16f;
             m_ListView.style.borderBottomLeftRadius = 16f;
             m_ListView.style.borderBottomRightRadius = 16f;
-            m_ListView.style.backgroundColor = new Color(0.04f, 0.05f, 0.08f, 0.9f);
+            m_ListView.style.backgroundColor = new Color(0.08f, 0.07f, 0.06f, 0.92f);
             m_ListView.style.borderLeftWidth = 1f;
             m_ListView.style.borderRightWidth = 1f;
             m_ListView.style.borderTopWidth = 1f;
             m_ListView.style.borderBottomWidth = 1f;
-            m_ListView.style.borderLeftColor = new Color(1f, 1f, 1f, 0.08f);
-            m_ListView.style.borderRightColor = new Color(1f, 1f, 1f, 0.08f);
-            m_ListView.style.borderTopColor = new Color(1f, 1f, 1f, 0.08f);
-            m_ListView.style.borderBottomColor = new Color(1f, 1f, 1f, 0.08f);
+            m_ListView.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
+            m_ListView.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
+            m_ListView.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
+            m_ListView.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
             m_ListView.selectionChanged += OnSelectionChanged;
             m_LeftPane.Add(m_ListView);
         }
@@ -506,14 +515,14 @@ namespace Blocks.Gameplay.Core.Customization
             m_RightPane.style.justifyContent = Justify.FlexStart;
             m_RightPane.style.minWidth = 0f;
             m_RightPane.style.minHeight = 0f;
-            m_RightPane.style.marginLeft = 18f;
+            m_RightPane.style.marginLeft = 20f;
             m_Content.Add(m_RightPane);
 
             m_PreviewFrame = new VisualElement();
             m_PreviewFrame.style.flexGrow = 1f;
-            m_PreviewFrame.style.minHeight = 180f;
+            m_PreviewFrame.style.minHeight = 220f;
             m_PreviewFrame.style.flexShrink = 1f;
-            m_PreviewFrame.style.backgroundColor = new Color(0.01f, 0.03f, 0.08f, 0.92f);
+            m_PreviewFrame.style.backgroundColor = new Color(0.05f, 0.05f, 0.05f, 0.95f);
             m_PreviewFrame.style.borderTopLeftRadius = 20f;
             m_PreviewFrame.style.borderTopRightRadius = 20f;
             m_PreviewFrame.style.borderBottomLeftRadius = 20f;
@@ -526,10 +535,10 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewFrame.style.borderRightWidth = 1f;
             m_PreviewFrame.style.borderTopWidth = 1f;
             m_PreviewFrame.style.borderBottomWidth = 1f;
-            m_PreviewFrame.style.borderLeftColor = new Color(1f, 1f, 1f, 0.08f);
-            m_PreviewFrame.style.borderRightColor = new Color(1f, 1f, 1f, 0.08f);
-            m_PreviewFrame.style.borderTopColor = new Color(1f, 1f, 1f, 0.08f);
-            m_PreviewFrame.style.borderBottomColor = new Color(1f, 1f, 1f, 0.08f);
+            m_PreviewFrame.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
+            m_PreviewFrame.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
+            m_PreviewFrame.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
+            m_PreviewFrame.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
             m_RightPane.Add(m_PreviewFrame);
 
             m_PreviewImage = new Image();
@@ -550,7 +559,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_DetailLabel = new Label("Browse the available character models and apply the one you want.");
             m_DetailLabel.style.whiteSpace = WhiteSpace.Normal;
             m_DetailLabel.style.fontSize = 14f;
-            m_DetailLabel.style.color = new Color(1f, 1f, 1f, 0.72f);
+            m_DetailLabel.style.color = new Color(0.93f, 0.86f, 0.78f, 0.85f);
             m_DetailLabel.style.marginBottom = 16f;
             m_RightPane.Add(m_DetailLabel);
 
@@ -560,12 +569,12 @@ namespace Blocks.Gameplay.Core.Customization
             actionsRow.style.flexShrink = 0f;
             m_RightPane.Add(actionsRow);
 
-            m_RandomizeButton = CreateActionButton("Randomize", RandomizeSelection, new Color(0.28f, 0.56f, 0.82f, 1f));
+            m_RandomizeButton = CreateActionButton("Randomize", RandomizeSelection, new Color(0.31f, 0.52f, 0.76f, 1f));
             m_RandomizeButton.style.flexGrow = 1f;
             m_RandomizeButton.style.marginRight = 12f;
             actionsRow.Add(m_RandomizeButton);
 
-            m_ApplyButton = CreateActionButton("Apply", ApplySelection, new Color(0.86f, 0.66f, 0.28f, 1f));
+            m_ApplyButton = CreateActionButton("Apply", ApplySelection, new Color(0.9f, 0.68f, 0.26f, 1f));
             m_ApplyButton.style.flexGrow = 1f;
             actionsRow.Add(m_ApplyButton);
         }
@@ -725,6 +734,11 @@ namespace Blocks.Gameplay.Core.Customization
                 }
             }
 
+            if (m_LocalPlayerState == null && m_LocalPlayerManager == null && m_LocalPlayerCoreAnimator == null)
+            {
+                TryResolveLikelyLocalPlayerFromScene();
+            }
+
             if (m_LocalPlayerState == null)
             {
                 var playerStates = FindObjectsByType<CorePlayerState>(FindObjectsSortMode.None);
@@ -786,10 +800,89 @@ namespace Blocks.Gameplay.Core.Customization
                 }
             }
 
+            if (m_LocalPlayerCoreAnimator == null)
+            {
+                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate();
+            }
+
+            if (m_LocalPlayerAnimator == null && m_LocalPlayerCoreAnimator != null)
+            {
+                m_LocalPlayerAnimator = m_LocalPlayerCoreAnimator.BoundAnimator != null
+                    ? m_LocalPlayerCoreAnimator.BoundAnimator
+                    : m_LocalPlayerCoreAnimator.GetComponent<Animator>();
+            }
+
             if (m_PreviewAnimator != null && m_LocalPlayerAnimator != null)
             {
                 m_PreviewAnimator.runtimeAnimatorController = m_LocalPlayerAnimator.runtimeAnimatorController;
             }
+        }
+
+        private bool TryResolveLikelyLocalPlayerFromScene()
+        {
+            GameObject taggedPlayer = null;
+            try
+            {
+                taggedPlayer = GameObject.FindGameObjectWithTag("Player");
+            }
+            catch (UnityException)
+            {
+                taggedPlayer = null;
+            }
+
+            if (taggedPlayer != null)
+            {
+                CacheLocalPlayerFromRoot(taggedPlayer);
+                if (m_LocalPlayerCoreAnimator != null)
+                {
+                    return true;
+                }
+            }
+
+            var movements = FindObjectsByType<CoreMovement>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            CoreMovement fallbackByName = null;
+            CoreMovement fallbackByAvailability = null;
+
+            for (int index = 0; index < movements.Length; index++)
+            {
+                var movement = movements[index];
+                if (movement == null)
+                {
+                    continue;
+                }
+
+                var root = movement.gameObject;
+                if (movement.IsOwner)
+                {
+                    CacheLocalPlayerFromRoot(root);
+                    if (m_LocalPlayerCoreAnimator != null)
+                    {
+                        return true;
+                    }
+                }
+
+                if (fallbackByName == null &&
+                    root.name.IndexOf("player", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    fallbackByName = movement;
+                }
+
+                if (fallbackByAvailability == null)
+                {
+                    fallbackByAvailability = movement;
+                }
+            }
+
+            if (fallbackByName != null)
+            {
+                CacheLocalPlayerFromRoot(fallbackByName.gameObject);
+            }
+            else if (fallbackByAvailability != null)
+            {
+                CacheLocalPlayerFromRoot(fallbackByAvailability.gameObject);
+            }
+
+            return m_LocalPlayerCoreAnimator != null;
         }
 
         private void CacheLocalPlayerFromRoot(GameObject rootObject)
@@ -801,17 +894,23 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_LocalPlayerState == null)
             {
-                m_LocalPlayerState = rootObject.GetComponent<CorePlayerState>();
+                m_LocalPlayerState = rootObject.GetComponent<CorePlayerState>() ??
+                                     rootObject.GetComponentInParent<CorePlayerState>() ??
+                                     rootObject.GetComponentInChildren<CorePlayerState>(true);
             }
 
             if (m_LocalPlayerManager == null)
             {
-                m_LocalPlayerManager = rootObject.GetComponent<CorePlayerManager>();
+                m_LocalPlayerManager = rootObject.GetComponent<CorePlayerManager>() ??
+                                       rootObject.GetComponentInParent<CorePlayerManager>() ??
+                                       rootObject.GetComponentInChildren<CorePlayerManager>(true);
             }
 
             if (m_LocalPlayerCoreAnimator == null)
             {
-                m_LocalPlayerCoreAnimator = rootObject.GetComponentInChildren<CoreAnimator>(true);
+                m_LocalPlayerCoreAnimator = rootObject.GetComponent<CoreAnimator>() ??
+                                            rootObject.GetComponentInParent<CoreAnimator>() ??
+                                            rootObject.GetComponentInChildren<CoreAnimator>(true);
             }
 
             if (m_LocalPlayerAnimator == null && m_LocalPlayerCoreAnimator != null)
@@ -1262,7 +1361,7 @@ namespace Blocks.Gameplay.Core.Customization
             row.style.borderTopRightRadius = 14f;
             row.style.borderBottomLeftRadius = 14f;
             row.style.borderBottomRightRadius = 14f;
-            row.style.backgroundColor = new Color(1f, 1f, 1f, 0.04f);
+            row.style.backgroundColor = new Color(1f, 0.98f, 0.92f, 0.05f);
             row.pickingMode = PickingMode.Position;
             row.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -1288,7 +1387,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             var idLabel = new Label { name = "preset-id" };
             idLabel.style.fontSize = 12f;
-            idLabel.style.color = new Color(1f, 1f, 1f, 0.56f);
+            idLabel.style.color = new Color(0.95f, 0.87f, 0.74f, 0.72f);
             nameColumn.Add(idLabel);
 
             var badge = new Label("PREVIEW");
@@ -1304,8 +1403,8 @@ namespace Blocks.Gameplay.Core.Customization
             badge.style.borderTopRightRadius = 999f;
             badge.style.borderBottomLeftRadius = 999f;
             badge.style.borderBottomRightRadius = 999f;
-            badge.style.backgroundColor = new Color(1f, 1f, 1f, 0.08f);
-            badge.style.color = new Color(1f, 1f, 1f, 0.76f);
+            badge.style.backgroundColor = new Color(1f, 0.9f, 0.74f, 0.18f);
+            badge.style.color = new Color(1f, 0.93f, 0.84f, 0.9f);
             row.Add(badge);
 
             return row;
@@ -1327,9 +1426,13 @@ namespace Blocks.Gameplay.Core.Customization
             element.userData = preset;
 
             var selected = m_SelectedPreset != null && string.Equals(m_SelectedPreset.id, preset.id, StringComparison.OrdinalIgnoreCase);
-            element.style.backgroundColor = selected ? new Color(0.19f, 0.29f, 0.44f, 0.92f) : new Color(1f, 1f, 1f, 0.04f);
+            element.style.backgroundColor = selected
+                ? new Color(0.32f, 0.23f, 0.14f, 0.92f)
+                : new Color(1f, 0.98f, 0.92f, 0.05f);
             element.style.borderLeftWidth = selected ? 4f : 1f;
-            element.style.borderLeftColor = selected ? new Color(0.64f, 0.82f, 1f, 1f) : new Color(1f, 1f, 1f, 0.05f);
+            element.style.borderLeftColor = selected
+                ? new Color(1f, 0.84f, 0.52f, 1f)
+                : new Color(1f, 0.94f, 0.82f, 0.08f);
 
             var nameLabel = element.Q<Label>("preset-name");
             if (nameLabel != null)
@@ -1347,8 +1450,12 @@ namespace Blocks.Gameplay.Core.Customization
             if (badge != null)
             {
                 badge.text = selected ? "SELECTED" : "PREVIEW";
-                badge.style.backgroundColor = selected ? new Color(0.64f, 0.82f, 1f, 0.18f) : new Color(1f, 1f, 1f, 0.08f);
-                badge.style.color = selected ? Color.white : new Color(1f, 1f, 1f, 0.76f);
+                badge.style.backgroundColor = selected
+                    ? new Color(1f, 0.84f, 0.52f, 0.22f)
+                    : new Color(1f, 0.9f, 0.74f, 0.18f);
+                badge.style.color = selected
+                    ? new Color(1f, 0.95f, 0.9f, 1f)
+                    : new Color(1f, 0.93f, 0.84f, 0.9f);
             }
         }
 
@@ -1369,10 +1476,10 @@ namespace Blocks.Gameplay.Core.Customization
             button.style.borderRightWidth = 1f;
             button.style.borderTopWidth = 1f;
             button.style.borderBottomWidth = 1f;
-            button.style.borderLeftColor = new Color(1f, 1f, 1f, 0.10f);
-            button.style.borderRightColor = new Color(1f, 1f, 1f, 0.10f);
-            button.style.borderTopColor = new Color(1f, 1f, 1f, 0.10f);
-            button.style.borderBottomColor = new Color(1f, 1f, 1f, 0.10f);
+            button.style.borderLeftColor = new Color(1f, 0.92f, 0.78f, 0.2f);
+            button.style.borderRightColor = new Color(1f, 0.92f, 0.78f, 0.2f);
+            button.style.borderTopColor = new Color(1f, 0.92f, 0.78f, 0.2f);
+            button.style.borderBottomColor = new Color(1f, 0.92f, 0.78f, 0.2f);
             button.style.backgroundColor = accentColor;
             button.style.color = Color.white;
             button.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -1653,8 +1760,18 @@ namespace Blocks.Gameplay.Core.Customization
                 }
             }
 
+            if (m_LocalPlayerCoreAnimator != null)
+            {
+                var localAnimatorAddon = m_LocalPlayerCoreAnimator.GetComponentInParent<CharacterCustomizationAddon>();
+                if (localAnimatorAddon != null)
+                {
+                    return localAnimatorAddon;
+                }
+            }
+
             var addons = FindObjectsByType<CharacterCustomizationAddon>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             CharacterCustomizationAddon fallbackAddon = null;
+            CharacterCustomizationAddon namedFallbackAddon = null;
             for (int index = 0; index < addons.Length; index++)
             {
                 var candidate = addons[index];
@@ -1674,13 +1791,19 @@ namespace Blocks.Gameplay.Core.Customization
                     return candidate;
                 }
 
+                if (namedFallbackAddon == null &&
+                    candidate.gameObject.name.IndexOf("player", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    namedFallbackAddon = candidate;
+                }
+
                 if (fallbackAddon == null)
                 {
                     fallbackAddon = candidate;
                 }
             }
 
-            return fallbackAddon;
+            return namedFallbackAddon != null ? namedFallbackAddon : fallbackAddon;
         }
 
         private bool TryApplyPresetLocally(CharacterCustomizationPreset preset)
@@ -1704,33 +1827,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_LocalPlayerCoreAnimator == null)
             {
-                var animators = FindObjectsByType<CoreAnimator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                CoreAnimator fallbackAnimator = null;
-                for (int index = 0; index < animators.Length; index++)
-                {
-                    var candidate = animators[index];
-                    if (candidate == null)
-                    {
-                        continue;
-                    }
-
-                    var state = candidate.GetComponentInParent<CorePlayerState>();
-                    if (state != null && state.IsOwner)
-                    {
-                        m_LocalPlayerCoreAnimator = candidate;
-                        break;
-                    }
-
-                    if (fallbackAnimator == null)
-                    {
-                        fallbackAnimator = candidate;
-                    }
-                }
-
-                if (m_LocalPlayerCoreAnimator == null)
-                {
-                    m_LocalPlayerCoreAnimator = fallbackAnimator;
-                }
+                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate();
             }
 
             if (m_LocalPlayerCoreAnimator == null)
@@ -1747,6 +1844,82 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             return applied;
+        }
+
+        private CoreAnimator ResolveBestCoreAnimatorCandidate()
+        {
+            var animators = FindObjectsByType<CoreAnimator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (animators == null || animators.Length == 0)
+            {
+                return null;
+            }
+
+            CoreAnimator movementCandidate = null;
+            CoreAnimator namedCandidate = null;
+            CoreAnimator cameraProximityCandidate = null;
+            CoreAnimator fallback = null;
+            var mainCamera = Camera.main;
+            var bestDistance = float.MaxValue;
+
+            for (int index = 0; index < animators.Length; index++)
+            {
+                var candidate = animators[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (m_PreviewRigRoot != null && candidate.transform.IsChildOf(m_PreviewRigRoot.transform))
+                {
+                    continue;
+                }
+
+                var state = candidate.GetComponentInParent<CorePlayerState>();
+                if (state != null && state.IsOwner)
+                {
+                    return candidate;
+                }
+
+                var movement = candidate.GetComponentInParent<CoreMovement>();
+                if (movement != null)
+                {
+                    if (movement.IsOwner)
+                    {
+                        return candidate;
+                    }
+
+                    if (movementCandidate == null)
+                    {
+                        movementCandidate = candidate;
+                    }
+                }
+
+                var candidateName = candidate.name;
+                var rootName = candidate.transform.root != null ? candidate.transform.root.name : string.Empty;
+                if (namedCandidate == null &&
+                    (candidateName.IndexOf("player", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     rootName.IndexOf("player", StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    namedCandidate = candidate;
+                }
+
+                if (mainCamera != null)
+                {
+                    var distanceSq = (candidate.transform.position - mainCamera.transform.position).sqrMagnitude;
+                    if (distanceSq < bestDistance)
+                    {
+                        bestDistance = distanceSq;
+                        cameraProximityCandidate = candidate;
+                    }
+                }
+
+                if (fallback == null)
+                {
+                    fallback = candidate;
+                }
+            }
+
+            return movementCandidate ?? namedCandidate ?? cameraProximityCandidate ?? fallback;
         }
     }
 }
