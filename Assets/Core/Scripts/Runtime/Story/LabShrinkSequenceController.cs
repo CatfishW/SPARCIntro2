@@ -31,6 +31,12 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField, Min(0.05f)] private float minimumActorScale = 0.08f;
         [SerializeField, Min(0.05f)] private float maximumActorScale = 2f;
         [SerializeField] private Color overlayColor = new Color(0.4f, 0.92f, 1f, 1f);
+        [SerializeField, Min(20f)] private float establishingShotFov = 62f;
+        [SerializeField, Min(20f)] private float orbitShotFov = 54f;
+        [SerializeField, Min(20f)] private float overheadShotFov = 49f;
+        [SerializeField, Min(20f)] private float heroShotFov = 44f;
+        [SerializeField, Min(0f)] private float handheldAmplitude = 0.03f;
+        [SerializeField, Min(0f)] private float handheldFrequency = 2.7f;
 
         private Canvas overlayCanvas;
         private CanvasGroup overlayGroup;
@@ -64,6 +70,7 @@ namespace Blocks.Gameplay.Core.Story
         private bool gameplayCameraWasEnabled;
         private Vector3 gameplayCameraStartPosition;
         private Quaternion gameplayCameraStartRotation;
+        private float gameplayCameraStartFov;
 
         public event Action Completed;
         public bool IsPlaying => activeRoutine != null;
@@ -614,11 +621,13 @@ namespace Blocks.Gameplay.Core.Story
             gameplayCameraStartPosition = gameplayCamera.transform.position;
             gameplayCameraStartRotation = gameplayCamera.transform.rotation;
             gameplayCameraWasEnabled = gameplayCamera.enabled;
+            gameplayCameraStartFov = gameplayCamera.fieldOfView;
 
             cinematicCamera.CopyFrom(gameplayCamera);
             cinematicCamera.depth = gameplayCamera.depth + 20f;
             cinematicCamera.transform.position = gameplayCameraStartPosition;
             cinematicCamera.transform.rotation = gameplayCameraStartRotation;
+            cinematicCamera.fieldOfView = gameplayCameraStartFov;
             cinematicCamera.enabled = true;
             gameplayCamera.enabled = false;
         }
@@ -652,40 +661,109 @@ namespace Blocks.Gameplay.Core.Story
                     ? localPlayerMovement.transform
                     : transform;
 
-            var forward = basis.forward;
-            var right = basis.right;
-            var introPosition = focusPoint - (forward * 2.6f) - (right * 1.45f) + (Vector3.up * 1.5f);
-            var compressionPosition = focusPoint + (right * 2.2f) + (Vector3.up * 1.35f) - (forward * 0.35f);
-            var finalPosition = focusPoint - (forward * 1.25f) + (right * 1.15f) + (Vector3.up * 1.65f);
+            var forward = Vector3.ProjectOnPlane(basis.forward, Vector3.up);
+            if (forward.sqrMagnitude < 0.0001f)
+            {
+                forward = Vector3.ProjectOnPlane(gameplayCameraStartRotation * Vector3.forward, Vector3.up);
+            }
 
-            var lookPoint = focusPoint + (Vector3.up * 0.7f);
-            var introRotation = Quaternion.LookRotation((lookPoint - introPosition).normalized, Vector3.up);
-            var compressionRotation = Quaternion.LookRotation((lookPoint - compressionPosition).normalized, Vector3.up);
-            var finalRotation = Quaternion.LookRotation((lookPoint - finalPosition).normalized, Vector3.up);
+            if (forward.sqrMagnitude < 0.0001f)
+            {
+                forward = Vector3.forward;
+            }
+
+            forward.Normalize();
+            var right = Vector3.Cross(Vector3.up, forward).normalized;
+
+            var establishingPosition = focusPoint - (forward * 3.1f) - (right * 1.8f) + (Vector3.up * 1.85f);
+            var orbitPosition = focusPoint - (forward * 1.05f) + (right * 2.45f) + (Vector3.up * 1.4f);
+            var overheadPosition = focusPoint - (forward * 0.2f) + (Vector3.up * 3.15f);
+            var heroFocusPoint = ResolveHeroFocusPoint(focusPoint);
+            var heroPosition = heroFocusPoint - (forward * 1.15f) + (right * 0.95f) + (Vector3.up * 1.2f);
+
+            var establishingLookPoint = focusPoint + (Vector3.up * 0.7f);
+            var orbitLookPoint = focusPoint + (Vector3.up * 0.6f);
+            var overheadLookPoint = focusPoint + (Vector3.up * 0.2f);
+            var heroLookPoint = heroFocusPoint + (Vector3.up * 0.45f);
+            var establishingRotation = Quaternion.LookRotation((establishingLookPoint - establishingPosition).normalized, Vector3.up);
+            var orbitRotation = Quaternion.LookRotation((orbitLookPoint - orbitPosition).normalized, Vector3.up);
+            var overheadRotation = Quaternion.LookRotation((overheadLookPoint - overheadPosition).normalized, Vector3.up);
+            var heroRotation = Quaternion.LookRotation((heroLookPoint - heroPosition).normalized, Vector3.up);
 
             Vector3 position;
             Quaternion rotation;
-            if (normalizedTime < 0.32f)
+            float targetFov;
+            if (normalizedTime < 0.2f)
             {
-                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.32f, normalizedTime));
-                position = Vector3.Lerp(gameplayCameraStartPosition, introPosition, blend);
-                rotation = Quaternion.Slerp(gameplayCameraStartRotation, introRotation, blend);
+                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.2f, normalizedTime));
+                position = Vector3.Lerp(gameplayCameraStartPosition, establishingPosition, blend);
+                rotation = Quaternion.Slerp(gameplayCameraStartRotation, establishingRotation, blend);
+                targetFov = Mathf.Lerp(gameplayCameraStartFov, establishingShotFov, blend);
             }
-            else if (normalizedTime < 0.72f)
+            else if (normalizedTime < 0.55f)
             {
-                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.32f, 0.72f, normalizedTime));
-                position = Vector3.Lerp(introPosition, compressionPosition, blend);
-                rotation = Quaternion.Slerp(introRotation, compressionRotation, blend);
+                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.2f, 0.55f, normalizedTime));
+                position = Vector3.Lerp(establishingPosition, orbitPosition, blend);
+                rotation = Quaternion.Slerp(establishingRotation, orbitRotation, blend);
+                targetFov = Mathf.Lerp(establishingShotFov, orbitShotFov, blend);
+            }
+            else if (normalizedTime < 0.82f)
+            {
+                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.55f, 0.82f, normalizedTime));
+                position = Vector3.Lerp(orbitPosition, overheadPosition, blend);
+                rotation = Quaternion.Slerp(orbitRotation, overheadRotation, blend);
+                targetFov = Mathf.Lerp(orbitShotFov, overheadShotFov, blend);
             }
             else
             {
-                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.72f, 1f, normalizedTime));
-                position = Vector3.Lerp(compressionPosition, finalPosition, blend);
-                rotation = Quaternion.Slerp(compressionRotation, finalRotation, blend);
+                var blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.82f, 1f, normalizedTime));
+                position = Vector3.Lerp(overheadPosition, heroPosition, blend);
+                rotation = Quaternion.Slerp(overheadRotation, heroRotation, blend);
+                targetFov = Mathf.Lerp(overheadShotFov, heroShotFov, blend);
             }
 
-            cinematicCamera.transform.position = position;
-            cinematicCamera.transform.rotation = rotation;
+            ApplyHandheldMotion(normalizedTime, ref position, ref rotation);
+            cinematicCamera.transform.SetPositionAndRotation(position, rotation);
+            cinematicCamera.fieldOfView = Mathf.Lerp(cinematicCamera.fieldOfView, targetFov, 0.65f);
+        }
+
+        private Vector3 ResolveHeroFocusPoint(Vector3 fallbackFocusPoint)
+        {
+            if (shrinkPlayerAnchor != null)
+            {
+                return shrinkPlayerAnchor.position;
+            }
+
+            if (localPlayerMovement != null && sceneContext?.RocketInteractable != null)
+            {
+                var actorPoint = localPlayerMovement.transform.position;
+                var rocketPoint = sceneContext.RocketInteractable.transform.position;
+                return Vector3.Lerp(actorPoint, rocketPoint, 0.5f);
+            }
+
+            return fallbackFocusPoint;
+        }
+
+        private void ApplyHandheldMotion(float normalizedTime, ref Vector3 position, ref Quaternion rotation)
+        {
+            if (handheldAmplitude <= 0.0001f || handheldFrequency <= 0.0001f)
+            {
+                return;
+            }
+
+            var envelope = 1f - Mathf.Abs((normalizedTime * 2f) - 1f);
+            if (envelope <= 0.0001f)
+            {
+                return;
+            }
+
+            var phase = Time.unscaledTime * handheldFrequency;
+            var lateral = Mathf.Sin(phase * 1.9f) * handheldAmplitude * envelope;
+            var vertical = Mathf.Sin((phase + 0.8f) * 2.35f) * handheldAmplitude * 0.65f * envelope;
+            var rollDegrees = Mathf.Sin((phase + 1.2f) * 1.5f) * 0.8f * envelope;
+
+            position += (rotation * Vector3.right * lateral) + (rotation * Vector3.up * vertical);
+            rotation *= Quaternion.Euler(0f, 0f, rollDegrees);
         }
 
         private Vector3 ResolveCameraFocusPoint()
