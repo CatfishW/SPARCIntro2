@@ -496,73 +496,10 @@ namespace Blocks.Gameplay.Core.Story
 
         private IEnumerator PositionPlayerAtSpawnRoutine()
         {
-            const float timeoutSeconds = 12f;
-            var remainingSeconds = timeoutSeconds;
-
-            while (remainingSeconds > 0f)
-            {
-                if (TryResolveLocalPlayerMovement(out var movement) && TryComputeSpawnPose(out var position, out var rotation))
-                {
-                    ApplySpawnPose(movement, position, rotation);
-                    yield break;
-                }
-
-                remainingSeconds -= 0.1f;
-                yield return new WaitForSeconds(0.1f);
-            }
-
-            if (TryComputeSpawnPose(out var fallbackPosition, out var fallbackRotation))
-            {
-                if (TryResolveLocalPlayerMovement(out var lateMovement))
-                {
-                    ApplySpawnPose(lateMovement, fallbackPosition, fallbackRotation);
-                    yield break;
-                }
-
-                // Fallback so scene does not appear broken if a player object is late/missing.
-                var mainCamera = Camera.main;
-                if (mainCamera != null)
-                {
-                    mainCamera.transform.SetPositionAndRotation(
-                        fallbackPosition + new Vector3(0f, 1.45f, 0f),
-                        fallbackRotation);
-                }
-            }
-        }
-
-        private static void ApplySpawnPose(CoreMovement movement, Vector3 position, Quaternion rotation)
-        {
-            if (movement == null)
-            {
-                return;
-            }
-
-            if (!movement.gameObject.activeSelf)
-            {
-                movement.gameObject.SetActive(true);
-            }
-
-            movement.transform.rotation = rotation;
-
-            // Recover from unexpected tiny/giant scales carried across scenes.
-            var localScale = movement.transform.localScale;
-            if ((localScale - Vector3.one).sqrMagnitude > 0.0001f)
-            {
-                movement.transform.localScale = Vector3.one;
-            }
-
-            var characterController = movement.GetComponent<CharacterController>();
-            if (characterController != null && !characterController.enabled)
-            {
-                characterController.enabled = true;
-            }
-
-            movement.SetPosition(position);
-            movement.ResetMovementForces();
-
-            var manager = movement.GetComponent<CorePlayerManager>() ??
-                          movement.GetComponentInParent<CorePlayerManager>();
-            manager?.SetMovementInputEnabled(true);
+            yield return StorySceneLocalPlayerSpawner.EnsureLocalPlayerAtPoseRoutine(
+                gameObject.scene,
+                TryComputeSpawnPose,
+                timeoutSeconds: 12f);
         }
 
         private bool TryComputeSpawnPose(out Vector3 position, out Quaternion rotation)
@@ -636,57 +573,11 @@ namespace Blocks.Gameplay.Core.Story
             return null;
         }
 
-        private static bool TryResolveLocalPlayerMovement(out CoreMovement movement)
-        {
-            movement = null;
-
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null)
-            {
-                var localPlayerObject = NetworkManager.Singleton.LocalClient.PlayerObject;
-                if (localPlayerObject != null)
-                {
-                    movement = localPlayerObject.GetComponent<CoreMovement>() ??
-                               localPlayerObject.GetComponentInChildren<CoreMovement>(true);
-                    if (movement != null)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            var taggedPlayer = GameObject.FindGameObjectWithTag("Player");
-            if (taggedPlayer != null)
-            {
-                movement = taggedPlayer.GetComponent<CoreMovement>();
-                if (movement != null)
-                {
-                    return true;
-                }
-            }
-
-            var managers = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            for (var index = 0; index < managers.Length; index++)
-            {
-                if (managers[index] == null || !managers[index].IsOwner)
-                {
-                    continue;
-                }
-
-                movement = managers[index].CoreMovement != null
-                    ? managers[index].CoreMovement
-                    : managers[index].GetComponent<CoreMovement>() ??
-                      managers[index].GetComponentInChildren<CoreMovement>(true);
-                return movement != null;
-            }
-
-            return false;
-        }
-
         private static bool TryResolveLocalPlayerAnimator(out CoreAnimator animator)
         {
             animator = null;
 
-            if (TryResolveLocalPlayerMovement(out var movement) && movement != null)
+            if (StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(SceneManager.GetActiveScene(), out var movement) && movement != null)
             {
                 animator = movement.GetComponentInChildren<CoreAnimator>(true);
                 if (animator != null)

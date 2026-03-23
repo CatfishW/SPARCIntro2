@@ -445,51 +445,10 @@ namespace Blocks.Gameplay.Core.Story
 
         private IEnumerator PositionPlayerAtWakeUpSpotRoutine()
         {
-            const float timeoutSeconds = 5f;
-            var remainingSeconds = timeoutSeconds;
-
-            while (remainingSeconds > 0f)
-            {
-                if (TryResolveLocalPlayerMovement(out var movement) && TryComputeWakeUpPose(out var position, out var rotation))
-                {
-                    movement.transform.rotation = rotation;
-                    movement.SetPosition(position);
-                    movement.ResetMovementForces();
-                    yield break;
-                }
-
-                remainingSeconds -= 0.1f;
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-
-        private static bool TryResolveLocalPlayerMovement(out CoreMovement movement)
-        {
-            movement = null;
-
-            var taggedPlayer = GameObject.FindGameObjectWithTag("Player");
-            if (taggedPlayer != null)
-            {
-                movement = taggedPlayer.GetComponent<CoreMovement>();
-                if (movement != null)
-                {
-                    return true;
-                }
-            }
-
-            var managers = FindObjectsByType<CorePlayerManager>(FindObjectsSortMode.None);
-            for (var index = 0; index < managers.Length; index++)
-            {
-                if (managers[index] == null || !managers[index].IsOwner)
-                {
-                    continue;
-                }
-
-                movement = managers[index].CoreMovement;
-                return movement != null;
-            }
-
-            return false;
+            yield return StorySceneLocalPlayerSpawner.EnsureLocalPlayerAtPoseRoutine(
+                gameObject.scene,
+                TryComputeWakeUpPose,
+                timeoutSeconds: 12f);
         }
 
         private bool TryComputeWakeUpPose(out Vector3 position, out Quaternion rotation)

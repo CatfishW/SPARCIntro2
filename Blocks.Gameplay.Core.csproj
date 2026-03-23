@@ -65,6 +65,7 @@
     <Compile Include="Assets/Core/Scripts/Runtime/Components/CorePlayerState.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/Interaction/IHittable.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Story/StoryNpcOptionDefinition.cs" />
+    <Compile Include="Assets/Core/Scripts/Runtime/Story/StorySceneLocalPlayerSpawner.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Customization/CharacterCustomizationPanel.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Components/JumpAbility.cs" />
     <Compile Include="Assets/Core/Scripts/Runtime/Framework/SoundSystem/Interpolator.cs" />
