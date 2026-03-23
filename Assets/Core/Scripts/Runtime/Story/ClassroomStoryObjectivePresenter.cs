@@ -12,15 +12,63 @@ namespace Blocks.Gameplay.Core.Story
     [RequireComponent(typeof(GraphicRaycaster))]
     public sealed class ClassroomStoryObjectivePresenter : MonoBehaviour
     {
-        private const float FadeDurationSeconds = 0.22f;
+        private const float MainFadeDuration = 0.22f;
+        private const float SlideDuration = 0.4f;
+        private const float RowStaggerDelay = 0.15f;
+        private const float RowFadeDuration = 0.3f;
+        private const float CheckBounceDuration = 0.4f;
+        private const float StrikeDuration = 0.35f;
         private const int MaxChecklistRows = 4;
+        private const float PanelVisibleX = 28f;
+        private const float PanelHiddenX = -500f;
+        private const float ShadowVisibleX = 38f;
+        private const float ShadowHiddenX = -490f;
+        private const float BasePanelWidth = 438f;
+        private const float BasePanelHeight = 252f;
+        private const float MaxPanelHeight = 404f;
+        private const float ChecklistTopInset = 126f;
+        private const float ChecklistBottomInset = 14f;
+        private const float ChecklistRowSpacing = 7f;
+        private const float MinRowHeight = 56f;
+        private const float MaxRowHeight = 98f;
+        private const float ApproxRowCharsPerLine = 43f;
+        private const float ApproxRowLineHeight = 17f;
+        private const float RowVerticalPadding = 20f;
 
         private sealed class ChecklistRowView
         {
             public RectTransform Root;
+            public CanvasGroup Group;
+            public Image Background;
             public Image Badge;
+            public RectTransform BadgeRect;
             public Text BadgeGlyph;
             public Text Label;
+            public RectTransform StrikethroughRect;
+            public Image StrikethroughImage;
+            public LayoutElement Layout;
+        }
+
+        private sealed class RowAnimState
+        {
+            public bool IsActive;
+            public bool WasCompleted;
+            public float DelayTimer;
+            public float FadeAlpha;
+            public float BounceTime;
+            public float StrikeFill;
+            public float BgDim;
+
+            public void Reset(bool startCompleted, float delay)
+            {
+                IsActive = true;
+                DelayTimer = delay;
+                FadeAlpha = 0f;
+                WasCompleted = startCompleted;
+                BounceTime = startCompleted ? CheckBounceDuration : 0f;
+                StrikeFill = startCompleted ? 1f : 0f;
+                BgDim = startCompleted ? 1f : 0f;
+            }
         }
 
         private sealed class ChecklistItem
@@ -31,18 +79,30 @@ namespace Blocks.Gameplay.Core.Story
 
         private CanvasGroup canvasGroup;
         private RectTransform panelRect;
+        private RectTransform shadowRect;
+        private RectTransform checklistRootRect;
         private Text badgeText;
         private Text contextText;
         private Text titleText;
+
         private readonly List<ChecklistRowView> checklistRows = new List<ChecklistRowView>(MaxChecklistRows);
+        private readonly List<RowAnimState> rowStates = new List<RowAnimState>(MaxChecklistRows);
         private readonly List<ChecklistItem> pendingItems = new List<ChecklistItem>(MaxChecklistRows);
+        
         private string pendingTitle = string.Empty;
         private bool visible;
         private bool suppressed;
+        
+        private float panelSlideTime;
+        private float panelAlpha;
 
         private void Awake()
         {
             EnsureUi();
+            for (int i = 0; i < MaxChecklistRows; i++)
+            {
+                rowStates.Add(new RowAnimState());
+            }
             HideImmediate();
         }
 
@@ -53,15 +113,106 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
-            var targetAlpha = visible ? 1f : 0f;
-            var delta = Mathf.Max(0.01f, Time.unscaledDeltaTime / FadeDurationSeconds);
-            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, delta);
+            float dt = Time.unscaledDeltaTime;
+
+            // Animate Panel Alpha
+            float targetAlpha = visible ? 1f : 0f;
+            panelAlpha = Mathf.MoveTowards(panelAlpha, targetAlpha, dt / MainFadeDuration);
+            canvasGroup.alpha = panelAlpha;
+
+            // Animate Panel Slide (with cubic ease-out)
+            float targetSlide = visible ? 1f : 0f;
+            panelSlideTime = Mathf.MoveTowards(panelSlideTime, targetSlide, dt / SlideDuration);
+            float slideEased = 1f - Mathf.Pow(1f - panelSlideTime, 3f);
+            
+            if (panelRect != null && shadowRect != null)
+            {
+                var pPos = panelRect.anchoredPosition;
+                pPos.x = Mathf.Lerp(PanelHiddenX, PanelVisibleX, slideEased);
+                panelRect.anchoredPosition = pPos;
+
+                var sPos = shadowRect.anchoredPosition;
+                sPos.x = Mathf.Lerp(ShadowHiddenX, ShadowVisibleX, slideEased);
+                shadowRect.anchoredPosition = sPos;
+            }
+
+            // Animate Checklist Rows
+            if (visible)
+            {
+                for (int i = 0; i < checklistRows.Count; i++)
+                {
+                    var state = rowStates[i];
+                    if (!state.IsActive) continue;
+
+                    if (state.DelayTimer > 0f)
+                    {
+                        state.DelayTimer -= dt;
+                        continue;
+                    }
+
+                    // Perform Row Fade-In
+                    if (state.FadeAlpha < 1f)
+                    {
+                        state.FadeAlpha = Mathf.MoveTowards(state.FadeAlpha, 1f, dt / RowFadeDuration);
+                    }
+
+                    // Progress Completed Trigger States
+                    if (state.WasCompleted)
+                    {
+                        state.BounceTime += dt;
+                        state.StrikeFill = Mathf.MoveTowards(state.StrikeFill, 1f, dt / StrikeDuration);
+                        state.BgDim = Mathf.MoveTowards(state.BgDim, 1f, dt / StrikeDuration);
+                    }
+
+                    ApplyRowAnimState(checklistRows[i], state);
+                }
+            }
+        }
+
+        private void ApplyRowAnimState(ChecklistRowView row, RowAnimState state)
+        {
+            if (row.Group != null)
+            {
+                row.Group.alpha = state.FadeAlpha;
+            }
+
+            // Strikethrough Scale Animation X
+            if (row.StrikethroughRect != null)
+            {
+                var scl = row.StrikethroughRect.localScale;
+                scl.x = state.StrikeFill;
+                row.StrikethroughRect.localScale = scl;
+            }
+
+            // Checkmark Bounce Animation applied to Scale
+            if (state.BounceTime > 0f && state.BounceTime <= CheckBounceDuration)
+            {
+                float t = state.BounceTime / CheckBounceDuration;
+                float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.4f; // pop out to 1.4 then 1
+                row.BadgeRect.localScale = new Vector3(scale, scale, 1f);
+            }
+            else if (row.BadgeRect != null)
+            {
+                row.BadgeRect.localScale = Vector3.one;
+            }
+
+            // Background subtle fade on complete
+            if (row.Background != null)
+            {
+                var targetColor = Color.Lerp(
+                    new Color(1f, 0.98f, 0.85f, 1f),
+                    new Color(0.92f, 0.90f, 0.82f, 1f),
+                    state.BgDim
+                );
+                row.Background.color = targetColor;
+            }
         }
 
         public void SetObjective(string title, params string[] lines)
         {
             pendingTitle = string.IsNullOrWhiteSpace(title) ? "Next Objective" : title.Trim();
             BuildPendingChecklist(lines);
+            
             if (suppressed)
             {
                 return;
@@ -81,11 +232,6 @@ namespace Blocks.Gameplay.Core.Story
             if (suppressed)
             {
                 visible = false;
-                if (panelRect != null)
-                {
-                    panelRect.gameObject.SetActive(false);
-                }
-
                 return;
             }
 
@@ -100,16 +246,15 @@ namespace Blocks.Gameplay.Core.Story
             pendingTitle = string.Empty;
             pendingItems.Clear();
             visible = false;
-            if (panelRect != null)
-            {
-                panelRect.gameObject.SetActive(false);
-            }
         }
 
         public void HideImmediate()
         {
             EnsureUi();
             visible = false;
+            panelAlpha = 0f;
+            panelSlideTime = 0f;
+
             if (titleText != null)
             {
                 titleText.text = string.Empty;
@@ -121,6 +266,7 @@ namespace Blocks.Gameplay.Core.Story
                 {
                     checklistRows[index].Root.gameObject.SetActive(false);
                 }
+                rowStates[index].IsActive = false;
             }
 
             if (canvasGroup != null)
@@ -130,14 +276,25 @@ namespace Blocks.Gameplay.Core.Story
 
             if (panelRect != null)
             {
+                var pPos = panelRect.anchoredPosition;
+                pPos.x = -500f;
+                panelRect.anchoredPosition = pPos;
                 panelRect.gameObject.SetActive(false);
+            }
+
+            if (shadowRect != null)
+            {
+                var sPos = shadowRect.anchoredPosition;
+                sPos.x = -490f;
+                shadowRect.anchoredPosition = sPos;
+                shadowRect.gameObject.SetActive(false);
             }
         }
 
         private void ApplyPendingObjective()
         {
             EnsureUi();
-            if (panelRect == null)
+            if (panelRect == null || shadowRect == null)
             {
                 return;
             }
@@ -157,9 +314,13 @@ namespace Blocks.Gameplay.Core.Story
                 count = 1;
             }
 
+            bool wasAlreadyVisible = visible;
+
             for (var index = 0; index < checklistRows.Count; index++)
             {
                 var row = checklistRows[index];
+                var state = rowStates[index];
+
                 if (row == null || row.Root == null)
                 {
                     continue;
@@ -168,22 +329,56 @@ namespace Blocks.Gameplay.Core.Story
                 if (index >= count)
                 {
                     row.Root.gameObject.SetActive(false);
+                    state.IsActive = false;
                     continue;
                 }
 
                 var item = pendingItems[index];
+                bool justCompleted = !state.WasCompleted && item.Completed;
+
+                // Configure staggering resets or update existing completion flow
+                if (!wasAlreadyVisible || !row.Root.gameObject.activeSelf)
+                {
+                    state.Reset(item.Completed, index * RowStaggerDelay);
+                }
+                else
+                {
+                    state.IsActive = true;
+                    if (justCompleted)
+                    {
+                        state.WasCompleted = true;
+                        state.BounceTime = 0f; // Initiate strike/bounce timeline
+                    }
+                }
+
                 row.Root.gameObject.SetActive(true);
                 row.Label.text = item.Text;
-                row.BadgeGlyph.text = item.Completed ? "✓" : string.Empty;
-                row.Badge.color = item.Completed
-                    ? new Color(0.2f, 0.66f, 0.29f, 1f)
-                    : new Color(1f, 0.99f, 0.92f, 1f);
-                row.BadgeGlyph.color = item.Completed
-                    ? new Color(1f, 1f, 1f, 1f)
-                    : new Color(0.04f, 0.06f, 0.08f, 0f);
+                var rowHeight = EstimateRowHeight(item.Text);
+                if (row.Layout != null)
+                {
+                    row.Layout.minHeight = rowHeight;
+                    row.Layout.preferredHeight = rowHeight;
+                }
+                
+                if (item.Completed)
+                {
+                    row.BadgeGlyph.text = "✓";
+                    row.Badge.color = new Color(0.2f, 0.66f, 0.29f, 1f);
+                    row.BadgeGlyph.color = new Color(1f, 1f, 1f, 1f);
+                }
+                else
+                {
+                    row.BadgeGlyph.text = string.Empty;
+                    row.Badge.color = new Color(1f, 0.99f, 0.92f, 1f);
+                    row.BadgeGlyph.color = new Color(0.04f, 0.06f, 0.08f, 0f);
+                }
+
+                ApplyRowAnimState(row, state);
             }
 
+            ApplyPanelSizingForRows(count);
             panelRect.gameObject.SetActive(true);
+            shadowRect.gameObject.SetActive(true);
             visible = true;
         }
 
@@ -271,12 +466,12 @@ namespace Blocks.Gameplay.Core.Story
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
 
-            var shadowRect = BedroomStoryUiFactory.CreateUiObject("ObjectivePanelShadow", transform).GetComponent<RectTransform>();
+            shadowRect = BedroomStoryUiFactory.CreateUiObject("ObjectivePanelShadow", transform).GetComponent<RectTransform>();
             shadowRect.anchorMin = new Vector2(0f, 1f);
             shadowRect.anchorMax = new Vector2(0f, 1f);
             shadowRect.pivot = new Vector2(0f, 1f);
-            shadowRect.anchoredPosition = new Vector2(38f, -28f);
-            shadowRect.sizeDelta = new Vector2(438f, 252f);
+            shadowRect.anchoredPosition = new Vector2(ShadowHiddenX, -28f);
+            shadowRect.sizeDelta = new Vector2(BasePanelWidth, BasePanelHeight);
             var shadowImage = shadowRect.gameObject.AddComponent<Image>();
             shadowImage.color = new Color(0.03f, 0.05f, 0.08f, 0.42f);
             shadowImage.raycastTarget = false;
@@ -285,8 +480,8 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.anchorMin = new Vector2(0f, 1f);
             panelRect.anchorMax = new Vector2(0f, 1f);
             panelRect.pivot = new Vector2(0f, 1f);
-            panelRect.anchoredPosition = new Vector2(28f, -18f);
-            panelRect.sizeDelta = new Vector2(438f, 252f);
+            panelRect.anchoredPosition = new Vector2(PanelHiddenX, -18f);
+            panelRect.sizeDelta = new Vector2(BasePanelWidth, BasePanelHeight);
 
             var background = panelRect.gameObject.AddComponent<Image>();
             background.color = new Color(0.98f, 0.94f, 0.58f, 0.98f);
@@ -344,39 +539,42 @@ namespace Blocks.Gameplay.Core.Story
             titleText.rectTransform.anchorMin = new Vector2(0f, 1f);
             titleText.rectTransform.anchorMax = new Vector2(1f, 1f);
             titleText.rectTransform.pivot = new Vector2(0f, 1f);
-            titleText.rectTransform.offsetMin = new Vector2(18f, -64f);
-            titleText.rectTransform.offsetMax = new Vector2(-18f, -26f);
+            titleText.rectTransform.offsetMin = new Vector2(18f, -112f);
+            titleText.rectTransform.offsetMax = new Vector2(-18f, -72f);
             titleText.fontStyle = FontStyle.Bold;
             titleText.color = new Color(0.05f, 0.08f, 0.11f, 1f);
             titleText.resizeTextForBestFit = true;
-            titleText.resizeTextMinSize = 18;
-            titleText.resizeTextMaxSize = 24;
+            titleText.resizeTextMinSize = 16;
+            titleText.resizeTextMaxSize = 22;
             titleText.horizontalOverflow = HorizontalWrapMode.Wrap;
             titleText.verticalOverflow = VerticalWrapMode.Truncate;
 
-            var checklistRoot = BedroomStoryUiFactory.CreateUiObject("ChecklistRoot", panelRect).GetComponent<RectTransform>();
-            checklistRoot.anchorMin = new Vector2(0f, 0f);
-            checklistRoot.anchorMax = new Vector2(1f, 1f);
-            checklistRoot.offsetMin = new Vector2(16f, 14f);
-            checklistRoot.offsetMax = new Vector2(-16f, -72f);
+            checklistRootRect = BedroomStoryUiFactory.CreateUiObject("ChecklistRoot", panelRect).GetComponent<RectTransform>();
+            checklistRootRect.anchorMin = new Vector2(0f, 0f);
+            checklistRootRect.anchorMax = new Vector2(1f, 1f);
+            checklistRootRect.offsetMin = new Vector2(16f, ChecklistBottomInset);
+            checklistRootRect.offsetMax = new Vector2(-16f, -ChecklistTopInset);
 
-            var checklistLayout = checklistRoot.gameObject.AddComponent<VerticalLayoutGroup>();
+            var checklistLayout = checklistRootRect.gameObject.AddComponent<VerticalLayoutGroup>();
             checklistLayout.childControlWidth = true;
             checklistLayout.childControlHeight = true;
             checklistLayout.childForceExpandWidth = true;
             checklistLayout.childForceExpandHeight = false;
-            checklistLayout.spacing = 7f;
+            checklistLayout.spacing = ChecklistRowSpacing;
             checklistLayout.padding = new RectOffset(0, 0, 0, 0);
 
             for (var index = 0; index < MaxChecklistRows; index++)
             {
-                checklistRows.Add(CreateChecklistRow(checklistRoot, index));
+                checklistRows.Add(CreateChecklistRow(checklistRootRect, index));
             }
         }
 
         private static ChecklistRowView CreateChecklistRow(Transform parent, int index)
         {
             var rowRect = BedroomStoryUiFactory.CreateUiObject($"ChecklistRow_{index}", parent).GetComponent<RectTransform>();
+            var group = rowRect.gameObject.AddComponent<CanvasGroup>();
+            group.alpha = 0f;
+
             var rowImage = rowRect.gameObject.AddComponent<Image>();
             rowImage.color = new Color(1f, 0.98f, 0.85f, 1f);
             rowImage.raycastTarget = false;
@@ -387,8 +585,8 @@ namespace Blocks.Gameplay.Core.Story
             rowBorder.useGraphicAlpha = false;
 
             var rowElement = rowRect.gameObject.AddComponent<LayoutElement>();
-            rowElement.minHeight = 56f;
-            rowElement.preferredHeight = 56f;
+            rowElement.minHeight = MinRowHeight;
+            rowElement.preferredHeight = MinRowHeight;
             rowElement.flexibleWidth = 1f;
 
             var badgeRect = BedroomStoryUiFactory.CreateUiObject("ChecklistBadge", rowRect).GetComponent<RectTransform>();
@@ -426,13 +624,90 @@ namespace Blocks.Gameplay.Core.Story
             label.resizeTextMinSize = 12;
             label.resizeTextMaxSize = 14;
 
+            var stRect = BedroomStoryUiFactory.CreateUiObject("Strikethrough", rowRect).GetComponent<RectTransform>();
+            stRect.anchorMin = new Vector2(0f, 0.5f);
+            stRect.anchorMax = new Vector2(1f, 0.5f); 
+            stRect.pivot = new Vector2(0f, 0.5f);
+            stRect.anchoredPosition = new Vector2(42f, 0f); 
+            stRect.offsetMin = new Vector2(42f, -1f);
+            stRect.offsetMax = new Vector2(-12f, 1f); 
+            stRect.localScale = new Vector3(0f, 1f, 1f); 
+            
+            var stImage = stRect.gameObject.AddComponent<Image>();
+            stImage.color = new Color(0.09f, 0.12f, 0.15f, 1f);
+            stImage.raycastTarget = false;
+
             return new ChecklistRowView
             {
                 Root = rowRect,
+                Group = group,
+                Background = rowImage,
                 Badge = badgeImage,
+                BadgeRect = badgeRect,
                 BadgeGlyph = badgeGlyph,
-                Label = label
+                Label = label,
+                StrikethroughRect = stRect,
+                StrikethroughImage = stImage,
+                Layout = rowElement
             };
+        }
+
+        private void ApplyPanelSizingForRows(int activeRowCount)
+        {
+            if (panelRect == null || shadowRect == null || checklistRootRect == null)
+            {
+                return;
+            }
+
+            activeRowCount = Mathf.Clamp(activeRowCount, 0, MaxChecklistRows);
+            float requiredRowsHeight = 0f;
+            for (var index = 0; index < activeRowCount; index++)
+            {
+                var row = checklistRows[index];
+                if (row?.Layout == null)
+                {
+                    requiredRowsHeight += MinRowHeight;
+                }
+                else
+                {
+                    requiredRowsHeight += Mathf.Max(MinRowHeight, row.Layout.preferredHeight);
+                }
+            }
+
+            if (activeRowCount > 1)
+            {
+                requiredRowsHeight += (activeRowCount - 1) * ChecklistRowSpacing;
+            }
+
+            float requiredPanelHeight = ChecklistTopInset + ChecklistBottomInset + requiredRowsHeight + 8f;
+            var clampedHeight = Mathf.Clamp(requiredPanelHeight, BasePanelHeight, MaxPanelHeight);
+
+            var panelSize = panelRect.sizeDelta;
+            panelSize.x = BasePanelWidth;
+            panelSize.y = clampedHeight;
+            panelRect.sizeDelta = panelSize;
+
+            var shadowSize = shadowRect.sizeDelta;
+            shadowSize.x = BasePanelWidth;
+            shadowSize.y = clampedHeight;
+            shadowRect.sizeDelta = shadowSize;
+
+            checklistRootRect.offsetMin = new Vector2(16f, ChecklistBottomInset);
+            checklistRootRect.offsetMax = new Vector2(-16f, -ChecklistTopInset);
+        }
+
+        private static float EstimateRowHeight(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return MinRowHeight;
+            }
+
+            var trimmed = text.Trim();
+            var estimatedLines = Mathf.CeilToInt(trimmed.Length / ApproxRowCharsPerLine);
+            estimatedLines = Mathf.Clamp(estimatedLines, 1, 4);
+            var estimatedHeight = (estimatedLines * ApproxRowLineHeight) + RowVerticalPadding;
+            return Mathf.Clamp(estimatedHeight, MinRowHeight, MaxRowHeight);
         }
     }
 }

@@ -3,6 +3,7 @@ using Blocks.Gameplay.Core;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -178,7 +179,13 @@ namespace Blocks.Gameplay.Core.Story
 
         private void LateUpdate()
         {
-            if (!conversationActive || gameplayCamera == null)
+            if (!conversationActive)
+            {
+                return;
+            }
+
+            ResolveRuntimeReferences();
+            if (gameplayCamera == null)
             {
                 return;
             }
@@ -561,35 +568,154 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveRuntimeReferences()
         {
-            controlLock = controlLock != null ? controlLock : FindFirstObjectByType<ClassroomPlayerControlLock>(FindObjectsInactive.Include);
-            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
-            gameplayCamera = gameplayCamera != null ? gameplayCamera : Camera.main;
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
 
-            if (localPlayerManager != null)
+            if (controlLock != null && controlLock.gameObject.scene != activeScene)
             {
-                return;
+                controlLock = null;
             }
 
-            var players = FindObjectsByType<CorePlayerManager>(FindObjectsSortMode.None);
-            for (var index = 0; index < players.Length; index++)
+            if (npcRegistry != null && npcRegistry.gameObject.scene != activeScene)
             {
-                var candidate = players[index];
+                npcRegistry = null;
+            }
+
+            controlLock = controlLock != null ? controlLock : FindSceneObject<ClassroomPlayerControlLock>(activeScene);
+            npcRegistry = npcRegistry != null ? npcRegistry : FindSceneObject<StoryNpcRegistry>(activeScene);
+
+            if (gameplayCamera == null || gameplayCamera.gameObject.scene != activeScene)
+            {
+                gameplayCamera = FindPreferredSceneCamera(activeScene);
+            }
+
+            var previousPlayerManager = localPlayerManager;
+            if (!IsValidLocalPlayerManager(localPlayerManager, activeScene))
+            {
+                localPlayerManager = null;
+            }
+
+            if (localPlayerManager == null &&
+                StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(activeScene, out var sceneLocalMovement) &&
+                sceneLocalMovement != null)
+            {
+                localPlayerManager = sceneLocalMovement.GetComponentInParent<CorePlayerManager>() ??
+                                     sceneLocalMovement.GetComponent<CorePlayerManager>();
+            }
+
+            if (localPlayerManager == null)
+            {
+                CorePlayerManager ownerInActiveScene = null;
+                CorePlayerManager firstInActiveScene = null;
+                CorePlayerManager ownerAnywhere = null;
+                CorePlayerManager firstAnywhere = null;
+
+                var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                for (var index = 0; index < players.Length; index++)
+                {
+                    var candidate = players[index];
+                    if (candidate == null)
+                    {
+                        continue;
+                    }
+
+                    if (firstAnywhere == null)
+                    {
+                        firstAnywhere = candidate;
+                    }
+
+                    var candidateScene = candidate.gameObject.scene;
+                    var inActiveScene = candidateScene.IsValid() && candidateScene == activeScene;
+                    if (inActiveScene)
+                    {
+                        if (firstInActiveScene == null)
+                        {
+                            firstInActiveScene = candidate;
+                        }
+
+                        if (candidate.IsOwner)
+                        {
+                            ownerInActiveScene = candidate;
+                            break;
+                        }
+                    }
+
+                    if (candidate.IsOwner && ownerAnywhere == null)
+                    {
+                        ownerAnywhere = candidate;
+                    }
+                }
+
+                localPlayerManager = ownerInActiveScene ?? firstInActiveScene ?? ownerAnywhere ?? firstAnywhere;
+            }
+
+            if (previousPlayerManager != localPlayerManager)
+            {
+                disabledPlayerRenderers.Clear();
+            }
+        }
+
+        private static bool IsValidLocalPlayerManager(CorePlayerManager candidate, Scene activeScene)
+        {
+            if (candidate == null)
+            {
+                return false;
+            }
+
+            var scene = candidate.gameObject.scene;
+            return scene.IsValid() && scene == activeScene;
+        }
+
+        private static Camera FindPreferredSceneCamera(Scene activeScene)
+        {
+            Camera fallback = null;
+            var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < cameras.Length; index++)
+            {
+                var candidate = cameras[index];
+                if (candidate == null || candidate.gameObject.scene != activeScene)
+                {
+                    continue;
+                }
+
+                if (candidate.CompareTag("MainCamera"))
+                {
+                    return candidate;
+                }
+
+                if (fallback == null && candidate.isActiveAndEnabled)
+                {
+                    fallback = candidate;
+                }
+                else if (fallback == null)
+                {
+                    fallback = candidate;
+                }
+            }
+
+            return fallback != null ? fallback : Camera.main;
+        }
+
+        private static T FindSceneObject<T>(Scene activeScene)
+            where T : Component
+        {
+            T fallback = null;
+            var candidates = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
                 if (candidate == null)
                 {
                     continue;
                 }
 
-                if (candidate.IsOwner)
+                fallback ??= candidate;
+                if (candidate.gameObject.scene == activeScene)
                 {
-                    localPlayerManager = candidate;
-                    return;
-                }
-
-                if (localPlayerManager == null)
-                {
-                    localPlayerManager = candidate;
+                    return candidate;
                 }
             }
+
+            return fallback;
         }
 
         private void ApplyConversationVisibility()

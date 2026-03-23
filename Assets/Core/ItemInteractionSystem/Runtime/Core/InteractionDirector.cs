@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 namespace ItemInteraction
 {
@@ -21,6 +23,7 @@ namespace ItemInteraction
 
         [Header("Runtime State")]
         [SerializeField] private bool lockInteractions;
+        [SerializeField, Min(0f)] private float promptResumeDelaySeconds = 0.45f;
 
         private readonly List<InteractionOption> visibleOptions = new List<InteractionOption>(8);
         private InteractableItem currentFocus;
@@ -33,6 +36,7 @@ namespace ItemInteraction
 
         private readonly List<MonoBehaviour> externalBusyBehaviours = new List<MonoBehaviour>(16);
         private readonly List<MonoBehaviour> uiBuffer = new List<MonoBehaviour>(64);
+        private float promptResumeBlockedUntilUnscaledTime;
 
         private static readonly string[] BusyOpenTypeNames =
         {
@@ -64,10 +68,18 @@ namespace ItemInteraction
 
         public void SetInteractionsLocked(bool value)
         {
+            var wasLocked = lockInteractions;
             lockInteractions = value;
             if (value)
             {
                 ClearFocus();
+                promptResumeBlockedUntilUnscaledTime = 0f;
+                return;
+            }
+
+            if (wasLocked && promptResumeDelaySeconds > 0f)
+            {
+                promptResumeBlockedUntilUnscaledTime = Time.unscaledTime + promptResumeDelaySeconds;
             }
         }
 
@@ -122,6 +134,7 @@ namespace ItemInteraction
         private void OnEnable()
         {
             lockInteractions = false;
+            promptResumeBlockedUntilUnscaledTime = 0f;
         }
 
         private void EnsurePresenters()
@@ -168,6 +181,12 @@ namespace ItemInteraction
             }
 
             if (HasExternalInteractionBusy())
+            {
+                ClearFocus();
+                return;
+            }
+
+            if (Time.unscaledTime < promptResumeBlockedUntilUnscaledTime)
             {
                 ClearFocus();
                 return;
@@ -221,6 +240,12 @@ namespace ItemInteraction
             }
 
             var behaviourScene = behaviour.gameObject.scene;
+            var activeScene = SceneManager.GetActiveScene();
+            if (behaviourScene.IsValid() && behaviourScene == activeScene)
+            {
+                return true;
+            }
+
             if (behaviourScene.IsValid() && behaviourScene == gameObject.scene)
             {
                 return true;
@@ -613,6 +638,23 @@ namespace ItemInteraction
             if (currentFocus == null || inputSource == null || visibleOptions.Count == 0)
             {
                 return;
+            }
+
+            if (EventSystem.current != null)
+            {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
+                for (var touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+                {
+                    var touch = Input.GetTouch(touchIndex);
+                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                    {
+                        return;
+                    }
+                }
             }
 
             float scroll = Input.mouseScrollDelta.y;

@@ -6,6 +6,7 @@ using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Events;
 using ModularStoryFlow.Runtime.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Blocks.Gameplay.Core.Story
@@ -227,10 +228,44 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveSceneReferences()
         {
-            interactionDirector = interactionDirector != null ? interactionDirector : FindFirstObjectByType<InteractionDirector>();
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+
+            if (!IsInScene(interactionDirector, activeScene))
+            {
+                interactionDirector = null;
+            }
+
+            if (!IsInScene(storyFlowPlayer, activeScene))
+            {
+                storyFlowPlayer = null;
+            }
+
+            if (!IsInScene(sceneTransition, activeScene))
+            {
+                sceneTransition = null;
+            }
+
+            if (!IsInScene(sceneContext, activeScene))
+            {
+                sceneContext = null;
+            }
+
+            interactionDirector = interactionDirector != null ? interactionDirector : FindSceneObject<InteractionDirector>(activeScene);
             storyFlowPlayer = storyFlowPlayer != null ? storyFlowPlayer : GetComponent<StoryFlowPlayer>();
+            if (!IsInScene(storyFlowPlayer, activeScene))
+            {
+                storyFlowPlayer = FindSceneObject<StoryFlowPlayer>(activeScene);
+            }
+
             sceneTransition = sceneTransition != null ? sceneTransition : GetComponent<LabStorySceneTransition>();
-            sceneContext = sceneContext != null ? sceneContext : GetComponent<LabSceneContext>() ?? FindFirstObjectByType<LabSceneContext>(FindObjectsInactive.Include);
+            if (!IsInScene(sceneTransition, activeScene))
+            {
+                sceneTransition = FindSceneObject<LabStorySceneTransition>(activeScene);
+            }
+
+            sceneContext = sceneContext != null
+                ? sceneContext
+                : GetComponent<LabSceneContext>() ?? FindSceneObject<LabSceneContext>(activeScene);
             sceneContext?.ResolveRuntimeReferences();
 
             npcSignalBridge = npcSignalBridge != null ? npcSignalBridge : GetComponent<StoryNpcStorySignalBridge>();
@@ -241,6 +276,45 @@ namespace Blocks.Gameplay.Core.Story
 
             npcSignalBridge.Configure(channels, currentSessionId);
             sceneContext?.CapConversationDirector?.Configure(channels);
+        }
+
+        private static bool IsInScene(Component component, Scene scene)
+        {
+            if (component == null)
+            {
+                return false;
+            }
+
+            var componentScene = component.gameObject.scene;
+            if (!scene.IsValid())
+            {
+                return componentScene.IsValid();
+            }
+
+            return componentScene.IsValid() && componentScene == scene;
+        }
+
+        private static T FindSceneObject<T>(Scene scene)
+            where T : Component
+        {
+            T fallback = null;
+            var candidates = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                fallback ??= candidate;
+                if (!scene.IsValid() || candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return fallback;
         }
 
         private void ApplyScenePresentation()

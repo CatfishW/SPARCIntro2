@@ -12,6 +12,7 @@ using ModularStoryFlow.Runtime.Player;
 using ModularStoryFlow.Runtime.State;
 using ModularStoryFlow.Runtime.Variables;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -93,6 +94,7 @@ namespace Blocks.Gameplay.Core.Story
                 gameObject.AddComponent<InteractionDirector>();
             }
 
+            EnsureSingleEventSystemInActiveScene();
             BuildRuntimeProject();
             InjectRuntimeProject();
         }
@@ -537,6 +539,60 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return null;
+        }
+
+        private static void EnsureSingleEventSystemInActiveScene()
+        {
+            var systems = FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (systems == null || systems.Length <= 1)
+            {
+                return;
+            }
+
+            var activeScene = SceneManager.GetActiveScene();
+            EventSystem preferred = null;
+
+            for (var index = 0; index < systems.Length; index++)
+            {
+                var candidate = systems[index];
+                if (candidate == null || candidate.gameObject.scene != activeScene)
+                {
+                    continue;
+                }
+
+                if (preferred == null || (!preferred.isActiveAndEnabled && candidate.isActiveAndEnabled))
+                {
+                    preferred = candidate;
+                }
+            }
+
+            if (preferred == null)
+            {
+                preferred = EventSystem.current != null ? EventSystem.current : systems[0];
+            }
+
+            if (preferred == null)
+            {
+                return;
+            }
+
+            if (!preferred.gameObject.activeSelf)
+            {
+                preferred.gameObject.SetActive(true);
+            }
+
+            preferred.enabled = true;
+
+            for (var index = 0; index < systems.Length; index++)
+            {
+                var candidate = systems[index];
+                if (candidate == null || candidate == preferred)
+                {
+                    continue;
+                }
+
+                Destroy(candidate.gameObject);
+            }
         }
 
         private static T CreateNode<T>() where T : StoryNodeAsset

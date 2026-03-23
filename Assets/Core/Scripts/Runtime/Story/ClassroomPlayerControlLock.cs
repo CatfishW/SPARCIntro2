@@ -2,6 +2,7 @@ using Blocks.Gameplay.Core;
 using ItemInteraction;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -156,11 +157,36 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveRuntimeReferences()
         {
-            interactionDirector = interactionDirector != null ? interactionDirector : FindFirstObjectByType<InteractionDirector>();
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (interactionDirector != null && interactionDirector.gameObject.scene != activeScene)
+            {
+                interactionDirector = null;
+            }
+
+            interactionDirector = interactionDirector != null ? interactionDirector : FindInteractionDirector(activeScene);
+
+            if (!IsValidPlayerManager(localPlayerManager, activeScene))
+            {
+                localPlayerManager = null;
+            }
 
             if (localPlayerManager == null)
             {
-                var players = FindObjectsByType<CorePlayerManager>(FindObjectsSortMode.None);
+                if (StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(activeScene, out var movement) && movement != null)
+                {
+                    localPlayerManager = movement.GetComponentInParent<CorePlayerManager>() ??
+                                         movement.GetComponent<CorePlayerManager>();
+                }
+            }
+
+            if (localPlayerManager == null)
+            {
+                CorePlayerManager ownerInActiveScene = null;
+                CorePlayerManager firstInActiveScene = null;
+                CorePlayerManager ownerAnywhere = null;
+                CorePlayerManager firstAnywhere = null;
+
+                var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < players.Length; index++)
                 {
                     var candidate = players[index];
@@ -169,22 +195,50 @@ namespace Blocks.Gameplay.Core.Story
                         continue;
                     }
 
-                    if (candidate.IsOwner)
+                    if (firstAnywhere == null)
                     {
-                        localPlayerManager = candidate;
-                        break;
+                        firstAnywhere = candidate;
                     }
 
-                    if (localPlayerManager == null)
+                    var candidateScene = candidate.gameObject.scene;
+                    var inActiveScene = candidateScene.IsValid() && candidateScene == activeScene;
+                    if (inActiveScene)
                     {
-                        localPlayerManager = candidate;
+                        if (firstInActiveScene == null)
+                        {
+                            firstInActiveScene = candidate;
+                        }
+
+                        if (candidate.IsOwner)
+                        {
+                            ownerInActiveScene = candidate;
+                            break;
+                        }
+                    }
+
+                    if (candidate.IsOwner && ownerAnywhere == null)
+                    {
+                        ownerAnywhere = candidate;
                     }
                 }
+
+                localPlayerManager = ownerInActiveScene ?? firstInActiveScene ?? ownerAnywhere ?? firstAnywhere;
+            }
+
+            if (!IsValidHud(localHud, activeScene))
+            {
+                localHud = null;
+                hudDocument = null;
             }
 
             if (localHud == null)
             {
-                var huds = FindObjectsByType<CoreHUD>(FindObjectsSortMode.None);
+                CoreHUD ownerInActiveScene = null;
+                CoreHUD firstInActiveScene = null;
+                CoreHUD ownerAnywhere = null;
+                CoreHUD firstAnywhere = null;
+
+                var huds = FindObjectsByType<CoreHUD>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < huds.Length; index++)
                 {
                     var candidate = huds[index];
@@ -193,23 +247,84 @@ namespace Blocks.Gameplay.Core.Story
                         continue;
                     }
 
-                    if (candidate.IsOwner)
+                    if (firstAnywhere == null)
                     {
-                        localHud = candidate;
-                        break;
+                        firstAnywhere = candidate;
                     }
 
-                    if (localHud == null)
+                    var candidateScene = candidate.gameObject.scene;
+                    var inActiveScene = candidateScene.IsValid() && candidateScene == activeScene;
+                    if (inActiveScene)
                     {
-                        localHud = candidate;
+                        if (firstInActiveScene == null)
+                        {
+                            firstInActiveScene = candidate;
+                        }
+
+                        if (candidate.IsOwner)
+                        {
+                            ownerInActiveScene = candidate;
+                            break;
+                        }
+                    }
+
+                    if (candidate.IsOwner && ownerAnywhere == null)
+                    {
+                        ownerAnywhere = candidate;
                     }
                 }
+
+                localHud = ownerInActiveScene ?? firstInActiveScene ?? ownerAnywhere ?? firstAnywhere;
             }
 
             if (localHud != null && hudDocument == null)
             {
                 hudDocument = localHud.GetComponent<UIDocument>();
             }
+        }
+
+        private static InteractionDirector FindInteractionDirector(Scene activeScene)
+        {
+            InteractionDirector fallback = null;
+            var directors = FindObjectsByType<InteractionDirector>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < directors.Length; index++)
+            {
+                var candidate = directors[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                fallback ??= candidate;
+                if (candidate.gameObject.scene == activeScene)
+                {
+                    return candidate;
+                }
+            }
+
+            return fallback;
+        }
+
+        private static bool IsValidPlayerManager(CorePlayerManager candidate, Scene activeScene)
+        {
+            if (candidate == null)
+            {
+                return false;
+            }
+
+            var scene = candidate.gameObject.scene;
+            return scene.IsValid() && scene == activeScene;
+        }
+
+        private static bool IsValidHud(CoreHUD candidate, Scene activeScene)
+        {
+            if (candidate == null)
+            {
+                return false;
+            }
+
+            var scene = candidate.gameObject.scene;
+            return scene.IsValid() && scene == activeScene;
         }
     }
 }

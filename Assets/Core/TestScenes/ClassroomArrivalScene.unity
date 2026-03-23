@@ -135,7 +135,19 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 718814635130075615, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 792668866629047957, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1067285442458242931, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075172434609311708, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -147,6 +159,10 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1231414943214114052, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1769387068264436569, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -155,7 +171,19 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2231136098144934792, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2551257420128529398, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3087924070949203973, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3485784083284739878, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -163,7 +191,23 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3892815373497213251, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4020814589889292520, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4898740701616281234, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4967534633994610091, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336839327271451620, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -175,9 +219,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5782321982766748051, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5977012077412635988, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_Name
       value: TheoMercer
+      objectReference: {fileID: 0}
+    - target: {fileID: 6041152642463743574, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146113581232135244, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6465282842083856366, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_LocalPosition.x
@@ -219,7 +275,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7190666394904842194, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7703788143997299621, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7816432328932910217, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8105193366130510962, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611552944954483771, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8946853059926243872, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -1050,6 +1126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.ClassroomBodyKnowledgeBookUi
   controlLock: {fileID: 0}
+  objectivePresenter: {fileID: 0}
   uiDocument: {fileID: 0}
   panelSettings: {fileID: 0}
   closeOnEscape: 1
@@ -1792,6 +1869,11 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!4 &883334532 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3154275923426328491, guid: a38fd5df68684014a958830a4f1242d6, type: 3}
+  m_PrefabInstance: {fileID: 1139901599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &895725766
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,13 +2470,21 @@ MonoBehaviour:
   npcActionExecutor: {fileID: 0}
   chatBubblePresenter: {fileID: 0}
   ambientChatterLoop: {fileID: 0}
+  ambientSoundscape: {fileID: 0}
+  introCutscene: {fileID: 0}
   freeChatUi: {fileID: 0}
+  objectivePresenter: {fileID: 0}
   bookUi: {fileID: 0}
   quizUi: {fileID: 0}
+  npcRegistry: {fileID: 0}
+  sharedFootstepSound: {fileID: 0}
+  sharedLandSound: {fileID: 0}
+  environmentClockTickSound: {fileID: 0}
   restartStoryOnBootstrap: 1
   spawnAnchorPath: _Spawns/Pfb_SpawnPad
   spawnVerticalOffset: 0.08
   spawnLookTargetPath: Classroom/teacherDesk.001
+  audioWiringTimeoutSeconds: 8
 --- !u!114 &1117109440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2466,6 +2556,7 @@ MonoBehaviour:
   friendNpc: {fileID: 0}
   skepticNpc: {fileID: 0}
   presentationController: {fileID: 0}
+  objectivePresenter: {fileID: 0}
   knowledgeBookUi: {fileID: 0}
   knowledgeQuizUi: {fileID: 0}
   llmService: {fileID: 0}
@@ -2521,12 +2612,21 @@ MonoBehaviour:
   controlLock: {fileID: 0}
   npcRegistry: {fileID: 0}
   localPlayerManager: {fileID: 0}
+  ambientController: {fileID: 0}
   gameplayCamera: {fileID: 0}
   cameraBlendSpeed: 7
   cameraSideOffset: {x: -1.05, y: 1.26, z: 1.42}
   lookOffset: {x: 0, y: 1.12, z: 0}
   hideLocalPlayerBodyInConversation: 1
   playerCullingLayerName: Player
+  conversationCameraObstructionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  occlusionProbeRadius: 0.08
+  occlusionBackoffDistance: 0.16
+  desiredConversationDistance: 1.4
+  desiredConversationDistanceTolerance: 0.35
+  facingTurnSpeed: 12
 --- !u!114 &1117109445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2868,7 +2968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ItemInteractionSystem.Runtime::ItemInteraction.InteractableItem
   displayName: Nia Park
   storyId: friend.nia
-  promptAnchor: {fileID: 1139901600}
+  promptAnchor: {fileID: 883334532}
   maxFocusDistanceOverride: 0
   inspectionSourceRoot: {fileID: 1139901600}
   defaultInspection:
@@ -3095,6 +3195,11 @@ MonoBehaviour:
     onInvoked:
       m_PersistentCalls:
         m_Calls: []
+--- !u!4 &1378428499 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4475984737488263155, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+  m_PrefabInstance: {fileID: 1772807895}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &1397698362 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1106021462523499924, guid: eba4c9055563fb148a88bd2fbe653e58, type: 3}
@@ -3112,6 +3217,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d2525a40d18437d86273599027284a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.NpcAnimationEventRelay
+  footstepSound: {fileID: 0}
+  landSound: {fileID: 0}
+  minStepIntervalSeconds: 0.16
+  walkStepVolume: 0.45
+  runStepVolume: 0.58
+  landVolume: 0.7
 --- !u!95 &1446724321 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8666052521418048522, guid: a38fd5df68684014a958830a4f1242d6, type: 3}
@@ -3129,6 +3240,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d2525a40d18437d86273599027284a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.NpcAnimationEventRelay
+  footstepSound: {fileID: 0}
+  landSound: {fileID: 0}
+  minStepIntervalSeconds: 0.16
+  walkStepVolume: 0.45
+  runStepVolume: 0.58
+  landVolume: 0.7
 --- !u!114 &1489038713
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -3418,6 +3535,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 483764484481617945, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1191821262361145569, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3434,9 +3555,17 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1823222326910879004, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2131405986535883979, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612431897326750874, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3239088707243595430, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
       propertyPath: m_IsActive
@@ -3498,13 +3627,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6085576041227482970, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590549615822166334, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7293277339904684537, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7440199202898606412, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7510690424781998051, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783700908388110245, guid: 36b950a0fd9b1a44ea92371843877ef0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3634,7 +3779,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ItemInteractionSystem.Runtime::ItemInteraction.InteractableItem
   displayName: Dr. Mira Sato
   storyId: teacher.mira
-  promptAnchor: {fileID: 1772807896}
+  promptAnchor: {fileID: 1378428499}
   maxFocusDistanceOverride: 0
   inspectionSourceRoot: {fileID: 1772807896}
   defaultInspection:
@@ -3701,6 +3846,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d2525a40d18437d86273599027284a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Story.NpcAnimationEventRelay
+  footstepSound: {fileID: 0}
+  landSound: {fileID: 0}
+  minStepIntervalSeconds: 0.16
+  walkStepVolume: 0.45
+  runStepVolume: 0.58
+  landVolume: 0.7
 --- !u!1 &1774718657
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,12 +9,15 @@ using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Events;
 using ModularStoryFlow.Runtime.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Blocks.Gameplay.Core.Story
 {
     [DisallowMultipleComponent]
     public sealed class LabCapConversationDirector : MonoBehaviour
     {
+        private const string TalkOptionId = "talk";
+
         [SerializeField] private StoryFlowChannels channels;
         [SerializeField] private StoryFlowPlayer storyFlowPlayer;
         [SerializeField] private StoryNpcAgent capNpc;
@@ -68,6 +71,8 @@ namespace Blocks.Gameplay.Core.Story
         {
             ResolveReferences();
             channels?.ChoiceSelections?.Register(HandleChoiceSelection);
+            StoryNpcAgent.AnyInteractionTriggered -= HandleAnyNpcInteraction;
+            StoryNpcAgent.AnyInteractionTriggered += HandleAnyNpcInteraction;
             if (capNpc != null)
             {
                 capNpc.InteractionTriggered -= HandleCapInteraction;
@@ -78,6 +83,7 @@ namespace Blocks.Gameplay.Core.Story
         private void OnDisable()
         {
             channels?.ChoiceSelections?.Unregister(HandleChoiceSelection);
+            StoryNpcAgent.AnyInteractionTriggered -= HandleAnyNpcInteraction;
             if (capNpc != null)
             {
                 capNpc.InteractionTriggered -= HandleCapInteraction;
@@ -157,7 +163,17 @@ namespace Blocks.Gameplay.Core.Story
 
         private void HandleCapInteraction(StoryNpcInteractionPayload payload)
         {
-            if (payload == null || payload.Agent != capNpc || !string.Equals(payload.OptionId, "talk", StringComparison.OrdinalIgnoreCase))
+            if (!IsCapTalkPayload(payload))
+            {
+                return;
+            }
+
+            StartConversation();
+        }
+
+        private void HandleAnyNpcInteraction(StoryNpcInteractionPayload payload)
+        {
+            if (!IsCapTalkPayload(payload))
             {
                 return;
             }
@@ -171,7 +187,7 @@ namespace Blocks.Gameplay.Core.Story
             try
             {
                 SyncSessionId();
-                controlLock?.Acquire(unlockCursor: false);
+                controlLock?.Acquire(unlockCursor: true);
                 interactionDirector?.SetInteractionsLocked(true);
                 cameraFocusController?.SetConversationTarget(capNpc != null ? capNpc.transform : transform);
                 cameraFocusController?.BeginConversation();
@@ -219,7 +235,7 @@ namespace Blocks.Gameplay.Core.Story
             try
             {
                 SyncSessionId();
-                controlLock?.Acquire(unlockCursor: false);
+                controlLock?.Acquire(unlockCursor: true);
                 interactionDirector?.SetInteractionsLocked(true);
                 cameraFocusController?.SetConversationTarget(capNpc != null ? capNpc.transform : transform);
                 cameraFocusController?.BeginConversation();
@@ -939,13 +955,61 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveReferences()
         {
-            storyFlowPlayer = storyFlowPlayer != null ? storyFlowPlayer : FindFirstObjectByType<StoryFlowPlayer>(FindObjectsInactive.Include);
-            capController = capController != null ? capController : FindFirstObjectByType<LabCapNpcController>(FindObjectsInactive.Include);
-            controlLock = controlLock != null ? controlLock : FindFirstObjectByType<ClassroomPlayerControlLock>(FindObjectsInactive.Include);
-            cameraFocusController = cameraFocusController != null ? cameraFocusController : FindFirstObjectByType<LabCameraFocusController>(FindObjectsInactive.Include);
-            interactionDirector = interactionDirector != null ? interactionDirector : FindFirstObjectByType<InteractionDirector>(FindObjectsInactive.Include);
-            sceneContext = sceneContext != null ? sceneContext : FindFirstObjectByType<LabSceneContext>(FindObjectsInactive.Include);
-            llmService = llmService != null ? llmService : FindFirstObjectByType<ClassroomLlmService>(FindObjectsInactive.Include);
+            var scene = ResolveReferenceScene();
+
+            if (!IsInScene(storyFlowPlayer, scene))
+            {
+                storyFlowPlayer = null;
+            }
+
+            if (!IsInScene(capController, scene))
+            {
+                capController = null;
+            }
+
+            if (!IsInScene(controlLock, scene))
+            {
+                controlLock = null;
+            }
+
+            if (!IsInScene(cameraFocusController, scene))
+            {
+                cameraFocusController = null;
+            }
+
+            if (!IsInScene(interactionDirector, scene))
+            {
+                interactionDirector = null;
+            }
+
+            if (!IsInScene(sceneContext, scene))
+            {
+                sceneContext = null;
+            }
+
+            if (!IsInScene(llmService, scene))
+            {
+                llmService = null;
+            }
+
+            if (!IsInScene(freeChatUi, scene))
+            {
+                freeChatUi = null;
+            }
+
+            if (!IsInScene(npcActionExecutor, scene))
+            {
+                npcActionExecutor = null;
+            }
+
+            storyFlowPlayer = storyFlowPlayer != null ? storyFlowPlayer : FindSceneObject<StoryFlowPlayer>(scene);
+            capController = capController != null ? capController : FindSceneObject<LabCapNpcController>(scene);
+            controlLock = controlLock != null ? controlLock : FindSceneObject<ClassroomPlayerControlLock>(scene);
+            cameraFocusController = cameraFocusController != null ? cameraFocusController : FindSceneObject<LabCameraFocusController>(scene);
+            interactionDirector = interactionDirector != null ? interactionDirector : FindSceneObject<InteractionDirector>(scene);
+            sceneContext = sceneContext != null ? sceneContext : FindSceneObject<LabSceneContext>(scene);
+            sceneContext?.ResolveRuntimeReferences();
+            llmService = llmService != null ? llmService : FindSceneObject<ClassroomLlmService>(scene);
             if (llmService == null)
             {
                 llmService = gameObject.GetComponent<ClassroomLlmService>();
@@ -955,18 +1019,162 @@ namespace Blocks.Gameplay.Core.Story
                 }
             }
 
-            freeChatUi = freeChatUi != null ? freeChatUi : FindFirstObjectByType<ClassroomNpcFreeChatUi>(FindObjectsInactive.Include);
+            freeChatUi = freeChatUi != null ? freeChatUi : FindSceneObject<ClassroomNpcFreeChatUi>(scene);
             if (freeChatUi == null)
             {
                 freeChatUi = EnsureOverlayComponent<ClassroomNpcFreeChatUi>("ClassroomNpcFreeChatUiRoot");
             }
-            npcActionExecutor = npcActionExecutor != null ? npcActionExecutor : FindFirstObjectByType<ClassroomNpcActionExecutor>(FindObjectsInactive.Include);
+
+            npcActionExecutor = npcActionExecutor != null ? npcActionExecutor : FindSceneObject<ClassroomNpcActionExecutor>(scene);
+
+            if (sceneContext?.CapNpc != null)
+            {
+                capNpc = sceneContext.CapNpc;
+            }
+
             if (capController != null)
             {
                 capNpc = capNpc != null ? capNpc : capController.NpcAgent;
             }
 
-            capNpc = capNpc != null ? capNpc : FindFirstObjectByType<StoryNpcAgent>(FindObjectsInactive.Include);
+            if (!IsInScene(capNpc, scene))
+            {
+                capNpc = null;
+            }
+
+            capNpc = capNpc != null ? capNpc : FindSceneCapNpc(scene);
+        }
+
+        private bool IsCapTalkPayload(StoryNpcInteractionPayload payload)
+        {
+            if (payload == null || !string.Equals(payload.OptionId, TalkOptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var agent = payload.Agent;
+            if (agent == null)
+            {
+                return false;
+            }
+
+            ResolveReferences();
+
+            var scene = ResolveReferenceScene();
+            var agentScene = agent.gameObject.scene;
+            if (agentScene.IsValid() && scene.IsValid() && agentScene != scene)
+            {
+                return false;
+            }
+
+            if (capNpc != null && agent == capNpc)
+            {
+                return true;
+            }
+
+            if (sceneContext?.CapNpc != null && agent == sceneContext.CapNpc)
+            {
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(agent.NpcId))
+            {
+                if (capNpc != null &&
+                    !string.IsNullOrWhiteSpace(capNpc.NpcId) &&
+                    string.Equals(agent.NpcId, capNpc.NpcId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                if (string.Equals(agent.NpcId, "cap", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return agent.gameObject.name.IndexOf("cap", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private Scene ResolveReferenceScene()
+        {
+            if (gameObject.scene.IsValid())
+            {
+                return gameObject.scene;
+            }
+
+            if (sceneContext != null && sceneContext.gameObject.scene.IsValid())
+            {
+                return sceneContext.gameObject.scene;
+            }
+
+            return SceneManager.GetActiveScene();
+        }
+
+        private static bool IsInScene(Component component, Scene scene)
+        {
+            if (component == null)
+            {
+                return false;
+            }
+
+            var componentScene = component.gameObject.scene;
+            if (!scene.IsValid())
+            {
+                return componentScene.IsValid();
+            }
+
+            return componentScene.IsValid() && componentScene == scene;
+        }
+
+        private static T FindSceneObject<T>(Scene scene)
+            where T : Component
+        {
+            T fallback = null;
+            var candidates = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                fallback ??= candidate;
+                if (!scene.IsValid() || candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return fallback;
+        }
+
+        private static StoryNpcAgent FindSceneCapNpc(Scene scene)
+        {
+            StoryNpcAgent fallback = null;
+            var npcs = FindObjectsByType<StoryNpcAgent>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < npcs.Length; index++)
+            {
+                var candidate = npcs[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (scene.IsValid() && candidate.gameObject.scene != scene)
+                {
+                    continue;
+                }
+
+                fallback ??= candidate;
+                if (string.Equals(candidate.NpcId, "cap", StringComparison.OrdinalIgnoreCase) ||
+                    candidate.gameObject.name.IndexOf("cap", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return candidate;
+                }
+            }
+
+            return fallback;
         }
 
         private void RefreshCapInteractionSubscription()

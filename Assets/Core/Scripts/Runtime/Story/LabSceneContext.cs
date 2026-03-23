@@ -1,6 +1,7 @@
 using ItemInteraction;
 using ModularStoryFlow.Runtime.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Blocks.Gameplay.Core.Story
@@ -57,25 +58,92 @@ namespace Blocks.Gameplay.Core.Story
 
         public void ResolveRuntimeReferences()
         {
-            storyFlowPlayer = storyFlowPlayer != null ? storyFlowPlayer : FindFirstObjectByType<StoryFlowPlayer>(FindObjectsInactive.Include);
-            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>(FindObjectsInactive.Include);
-            capNpc = capNpc != null ? capNpc : ResolveNpc();
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
 
-            bodyInteractable = ResolveInteractable(bodyInteractable, "lab.bodyModel", "Body Model");
-            dnaMachineInteractable = ResolveInteractable(dnaMachineInteractable, "lab.shrinkMachine", "Shrink Machine");
-            rocketInteractable = ResolveInteractable(rocketInteractable, "lab.rocket", "Mini Rocket");
+            if (!IsInScene(storyFlowPlayer, activeScene))
+            {
+                storyFlowPlayer = null;
+            }
 
-            controlLock = controlLock != null ? controlLock : FindFirstObjectByType<ClassroomPlayerControlLock>(FindObjectsInactive.Include);
+            if (!IsInScene(npcRegistry, activeScene))
+            {
+                npcRegistry = null;
+            }
 
-            capNpcController = capNpcController != null ? capNpcController : FindFirstObjectByType<LabCapNpcController>(FindObjectsInactive.Include);
-            capConversationDirector = capConversationDirector != null ? capConversationDirector : FindFirstObjectByType<LabCapConversationDirector>(FindObjectsInactive.Include);
-            bodyInspectionUi = bodyInspectionUi != null ? bodyInspectionUi : FindFirstObjectByType<LabBodyInspectionUi>(FindObjectsInactive.Include);
-            lightPuzzleUi = ResolveLightPuzzleUi(lightPuzzleUi);
-            shrinkSequenceController = shrinkSequenceController != null ? shrinkSequenceController : FindFirstObjectByType<LabShrinkSequenceController>(FindObjectsInactive.Include);
-            finalCutsceneController = finalCutsceneController != null ? finalCutsceneController : FindFirstObjectByType<LabFinalCutsceneController>(FindObjectsInactive.Include);
-            doorController = doorController != null ? doorController : FindFirstObjectByType<LabDoorController>(FindObjectsInactive.Include);
-            objectivePanelUi = objectivePanelUi != null ? objectivePanelUi : FindFirstObjectByType<LabObjectivePanelUi>(FindObjectsInactive.Include);
-            cameraFocusController = cameraFocusController != null ? cameraFocusController : FindFirstObjectByType<LabCameraFocusController>(FindObjectsInactive.Include);
+            if (!IsInScene(capNpc, activeScene))
+            {
+                capNpc = null;
+            }
+
+            if (!IsInScene(controlLock, activeScene))
+            {
+                controlLock = null;
+            }
+
+            if (!IsInScene(capNpcController, activeScene))
+            {
+                capNpcController = null;
+            }
+
+            if (!IsInScene(capConversationDirector, activeScene))
+            {
+                capConversationDirector = null;
+            }
+
+            if (!IsInScene(bodyInspectionUi, activeScene))
+            {
+                bodyInspectionUi = null;
+            }
+
+            if (!IsInScene(lightPuzzleUi, activeScene))
+            {
+                lightPuzzleUi = null;
+            }
+
+            if (!IsInScene(shrinkSequenceController, activeScene))
+            {
+                shrinkSequenceController = null;
+            }
+
+            if (!IsInScene(finalCutsceneController, activeScene))
+            {
+                finalCutsceneController = null;
+            }
+
+            if (!IsInScene(doorController, activeScene))
+            {
+                doorController = null;
+            }
+
+            if (!IsInScene(objectivePanelUi, activeScene))
+            {
+                objectivePanelUi = null;
+            }
+
+            if (!IsInScene(cameraFocusController, activeScene))
+            {
+                cameraFocusController = null;
+            }
+
+            storyFlowPlayer = storyFlowPlayer != null ? storyFlowPlayer : FindSceneObject<StoryFlowPlayer>(activeScene);
+            npcRegistry = npcRegistry != null ? npcRegistry : FindSceneObject<StoryNpcRegistry>(activeScene);
+            capNpc = capNpc != null ? capNpc : ResolveNpc(activeScene);
+
+            bodyInteractable = ResolveInteractable(bodyInteractable, "lab.bodyModel", "Body Model", activeScene);
+            dnaMachineInteractable = ResolveInteractable(dnaMachineInteractable, "lab.shrinkMachine", "Shrink Machine", activeScene);
+            rocketInteractable = ResolveInteractable(rocketInteractable, "lab.rocket", "Mini Rocket", activeScene);
+
+            controlLock = controlLock != null ? controlLock : FindSceneObject<ClassroomPlayerControlLock>(activeScene);
+
+            capNpcController = capNpcController != null ? capNpcController : FindSceneObject<LabCapNpcController>(activeScene);
+            capConversationDirector = capConversationDirector != null ? capConversationDirector : FindSceneObject<LabCapConversationDirector>(activeScene);
+            bodyInspectionUi = bodyInspectionUi != null ? bodyInspectionUi : FindSceneObject<LabBodyInspectionUi>(activeScene);
+            lightPuzzleUi = ResolveLightPuzzleUi(lightPuzzleUi, activeScene);
+            shrinkSequenceController = shrinkSequenceController != null ? shrinkSequenceController : FindSceneObject<LabShrinkSequenceController>(activeScene);
+            finalCutsceneController = finalCutsceneController != null ? finalCutsceneController : FindSceneObject<LabFinalCutsceneController>(activeScene);
+            doorController = doorController != null ? doorController : FindSceneObject<LabDoorController>(activeScene);
+            objectivePanelUi = objectivePanelUi != null ? objectivePanelUi : FindSceneObject<LabObjectivePanelUi>(activeScene);
+            cameraFocusController = cameraFocusController != null ? cameraFocusController : FindSceneObject<LabCameraFocusController>(activeScene);
 
             if (bodyPreviewAnchor == null && bodyInteractable != null)
             {
@@ -88,9 +156,9 @@ namespace Blocks.Gameplay.Core.Story
             }
         }
 
-        private static LabLightPuzzleUi ResolveLightPuzzleUi(LabLightPuzzleUi existing)
+        private static LabLightPuzzleUi ResolveLightPuzzleUi(LabLightPuzzleUi existing, Scene activeScene)
         {
-            if (IsPreferredLightPuzzleUi(existing))
+            if (IsPreferredLightPuzzleUi(existing, activeScene))
             {
                 return existing;
             }
@@ -105,7 +173,7 @@ namespace Blocks.Gameplay.Core.Story
                     continue;
                 }
 
-                if (IsPreferredLightPuzzleUi(candidate))
+                if (IsPreferredLightPuzzleUi(candidate, activeScene))
                 {
                     return candidate;
                 }
@@ -116,9 +184,14 @@ namespace Blocks.Gameplay.Core.Story
             return fallback;
         }
 
-        private static bool IsPreferredLightPuzzleUi(LabLightPuzzleUi candidate)
+        private static bool IsPreferredLightPuzzleUi(LabLightPuzzleUi candidate, Scene activeScene)
         {
             if (candidate == null)
+            {
+                return false;
+            }
+
+            if (activeScene.IsValid() && candidate.gameObject.scene != activeScene)
             {
                 return false;
             }
@@ -132,12 +205,12 @@ namespace Blocks.Gameplay.Core.Story
             return string.Equals(candidate.gameObject.name, "LabLightPuzzleUiRoot", System.StringComparison.OrdinalIgnoreCase);
         }
 
-        private StoryNpcAgent ResolveNpc()
+        private StoryNpcAgent ResolveNpc(Scene activeScene)
         {
             if (npcRegistry != null)
             {
                 var registeredCap = npcRegistry.GetNpc("cap");
-                if (registeredCap != null)
+                if (registeredCap != null && (!activeScene.IsValid() || registeredCap.gameObject.scene == activeScene))
                 {
                     return registeredCap;
                 }
@@ -148,6 +221,11 @@ namespace Blocks.Gameplay.Core.Story
             {
                 var candidate = npcs[index];
                 if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (activeScene.IsValid() && candidate.gameObject.scene != activeScene)
                 {
                     continue;
                 }
@@ -163,9 +241,9 @@ namespace Blocks.Gameplay.Core.Story
             return null;
         }
 
-        private static InteractableItem ResolveInteractable(InteractableItem existing, string storyIdHint, string nameHint)
+        private static InteractableItem ResolveInteractable(InteractableItem existing, string storyIdHint, string nameHint, Scene activeScene)
         {
-            if (IsMatchingInteractable(existing, storyIdHint, nameHint))
+            if (IsMatchingInteractable(existing, storyIdHint, nameHint, activeScene))
             {
                 return existing;
             }
@@ -185,6 +263,11 @@ namespace Blocks.Gameplay.Core.Story
                     continue;
                 }
 
+                if (activeScene.IsValid() && candidate.gameObject.scene != activeScene)
+                {
+                    continue;
+                }
+
                 if (!string.IsNullOrWhiteSpace(storyIdHint) &&
                     string.Equals(candidate.storyId, storyIdHint, System.StringComparison.OrdinalIgnoreCase))
                 {
@@ -196,6 +279,11 @@ namespace Blocks.Gameplay.Core.Story
             {
                 var candidate = interactables[index];
                 if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (activeScene.IsValid() && candidate.gameObject.scene != activeScene)
                 {
                     continue;
                 }
@@ -214,9 +302,14 @@ namespace Blocks.Gameplay.Core.Story
             return null;
         }
 
-        private static bool IsMatchingInteractable(InteractableItem candidate, string storyIdHint, string nameHint)
+        private static bool IsMatchingInteractable(InteractableItem candidate, string storyIdHint, string nameHint, Scene activeScene)
         {
             if (candidate == null)
+            {
+                return false;
+            }
+
+            if (activeScene.IsValid() && candidate.gameObject.scene != activeScene)
             {
                 return false;
             }
@@ -240,6 +333,45 @@ namespace Blocks.Gameplay.Core.Story
         public void SetStartupCooldownActive(bool value)
         {
             startupCooldownActive = value;
+        }
+
+        private static bool IsInScene(Component component, Scene scene)
+        {
+            if (component == null)
+            {
+                return false;
+            }
+
+            var componentScene = component.gameObject.scene;
+            if (!scene.IsValid())
+            {
+                return componentScene.IsValid();
+            }
+
+            return componentScene.IsValid() && componentScene == scene;
+        }
+
+        private static T FindSceneObject<T>(Scene scene)
+            where T : Component
+        {
+            T fallback = null;
+            var candidates = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                fallback ??= candidate;
+                if (!scene.IsValid() || candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return fallback;
         }
     }
 }
