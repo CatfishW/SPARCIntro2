@@ -640,23 +640,6 @@ namespace ItemInteraction
                 return;
             }
 
-            if (EventSystem.current != null)
-            {
-                if (EventSystem.current.IsPointerOverGameObject())
-                {
-                    return;
-                }
-
-                for (var touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
-                {
-                    var touch = Input.GetTouch(touchIndex);
-                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-                    {
-                        return;
-                    }
-                }
-            }
-
             float scroll = Input.mouseScrollDelta.y;
             if (Mathf.Abs(scroll) > 0.01f)
             {
@@ -674,8 +657,13 @@ namespace ItemInteraction
             if (Input.GetMouseButtonDown(0))
             {
                 selectedOption = promptPresenter.GetOptionAtScreenPosition(Input.mousePosition, visibleOptions);
-                if (selectedOption == null) 
+                if (selectedOption == null)
                 {
+                    if (IsPointerOverUi())
+                    {
+                        return;
+                    }
+
                     selectedOption = visibleOptions[highlightedOptionIndex];
                 }
             }
@@ -699,6 +687,30 @@ namespace ItemInteraction
 
                 ClearFocus();
             }
+        }
+
+        private static bool IsPointerOverUi()
+        {
+            if (EventSystem.current == null)
+            {
+                return false;
+            }
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return true;
+            }
+
+            for (var touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+            {
+                var touch = Input.GetTouch(touchIndex);
+                if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private IEnumerator OpenInspectionRoutine(InteractableItem item, InspectionPresentation presentation)
