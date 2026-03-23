@@ -11,6 +11,7 @@ using ModularStoryFlow.Runtime.Integration;
 using ModularStoryFlow.Runtime.Player;
 using ModularStoryFlow.Runtime.State;
 using ModularStoryFlow.Runtime.Variables;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -404,9 +405,7 @@ namespace Blocks.Gameplay.Core.Story
 
         private IEnumerator PositionPlayerAtSpawnRoutine()
         {
-            const float timeoutSeconds = 5f;
-            const float tickSeconds = 0.1f;
-            const float maxAllowedDriftFromSpawn = 2.5f;
+            const float timeoutSeconds = 12f;
             var remainingSeconds = timeoutSeconds;
 
             while (remainingSeconds > 0f)
@@ -414,27 +413,67 @@ namespace Blocks.Gameplay.Core.Story
                 if (TryResolveLocalPlayerMovement(out var movement) && TryComputeSpawnPose(out var position, out var rotation))
                 {
                     EnsureRuntimeSpawnSafetyFloor(position);
-
-                    var positionError = Vector3.Distance(movement.transform.position, position);
-                    var fellBelowSpawn = movement.transform.position.y < position.y - 1.5f;
-                    var shouldReposition = positionError > maxAllowedDriftFromSpawn || fellBelowSpawn || !movement.IsGrounded;
-                    if (shouldReposition)
-                    {
-                        movement.transform.rotation = rotation;
-                        movement.SetPosition(position);
-                        movement.SetVerticalVelocity(0f);
-                        movement.ResetMovementForces();
-                    }
-
-                    if (movement.IsGrounded && positionError <= maxAllowedDriftFromSpawn)
-                    {
-                        yield break;
-                    }
+                    ApplySpawnPose(movement, position, rotation);
+                    yield break;
                 }
 
-                remainingSeconds -= tickSeconds;
-                yield return new WaitForSeconds(tickSeconds);
+                remainingSeconds -= 0.1f;
+                yield return new WaitForSeconds(0.1f);
             }
+
+            if (TryComputeSpawnPose(out var fallbackPosition, out var fallbackRotation))
+            {
+                EnsureRuntimeSpawnSafetyFloor(fallbackPosition);
+
+                if (TryResolveLocalPlayerMovement(out var lateMovement))
+                {
+                    ApplySpawnPose(lateMovement, fallbackPosition, fallbackRotation);
+                    yield break;
+                }
+
+                var mainCamera = Camera.main;
+                if (mainCamera != null)
+                {
+                    mainCamera.transform.SetPositionAndRotation(
+                        fallbackPosition + new Vector3(0f, 1.45f, 0f),
+                        fallbackRotation);
+                }
+            }
+        }
+
+        private static void ApplySpawnPose(CoreMovement movement, Vector3 position, Quaternion rotation)
+        {
+            if (movement == null)
+            {
+                return;
+            }
+
+            if (!movement.gameObject.activeSelf)
+            {
+                movement.gameObject.SetActive(true);
+            }
+
+            movement.transform.rotation = rotation;
+
+            var localScale = movement.transform.localScale;
+            if ((localScale - Vector3.one).sqrMagnitude > 0.0001f)
+            {
+                movement.transform.localScale = Vector3.one;
+            }
+
+            var characterController = movement.GetComponent<CharacterController>();
+            if (characterController != null && !characterController.enabled)
+            {
+                characterController.enabled = true;
+            }
+
+            movement.SetPosition(position);
+            movement.SetVerticalVelocity(0f);
+            movement.ResetMovementForces();
+
+            var manager = movement.GetComponent<CorePlayerManager>() ??
+                          movement.GetComponentInParent<CorePlayerManager>();
+            manager?.SetMovementInputEnabled(true);
         }
 
         private bool TryComputeSpawnPose(out Vector3 position, out Quaternion rotation)
@@ -569,17 +608,32 @@ namespace Blocks.Gameplay.Core.Story
         {
             movement = null;
 
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null)
+            {
+                var localPlayerObject = NetworkManager.Singleton.LocalClient.PlayerObject;
+                if (localPlayerObject != null)
+                {
+                    movement = localPlayerObject.GetComponent<CoreMovement>() ??
+                               localPlayerObject.GetComponentInChildren<CoreMovement>(true);
+                    if (movement != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+
             var taggedPlayer = GameObject.FindGameObjectWithTag("Player");
             if (taggedPlayer != null)
             {
-                movement = taggedPlayer.GetComponent<CoreMovement>();
+                movement = taggedPlayer.GetComponent<CoreMovement>() ??
+                           taggedPlayer.GetComponentInChildren<CoreMovement>(true);
                 if (movement != null)
                 {
                     return true;
                 }
             }
 
-            var managers = FindObjectsByType<CorePlayerManager>(FindObjectsSortMode.None);
+            var managers = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             for (var index = 0; index < managers.Length; index++)
             {
                 if (managers[index] == null || !managers[index].IsOwner)
@@ -587,7 +641,10 @@ namespace Blocks.Gameplay.Core.Story
                     continue;
                 }
 
-                movement = managers[index].CoreMovement;
+                movement = managers[index].CoreMovement != null
+                    ? managers[index].CoreMovement
+                    : managers[index].GetComponent<CoreMovement>() ??
+                      managers[index].GetComponentInChildren<CoreMovement>(true);
                 return movement != null;
             }
 
