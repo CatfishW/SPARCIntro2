@@ -132,5 +132,89 @@ namespace Blocks.Gameplay.Core
         private void HandleMenuPressed(InputAction.CallbackContext context) => onMenuPressed?.Raise();
 
         #endregion
+
+        #region Runtime Input Injection (Touch / UI)
+
+        public void InjectMoveInput(Vector2 input)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onMoveInput?.Raise(input);
+        }
+
+        public void InjectLookInput(Vector2 input)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onLookInput?.Raise(input);
+        }
+
+        public void InjectJumpPressed()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onJumpPressed?.Raise();
+        }
+
+        public void InjectJumpReleased()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onJumpReleased?.Raise();
+        }
+
+        public void InjectSprintState(bool sprinting)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onSprintStateChanged?.Raise(sprinting);
+        }
+
+        public void InjectPrimaryActionPressed()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onPrimaryActionPressed?.Raise();
+        }
+
+        public void InjectPrimaryActionReleased()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onPrimaryActionReleased?.Raise();
+        }
+
+        public void InjectMenuPressed()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            onMenuPressed?.Raise();
+        }
+
+        #endregion
     }
 }

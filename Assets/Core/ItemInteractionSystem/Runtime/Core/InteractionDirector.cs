@@ -654,9 +654,9 @@ namespace ItemInteraction
 
             InteractionOption selectedOption = null;
 
-            if (Input.GetMouseButtonDown(0))
+            if (TryGetPrimaryPointerDown(out var pointerScreenPosition))
             {
-                selectedOption = promptPresenter.GetOptionAtScreenPosition(Input.mousePosition, visibleOptions);
+                selectedOption = promptPresenter.GetOptionAtScreenPosition(pointerScreenPosition, visibleOptions);
                 if (selectedOption == null)
                 {
                     if (IsPointerOverUi())
@@ -710,6 +710,28 @@ namespace ItemInteraction
                 }
             }
 
+            return false;
+        }
+
+        private static bool TryGetPrimaryPointerDown(out Vector2 pointerScreenPosition)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                pointerScreenPosition = Input.mousePosition;
+                return true;
+            }
+
+            for (int touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
+            {
+                var touch = Input.GetTouch(touchIndex);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    pointerScreenPosition = touch.position;
+                    return true;
+                }
+            }
+
+            pointerScreenPosition = Vector2.zero;
             return false;
         }
 

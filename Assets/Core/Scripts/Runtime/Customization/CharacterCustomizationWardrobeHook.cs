@@ -1,12 +1,16 @@
 using ItemInteraction;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 namespace Blocks.Gameplay.Core.Customization
 {
+    [DefaultExecutionOrder(120)]
     [DisallowMultipleComponent]
     public sealed class CharacterCustomizationWardrobeHook : MonoBehaviour
     {
+        private const string RuntimePanelObjectName = "CharacterCustomizationPanelRuntime";
+
         [SerializeField] private InteractableItem interactableItem;
         [SerializeField] private CharacterCustomizationPanel customizationPanel;
         [SerializeField] private string optionId = "change_character";
@@ -122,10 +126,18 @@ namespace Blocks.Gameplay.Core.Customization
         {
             ResolveDependencies();
 
-            if (customizationPanel != null)
+            if (customizationPanel == null)
             {
-                customizationPanel.Show();
+                Debug.LogWarning("[CharacterCustomizationWardrobeHook] Change Character was triggered but no panel could be resolved or created.", this);
+                return;
             }
+
+            if (!customizationPanel.gameObject.activeSelf)
+            {
+                customizationPanel.gameObject.SetActive(true);
+            }
+
+            customizationPanel.Show();
         }
 
         private void HandleOptionTriggered(InteractionInvocation invocation)
@@ -153,7 +165,38 @@ namespace Blocks.Gameplay.Core.Customization
             if (customizationPanel == null)
             {
                 customizationPanel = FindFirstObjectByType<CharacterCustomizationPanel>(FindObjectsInactive.Include);
+                if (customizationPanel == null)
+                {
+                    customizationPanel = CreateRuntimePanel();
+                }
             }
+        }
+
+        private CharacterCustomizationPanel CreateRuntimePanel()
+        {
+            var panelObject = GameObject.Find(RuntimePanelObjectName);
+            if (panelObject == null)
+            {
+                panelObject = new GameObject(RuntimePanelObjectName);
+            }
+
+            if (panelObject.GetComponent<UIDocument>() == null)
+            {
+                panelObject.AddComponent<UIDocument>();
+            }
+
+            var panel = panelObject.GetComponent<CharacterCustomizationPanel>();
+            if (panel == null)
+            {
+                panel = panelObject.AddComponent<CharacterCustomizationPanel>();
+            }
+
+            if (!panelObject.activeSelf)
+            {
+                panelObject.SetActive(true);
+            }
+
+            return panel;
         }
 
         private void NormalizeLookOptionSlot(InteractionOption primaryOption)
