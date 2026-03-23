@@ -129,11 +129,8 @@ namespace Blocks.Gameplay.Core.Story
 
             interactable.displayName = string.IsNullOrWhiteSpace(npcDisplayName) ? gameObject.name : npcDisplayName;
             interactable.storyId = string.IsNullOrWhiteSpace(npcId) ? gameObject.name : npcId;
-            interactable.promptAnchor = promptAnchor != null
-                ? promptAnchor
-                : interactable.promptAnchor != null
-                    ? interactable.promptAnchor
-                    : EnsurePromptAnchor(interactable);
+            interactable.promptAnchor = EnsurePromptAnchor(interactable);
+            promptAnchor = interactable.promptAnchor;
             interactable.inspectionSourceRoot = inspectionSourceRoot != null ? inspectionSourceRoot : interactable.inspectionSourceRoot != null ? interactable.inspectionSourceRoot : transform;
             interactable.outline = outline != null ? outline : interactable.outline;
             interactable.lookDialogueSpeaker = string.IsNullOrWhiteSpace(lookDialogueSpeaker) ? interactable.displayName : lookDialogueSpeaker;
@@ -399,11 +396,12 @@ namespace Blocks.Gameplay.Core.Story
 
             if (TryGetCombinedBounds(target.gameObject, out var bounds))
             {
-                anchor.position = new Vector3(bounds.center.x, bounds.max.y - Mathf.Max(bounds.size.y * 0.1f, 0.04f), bounds.center.z);
+                var anchorY = Mathf.Lerp(bounds.min.y, bounds.max.y, 0.58f);
+                anchor.position = new Vector3(bounds.center.x, anchorY, bounds.center.z);
             }
             else
             {
-                anchor.localPosition = new Vector3(0f, 1.45f, 0f);
+                anchor.localPosition = new Vector3(0f, 1.1f, 0f);
             }
 
             return anchor;

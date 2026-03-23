@@ -276,7 +276,7 @@ namespace Blocks.Gameplay.Core.Story
             shadowRect.anchorMax = new Vector2(0f, 1f);
             shadowRect.pivot = new Vector2(0f, 1f);
             shadowRect.anchoredPosition = new Vector2(38f, -28f);
-            shadowRect.sizeDelta = new Vector2(430f, 232f);
+            shadowRect.sizeDelta = new Vector2(438f, 252f);
             var shadowImage = shadowRect.gameObject.AddComponent<Image>();
             shadowImage.color = new Color(0.03f, 0.05f, 0.08f, 0.42f);
             shadowImage.raycastTarget = false;
@@ -286,7 +286,7 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.anchorMax = new Vector2(0f, 1f);
             panelRect.pivot = new Vector2(0f, 1f);
             panelRect.anchoredPosition = new Vector2(28f, -18f);
-            panelRect.sizeDelta = new Vector2(430f, 232f);
+            panelRect.sizeDelta = new Vector2(438f, 252f);
 
             var background = panelRect.gameObject.AddComponent<Image>();
             background.color = new Color(0.98f, 0.94f, 0.58f, 0.98f);
@@ -340,14 +340,17 @@ namespace Blocks.Gameplay.Core.Story
             contextText.color = new Color(0.05f, 0.08f, 0.11f, 1f);
             contextText.text = "CHECKLIST";
 
-            titleText = BedroomStoryUiFactory.CreateText("ObjectiveTitle", panelRect, 34, TextAnchor.UpperLeft);
+            titleText = BedroomStoryUiFactory.CreateText("ObjectiveTitle", panelRect, 24, TextAnchor.UpperLeft);
             titleText.rectTransform.anchorMin = new Vector2(0f, 1f);
             titleText.rectTransform.anchorMax = new Vector2(1f, 1f);
             titleText.rectTransform.pivot = new Vector2(0f, 1f);
-            titleText.rectTransform.offsetMin = new Vector2(16f, -82f);
-            titleText.rectTransform.offsetMax = new Vector2(-16f, -40f);
+            titleText.rectTransform.offsetMin = new Vector2(18f, -64f);
+            titleText.rectTransform.offsetMax = new Vector2(-18f, -26f);
             titleText.fontStyle = FontStyle.Bold;
             titleText.color = new Color(0.05f, 0.08f, 0.11f, 1f);
+            titleText.resizeTextForBestFit = true;
+            titleText.resizeTextMinSize = 18;
+            titleText.resizeTextMaxSize = 24;
             titleText.horizontalOverflow = HorizontalWrapMode.Wrap;
             titleText.verticalOverflow = VerticalWrapMode.Truncate;
 
@@ -355,14 +358,14 @@ namespace Blocks.Gameplay.Core.Story
             checklistRoot.anchorMin = new Vector2(0f, 0f);
             checklistRoot.anchorMax = new Vector2(1f, 1f);
             checklistRoot.offsetMin = new Vector2(16f, 14f);
-            checklistRoot.offsetMax = new Vector2(-16f, -88f);
+            checklistRoot.offsetMax = new Vector2(-16f, -72f);
 
             var checklistLayout = checklistRoot.gameObject.AddComponent<VerticalLayoutGroup>();
             checklistLayout.childControlWidth = true;
-            checklistLayout.childControlHeight = false;
+            checklistLayout.childControlHeight = true;
             checklistLayout.childForceExpandWidth = true;
             checklistLayout.childForceExpandHeight = false;
-            checklistLayout.spacing = 8f;
+            checklistLayout.spacing = 7f;
             checklistLayout.padding = new RectOffset(0, 0, 0, 0);
 
             for (var index = 0; index < MaxChecklistRows; index++)
@@ -383,21 +386,16 @@ namespace Blocks.Gameplay.Core.Story
             rowBorder.effectDistance = new Vector2(2f, -2f);
             rowBorder.useGraphicAlpha = false;
 
-            var rowLayout = rowRect.gameObject.AddComponent<HorizontalLayoutGroup>();
-            rowLayout.childAlignment = TextAnchor.MiddleLeft;
-            rowLayout.childControlWidth = false;
-            rowLayout.childControlHeight = false;
-            rowLayout.childForceExpandWidth = false;
-            rowLayout.childForceExpandHeight = false;
-            rowLayout.spacing = 10f;
-            rowLayout.padding = new RectOffset(10, 10, 7, 7);
-
             var rowElement = rowRect.gameObject.AddComponent<LayoutElement>();
-            rowElement.minHeight = 38f;
-            rowElement.preferredHeight = 38f;
+            rowElement.minHeight = 56f;
+            rowElement.preferredHeight = 56f;
             rowElement.flexibleWidth = 1f;
 
             var badgeRect = BedroomStoryUiFactory.CreateUiObject("ChecklistBadge", rowRect).GetComponent<RectTransform>();
+            badgeRect.anchorMin = new Vector2(0f, 0.5f);
+            badgeRect.anchorMax = new Vector2(0f, 0.5f);
+            badgeRect.pivot = new Vector2(0f, 0.5f);
+            badgeRect.anchoredPosition = new Vector2(12f, 0f);
             badgeRect.sizeDelta = new Vector2(22f, 22f);
             var badgeImage = badgeRect.gameObject.AddComponent<Image>();
             badgeImage.color = new Color(1f, 0.99f, 0.92f, 1f);
@@ -416,12 +414,17 @@ namespace Blocks.Gameplay.Core.Story
             badgeGlyph.color = new Color(0.04f, 0.06f, 0.08f, 0f);
             badgeGlyph.text = string.Empty;
 
-            var label = BedroomStoryUiFactory.CreateText("ChecklistLabel", rowRect, 16, TextAnchor.MiddleLeft);
+            var label = BedroomStoryUiFactory.CreateText("ChecklistLabel", rowRect, 14, TextAnchor.UpperLeft);
+            label.rectTransform.anchorMin = new Vector2(0f, 0f);
+            label.rectTransform.anchorMax = new Vector2(1f, 1f);
+            label.rectTransform.offsetMin = new Vector2(42f, 7f);
+            label.rectTransform.offsetMax = new Vector2(-12f, -7f);
             label.color = new Color(0.09f, 0.12f, 0.15f, 1f);
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Truncate;
-            var labelElement = label.gameObject.AddComponent<LayoutElement>();
-            labelElement.flexibleWidth = 1f;
+            label.resizeTextForBestFit = true;
+            label.resizeTextMinSize = 12;
+            label.resizeTextMaxSize = 14;
 
             return new ChecklistRowView
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ItemInteraction;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,7 @@ namespace Blocks.Gameplay.Core.Story
         }
 
         [SerializeField] private Camera worldCamera;
+        [SerializeField] private InteractionDirector interactionDirector;
         [SerializeField] private ClassroomStoryConversationPresentationController conversationPresentationController;
         [SerializeField] private bool suppressWhileConversationActive = true;
         [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.46f, 0f);
@@ -34,6 +36,7 @@ namespace Blocks.Gameplay.Core.Story
         private void Awake()
         {
             ResolveConversationController();
+            ResolveInteractionDirector();
             EnsureCanvas();
         }
 
@@ -366,7 +369,19 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             ResolveConversationController();
-            return conversationPresentationController != null && conversationPresentationController.IsConversationActive;
+            if (conversationPresentationController != null && conversationPresentationController.IsConversationActive)
+            {
+                return true;
+            }
+
+            ResolveInteractionDirector();
+            if (interactionDirector == null)
+            {
+                return false;
+            }
+
+            var currentFocus = interactionDirector.CurrentFocus;
+            return currentFocus != null && currentFocus.GetComponent<StoryNpcAgent>() != null;
         }
 
         private void ResolveConversationController()
@@ -377,6 +392,16 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             conversationPresentationController = FindFirstObjectByType<ClassroomStoryConversationPresentationController>(FindObjectsInactive.Include);
+        }
+
+        private void ResolveInteractionDirector()
+        {
+            if (interactionDirector != null)
+            {
+                return;
+            }
+
+            interactionDirector = FindFirstObjectByType<InteractionDirector>(FindObjectsInactive.Include);
         }
 
         private static Font ResolveBuiltinFont()
@@ -472,7 +497,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             var height = Mathf.Max(0.6f, bounds.size.y);
-            var yOffset = Mathf.Clamp((height * 0.92f) + 0.14f, 1.12f, 1.72f);
+            var yOffset = Mathf.Clamp((height * 0.76f) + 0.08f, 0.98f, 1.42f);
             return new Vector3(0f, yOffset, 0f);
         }
 
