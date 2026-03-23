@@ -21,7 +21,9 @@ namespace Blocks.Gameplay.Core.Story
         }
 
         [SerializeField] private Camera worldCamera;
-        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.12f, 0f);
+        [SerializeField] private ClassroomStoryConversationPresentationController conversationPresentationController;
+        [SerializeField] private bool suppressWhileConversationActive = true;
+        [SerializeField] private Vector3 defaultOffset = new Vector3(0f, 1.46f, 0f);
         [SerializeField, Min(0.05f)] private float fadeDurationSeconds = 0.36f;
         [SerializeField] private int sortingOrder = 625;
 
@@ -31,11 +33,18 @@ namespace Blocks.Gameplay.Core.Story
 
         private void Awake()
         {
+            ResolveConversationController();
             EnsureCanvas();
         }
 
         private void LateUpdate()
         {
+            if (ShouldSuppressBubbles())
+            {
+                ClearAllBubbles();
+                return;
+            }
+
             if (activeBubbles.Count == 0)
             {
                 return;
@@ -108,6 +117,11 @@ namespace Blocks.Gameplay.Core.Story
 
         public void ShowBubble(StoryNpcAgent npc, string body, float durationSeconds = 4.6f, string speakerOverride = null)
         {
+            if (ShouldSuppressBubbles())
+            {
+                return;
+            }
+
             if (npc == null || string.IsNullOrWhiteSpace(body))
             {
                 return;
@@ -128,6 +142,11 @@ namespace Blocks.Gameplay.Core.Story
 
         public void ShowBubble(int id, Transform followTarget, string speaker, string body, float durationSeconds, Vector3 worldOffset)
         {
+            if (ShouldSuppressBubbles())
+            {
+                return;
+            }
+
             if (followTarget == null || string.IsNullOrWhiteSpace(body))
             {
                 return;
@@ -168,7 +187,7 @@ namespace Blocks.Gameplay.Core.Story
             dropRect.offsetMin = new Vector2(6f, -6f);
             dropRect.offsetMax = new Vector2(6f, -6f);
             var dropImage = drop.GetComponent<Image>();
-            dropImage.color = new Color(0.03f, 0.04f, 0.06f, 0.65f);
+            dropImage.color = new Color(0f, 0f, 0f, 0f);
             dropImage.raycastTarget = false;
 
             var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
@@ -179,7 +198,7 @@ namespace Blocks.Gameplay.Core.Story
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             var panelImage = panel.GetComponent<Image>();
-            panelImage.color = new Color(0.98f, 0.95f, 0.8f, 0.98f);
+            panelImage.color = new Color(1f, 1f, 1f, 0f);
             panelImage.raycastTarget = false;
             var panelBorder = panel.gameObject.AddComponent<Outline>();
             panelBorder.effectColor = new Color(0.05f, 0.08f, 0.11f, 1f);
@@ -195,7 +214,7 @@ namespace Blocks.Gameplay.Core.Story
             ribbonRect.anchoredPosition = new Vector2(10f, -8f);
             ribbonRect.sizeDelta = new Vector2(158f, 30f);
             var ribbonImage = speakerRibbon.GetComponent<Image>();
-            ribbonImage.color = new Color(0.04f, 0.06f, 0.08f, 1f);
+            ribbonImage.color = new Color(0f, 0f, 0f, 0f);
             ribbonImage.raycastTarget = false;
 
             var speaker = CreateText(panel.transform, "Speaker", 14, FontStyle.Bold);
@@ -206,7 +225,7 @@ namespace Blocks.Gameplay.Core.Story
             speaker.rectTransform.offsetMax = new Vector2(-10f, -4f);
             speaker.alignment = TextAnchor.MiddleLeft;
             speaker.fontSize = 14;
-            speaker.color = new Color(0.99f, 0.95f, 0.75f, 1f);
+            speaker.color = new Color(0.08f, 0.11f, 0.16f, 1f);
 
             var body = CreateText(panel.transform, "Body", 17, FontStyle.Bold);
             body.rectTransform.anchorMin = new Vector2(0f, 0f);
@@ -242,6 +261,27 @@ namespace Blocks.Gameplay.Core.Story
             {
                 Destroy(bubble.Root.gameObject);
             }
+        }
+
+        private void ClearAllBubbles()
+        {
+            if (activeBubbles.Count == 0)
+            {
+                return;
+            }
+
+            var ids = ListPool<int>.Get();
+            foreach (var pair in activeBubbles)
+            {
+                ids.Add(pair.Key);
+            }
+
+            for (var index = 0; index < ids.Count; index++)
+            {
+                RemoveBubble(ids[index]);
+            }
+
+            ListPool<int>.Release(ids);
         }
 
         private void EnsureCanvas()
@@ -316,6 +356,27 @@ namespace Blocks.Gameplay.Core.Story
 
             worldCamera = null;
             return null;
+        }
+
+        private bool ShouldSuppressBubbles()
+        {
+            if (!suppressWhileConversationActive)
+            {
+                return false;
+            }
+
+            ResolveConversationController();
+            return conversationPresentationController != null && conversationPresentationController.IsConversationActive;
+        }
+
+        private void ResolveConversationController()
+        {
+            if (conversationPresentationController != null)
+            {
+                return;
+            }
+
+            conversationPresentationController = FindFirstObjectByType<ClassroomStoryConversationPresentationController>(FindObjectsInactive.Include);
         }
 
         private static Font ResolveBuiltinFont()
@@ -411,7 +472,7 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             var height = Mathf.Max(0.6f, bounds.size.y);
-            var yOffset = Mathf.Clamp((height * 0.62f) + 0.04f, 0.76f, 1.18f);
+            var yOffset = Mathf.Clamp((height * 0.92f) + 0.14f, 1.12f, 1.72f);
             return new Vector3(0f, yOffset, 0f);
         }
 

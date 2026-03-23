@@ -56,6 +56,8 @@ namespace Blocks.Gameplay.Core.Story
             public Collider Second { get; }
         }
 
+        public bool IsConversationActive => conversationActive;
+
         public void SetConversationTarget(Transform target)
         {
             pendingConversationTarget = target;
