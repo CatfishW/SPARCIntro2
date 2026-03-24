@@ -467,7 +467,7 @@ namespace Blocks.Gameplay.Core.Story
                 for (var rootIndex = 0; rootIndex < roots.Length; rootIndex++)
                 {
                     var root = roots[rootIndex];
-                    if (root.name != segments[0])
+                    if (!NameMatches(root.name, segments[0]))
                     {
                         continue;
                     }
@@ -475,7 +475,7 @@ namespace Blocks.Gameplay.Core.Story
                     var current = root.transform;
                     for (var segmentIndex = 1; segmentIndex < segments.Length && current != null; segmentIndex++)
                     {
-                        current = current.Find(segments[segmentIndex]);
+                        current = FindChildBySegment(current, segments[segmentIndex]);
                     }
 
                     if (current != null)
@@ -521,7 +521,7 @@ namespace Blocks.Gameplay.Core.Story
             for (var rootIndex = 0; rootIndex < roots.Length; rootIndex++)
             {
                 var root = roots[rootIndex];
-                if (root.name != segments[0])
+                if (!NameMatches(root.name, segments[0]))
                 {
                     continue;
                 }
@@ -529,7 +529,7 @@ namespace Blocks.Gameplay.Core.Story
                 var current = root.transform;
                 for (var segmentIndex = 1; segmentIndex < segments.Length && current != null; segmentIndex++)
                 {
-                    current = current.Find(segments[segmentIndex]);
+                    current = FindChildBySegment(current, segments[segmentIndex]);
                 }
 
                 if (current != null)
@@ -539,6 +539,49 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return null;
+        }
+
+        private static Transform FindChildBySegment(Transform parent, string segment)
+        {
+            if (parent == null || string.IsNullOrWhiteSpace(segment))
+            {
+                return null;
+            }
+
+            var direct = parent.Find(segment);
+            if (direct != null)
+            {
+                return direct;
+            }
+
+            for (var index = 0; index < parent.childCount; index++)
+            {
+                var child = parent.GetChild(index);
+                if (NameMatches(child.name, segment))
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool NameMatches(string actualName, string expectedSegment)
+        {
+            if (string.IsNullOrWhiteSpace(actualName) || string.IsNullOrWhiteSpace(expectedSegment))
+            {
+                return false;
+            }
+
+            if (string.Equals(actualName, expectedSegment, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return actualName.StartsWith(expectedSegment + " ", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment + "(", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment + "_", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment, System.StringComparison.OrdinalIgnoreCase);
         }
 
         private static void EnsureSingleEventSystemInActiveScene()

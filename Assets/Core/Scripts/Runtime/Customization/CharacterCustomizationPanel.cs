@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Blocks.Gameplay.Core.Customization
@@ -93,6 +94,37 @@ namespace Blocks.Gameplay.Core.Customization
         private StandaloneInputModule m_StandaloneInputModule;
 
         public bool IsOpen => m_IsOpen;
+
+        private Scene GetContextScene()
+        {
+            return gameObject != null && gameObject.scene.IsValid()
+                ? gameObject.scene
+                : SceneManager.GetActiveScene();
+        }
+
+        private static bool IsInScene(GameObject target, Scene scene)
+        {
+            return target != null && scene.IsValid() && target.scene == scene;
+        }
+
+        private static T FindSceneComponent<T>(Scene scene, bool includeInactive) where T : Component
+        {
+            var components = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+            for (int index = 0; index < components.Length; index++)
+            {
+                var component = components[index];
+                if (component == null || !IsInScene(component.gameObject, scene))
+                {
+                    continue;
+                }
+
+                return component;
+            }
+
+            return null;
+        }
 
         private void Awake()
         {
@@ -408,6 +440,8 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
+            var contextScene = GetContextScene();
+
             DetachFromParentDocument();
 
             if (m_UIDocument.panelSettings != null)
@@ -415,7 +449,9 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
-            if (m_UIDocument.parentUI != null && m_UIDocument.parentUI.panelSettings != null)
+            if (m_UIDocument.parentUI != null &&
+                m_UIDocument.parentUI.panelSettings != null &&
+                IsInScene(m_UIDocument.parentUI.gameObject, contextScene))
             {
                 m_UIDocument.panelSettings = m_UIDocument.parentUI.panelSettings;
                 return;
@@ -425,7 +461,10 @@ namespace Blocks.Gameplay.Core.Customization
             for (int index = 0; index < documents.Length; index++)
             {
                 var candidate = documents[index];
-                if (candidate == null || candidate == m_UIDocument || candidate.panelSettings == null)
+                if (candidate == null ||
+                    candidate == m_UIDocument ||
+                    candidate.panelSettings == null ||
+                    !IsInScene(candidate.gameObject, contextScene))
                 {
                     continue;
                 }
@@ -790,11 +829,12 @@ namespace Blocks.Gameplay.Core.Customization
             m_LocalPlayerState = null;
             m_LocalPlayerCoreAnimator = null;
             m_LocalPlayerAnimator = null;
+            var contextScene = GetContextScene();
 
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient != null)
             {
                 var playerObject = NetworkManager.Singleton.LocalClient.PlayerObject;
-                if (playerObject != null)
+                if (playerObject != null && IsInScene(playerObject.gameObject, contextScene))
                 {
                     CacheLocalPlayerFromRoot(playerObject.gameObject);
                 }
@@ -802,7 +842,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_LocalPlayerState == null && m_LocalPlayerManager == null && m_LocalPlayerCoreAnimator == null)
             {
-                TryResolveLikelyLocalPlayerFromScene();
+                TryResolveLikelyLocalPlayerFromScene(contextScene);
             }
 
             if (m_LocalPlayerState == null)
@@ -812,7 +852,7 @@ namespace Blocks.Gameplay.Core.Customization
                 for (int index = 0; index < playerStates.Length; index++)
                 {
                     var state = playerStates[index];
-                    if (state == null)
+                    if (state == null || !IsInScene(state.gameObject, contextScene))
                     {
                         continue;
                     }
@@ -842,7 +882,7 @@ namespace Blocks.Gameplay.Core.Customization
                 for (int index = 0; index < addons.Length; index++)
                 {
                     var addon = addons[index];
-                    if (addon == null)
+                    if (addon == null || !IsInScene(addon.gameObject, contextScene))
                     {
                         continue;
                     }
@@ -868,7 +908,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_LocalPlayerCoreAnimator == null)
             {
-                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate();
+                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate(contextScene);
             }
 
             if (m_LocalPlayerAnimator == null && m_LocalPlayerCoreAnimator != null)
@@ -884,7 +924,7 @@ namespace Blocks.Gameplay.Core.Customization
             }
         }
 
-        private bool TryResolveLikelyLocalPlayerFromScene()
+        private bool TryResolveLikelyLocalPlayerFromScene(Scene contextScene)
         {
             GameObject taggedPlayer = null;
             try
@@ -896,7 +936,7 @@ namespace Blocks.Gameplay.Core.Customization
                 taggedPlayer = null;
             }
 
-            if (taggedPlayer != null)
+            if (IsInScene(taggedPlayer, contextScene))
             {
                 CacheLocalPlayerFromRoot(taggedPlayer);
                 if (m_LocalPlayerCoreAnimator != null)
@@ -912,7 +952,7 @@ namespace Blocks.Gameplay.Core.Customization
             for (int index = 0; index < movements.Length; index++)
             {
                 var movement = movements[index];
-                if (movement == null)
+                if (movement == null || !IsInScene(movement.gameObject, contextScene))
                 {
                     continue;
                 }
@@ -1319,9 +1359,13 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
-            m_InteractionDirector = m_InteractionDirector != null
-                ? m_InteractionDirector
-                : FindFirstObjectByType<InteractionDirector>();
+            var contextScene = GetContextScene();
+            if (m_InteractionDirector != null && !IsInScene(m_InteractionDirector.gameObject, contextScene))
+            {
+                m_InteractionDirector = null;
+            }
+
+            m_InteractionDirector ??= FindSceneComponent<InteractionDirector>(contextScene, true);
             if (m_InteractionDirector == null)
             {
                 return;
@@ -1338,9 +1382,13 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
-            m_InteractionDirector = m_InteractionDirector != null
-                ? m_InteractionDirector
-                : FindFirstObjectByType<InteractionDirector>();
+            var contextScene = GetContextScene();
+            if (m_InteractionDirector != null && !IsInScene(m_InteractionDirector.gameObject, contextScene))
+            {
+                m_InteractionDirector = null;
+            }
+
+            m_InteractionDirector ??= FindSceneComponent<InteractionDirector>(contextScene, true);
             if (m_InteractionDirector != null)
             {
                 m_InteractionDirector.SetInteractionsLocked(false);
@@ -1808,6 +1856,8 @@ namespace Blocks.Gameplay.Core.Customization
 
         private CharacterCustomizationAddon ResolvePreferredAddon()
         {
+            var contextScene = GetContextScene();
+
             if (m_LocalPlayerState != null)
             {
                 var localStateAddon = m_LocalPlayerState.GetComponent<CharacterCustomizationAddon>();
@@ -1841,7 +1891,7 @@ namespace Blocks.Gameplay.Core.Customization
             for (int index = 0; index < addons.Length; index++)
             {
                 var candidate = addons[index];
-                if (candidate == null)
+                if (candidate == null || !IsInScene(candidate.gameObject, contextScene))
                 {
                     continue;
                 }
@@ -1893,7 +1943,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_LocalPlayerCoreAnimator == null)
             {
-                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate();
+                m_LocalPlayerCoreAnimator = ResolveBestCoreAnimatorCandidate(GetContextScene());
             }
 
             if (m_LocalPlayerCoreAnimator == null)
@@ -1912,7 +1962,7 @@ namespace Blocks.Gameplay.Core.Customization
             return applied;
         }
 
-        private CoreAnimator ResolveBestCoreAnimatorCandidate()
+        private CoreAnimator ResolveBestCoreAnimatorCandidate(Scene contextScene)
         {
             var animators = FindObjectsByType<CoreAnimator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (animators == null || animators.Length == 0)
@@ -1930,7 +1980,7 @@ namespace Blocks.Gameplay.Core.Customization
             for (int index = 0; index < animators.Length; index++)
             {
                 var candidate = animators[index];
-                if (candidate == null)
+                if (candidate == null || !IsInScene(candidate.gameObject, contextScene))
                 {
                     continue;
                 }

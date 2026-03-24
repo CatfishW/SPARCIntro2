@@ -21,7 +21,7 @@ MonoBehaviour:
     height: 220
   notes: 
   speakerId: 
-  speakerDisplayName: 
+  speakerDisplayName: You
   body: Right... I need to go.
   portraitKey: 
   moodTag: 

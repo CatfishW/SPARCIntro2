@@ -21,8 +21,8 @@ MonoBehaviour:
     height: 220
   notes: 
   speakerId: 
-  speakerDisplayName: 
-  body: Alright... here goes.
+  speakerDisplayName: You
+  body: 'Alright... here goes '
   portraitKey: 
   moodTag: 
   autoAdvance: 1

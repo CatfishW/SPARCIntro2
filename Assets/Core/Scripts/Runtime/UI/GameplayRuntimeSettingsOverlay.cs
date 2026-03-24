@@ -1,3 +1,4 @@
+using Blocks.Gameplay.Core.Story;
 using ItemInteraction;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,13 +14,27 @@ namespace Blocks.Gameplay.Core
     {
         private const string OverlayObjectName = "GameplayRuntimeSettingsOverlay";
         private const string PrefTouchEnabled = "intro2.settings.touch_controls";
+        private const string PrefTouchPlatform = "intro2.settings.touch_platform";
         private const string PrefHighQuality = "intro2.settings.high_quality";
 
         private static GameplayRuntimeSettingsOverlay s_Instance;
 
+        private enum NeoGlyphKind
+        {
+            None,
+            Settings,
+            Jump,
+            Sprint,
+            Action,
+            Touch,
+            Quality,
+            Close
+        }
+
         private Canvas m_Canvas;
         private RectTransform m_CanvasRect;
         private RectTransform m_TouchRoot;
+        private RectTransform m_SettingsButtonRoot;
         private RectTransform m_SettingsPanel;
         private RectTransform m_MovePad;
         private RectTransform m_MoveHandle;
@@ -35,6 +50,12 @@ namespace Blocks.Gameplay.Core
         private CorePlayerManager m_LocalPlayer;
         private CoreCameraController m_LocalCamera;
         private InteractionDirector m_InteractionDirector;
+        private ClassroomPlayerControlLock m_PlayerControlLock;
+        private ClassroomStoryConversationPresentationController m_ClassroomConversationPresentation;
+        private LabCameraFocusController m_LabConversationFocus;
+        private ClassroomSceneIntroCutscene m_ClassroomIntroCutscene;
+        private LabShrinkSequenceController m_LabShrinkSequence;
+        private LabFinalCutsceneController m_LabFinalCutscene;
 
         private Vector2 m_MoveVector;
         private Vector2 m_PendingLookInput;
@@ -52,6 +73,9 @@ namespace Blocks.Gameplay.Core
         private bool m_HadMoveInputLastFrame;
         private bool m_ObservedTouchInput;
         private float m_NextEventSystemNormalizeTime;
+        private float m_NextPlatformProbeTime;
+        private bool m_IsLikelyMobileWebGl;
+        private bool m_LastSettingsButtonVisible = true;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -90,8 +114,7 @@ namespace Blocks.Gameplay.Core
             s_Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            var defaultTouchEnabled = (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld) ? 1 : 0;
-            m_TouchControlsEnabled = PlayerPrefs.GetInt(PrefTouchEnabled, defaultTouchEnabled) != 0;
+            InitializeTouchControlsPreference();
             m_HighQualityMode = PlayerPrefs.GetInt(PrefHighQuality, 1) != 0;
 
             BuildUi();
@@ -113,7 +136,10 @@ namespace Blocks.Gameplay.Core
         private void Update()
         {
             ResolveRuntimeReferences();
+            EnforceSettingsAvailability();
+            UpdateSettingsButtonVisibility();
             HandleMenuToggleShortcut();
+            RefreshPlatformDetection();
             ObserveTouchInput();
             TryNormalizeEventSystems();
             UpdateTouchControlsVisibility();
@@ -144,6 +170,8 @@ namespace Blocks.Gameplay.Core
             m_NextResolveTime = 0f;
             ResolveRuntimeReferences(force: true);
             m_NextEventSystemNormalizeTime = Time.unscaledTime + 0.15f;
+            m_NextPlatformProbeTime = 0f;
+            RefreshPlatformDetection();
 
             if (m_SettingsOpen)
             {
@@ -159,15 +187,16 @@ namespace Blocks.Gameplay.Core
             }
 
             m_NextResolveTime = Time.unscaledTime + 0.35f;
+            var activeScene = SceneManager.GetActiveScene();
 
-            if (m_LocalInput == null || !m_LocalInput.IsSpawned || !m_LocalInput.IsOwner)
+            if (m_LocalInput == null || !m_LocalInput.IsSpawned || !m_LocalInput.IsOwner || !IsInScene(m_LocalInput.gameObject, activeScene))
             {
                 m_LocalInput = null;
                 var inputs = FindObjectsByType<CoreInputHandler>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < inputs.Length; index++)
                 {
                     var input = inputs[index];
-                    if (input != null && input.IsSpawned && input.IsOwner)
+                    if (input != null && input.IsSpawned && input.IsOwner && IsInScene(input.gameObject, activeScene))
                     {
                         m_LocalInput = input;
                         break;
@@ -175,14 +204,14 @@ namespace Blocks.Gameplay.Core
                 }
             }
 
-            if (m_LocalPlayer == null || !m_LocalPlayer.IsSpawned || !m_LocalPlayer.IsOwner)
+            if (m_LocalPlayer == null || !m_LocalPlayer.IsSpawned || !m_LocalPlayer.IsOwner || !IsInScene(m_LocalPlayer.gameObject, activeScene))
             {
                 m_LocalPlayer = null;
                 var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < players.Length; index++)
                 {
                     var player = players[index];
-                    if (player != null && player.IsSpawned && player.IsOwner)
+                    if (player != null && player.IsSpawned && player.IsOwner && IsInScene(player.gameObject, activeScene))
                     {
                         m_LocalPlayer = player;
                         break;
@@ -199,21 +228,75 @@ namespace Blocks.Gameplay.Core
                 m_LocalCamera = null;
             }
 
-            if (m_InteractionDirector == null)
+            if (m_InteractionDirector != null && !IsInScene(m_InteractionDirector.gameObject, activeScene))
             {
-                m_InteractionDirector = FindFirstObjectByType<InteractionDirector>(FindObjectsInactive.Include);
+                m_InteractionDirector = null;
             }
+
+            m_InteractionDirector ??= FindSceneObject<InteractionDirector>(activeScene, includeInactive: true);
+
+            if (m_PlayerControlLock != null && !IsInScene(m_PlayerControlLock.gameObject, activeScene))
+            {
+                m_PlayerControlLock = null;
+            }
+
+            if (m_ClassroomConversationPresentation != null && !IsInScene(m_ClassroomConversationPresentation.gameObject, activeScene))
+            {
+                m_ClassroomConversationPresentation = null;
+            }
+
+            if (m_LabConversationFocus != null && !IsInScene(m_LabConversationFocus.gameObject, activeScene))
+            {
+                m_LabConversationFocus = null;
+            }
+
+            if (m_ClassroomIntroCutscene != null && !IsInScene(m_ClassroomIntroCutscene.gameObject, activeScene))
+            {
+                m_ClassroomIntroCutscene = null;
+            }
+
+            if (m_LabShrinkSequence != null && !IsInScene(m_LabShrinkSequence.gameObject, activeScene))
+            {
+                m_LabShrinkSequence = null;
+            }
+
+            if (m_LabFinalCutscene != null && !IsInScene(m_LabFinalCutscene.gameObject, activeScene))
+            {
+                m_LabFinalCutscene = null;
+            }
+
+            m_PlayerControlLock ??= FindSceneObject<ClassroomPlayerControlLock>(activeScene, includeInactive: true);
+            m_ClassroomConversationPresentation ??= FindSceneObject<ClassroomStoryConversationPresentationController>(activeScene, includeInactive: true);
+            m_LabConversationFocus ??= FindSceneObject<LabCameraFocusController>(activeScene, includeInactive: true);
+            m_ClassroomIntroCutscene ??= FindSceneObject<ClassroomSceneIntroCutscene>(activeScene, includeInactive: true);
+            m_LabShrinkSequence ??= FindSceneObject<LabShrinkSequenceController>(activeScene, includeInactive: true);
+            m_LabFinalCutscene ??= FindSceneObject<LabFinalCutsceneController>(activeScene, includeInactive: true);
         }
 
         private void HandleMenuToggleShortcut()
         {
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                {
+                    ToggleSettingsPanel();
+                    return;
+                }
+
+                if (Keyboard.current.tabKey.wasPressedThisFrame)
+                {
+                    ToggleSettingsPanel();
+                    return;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 ToggleSettingsPanel();
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 ToggleSettingsPanel();
             }
@@ -253,17 +336,7 @@ namespace Blocks.Gameplay.Core
                 return false;
             }
 
-            if (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld)
-            {
-                return true;
-            }
-
-            if (Application.platform == RuntimePlatform.WebGLPlayer && Input.touchSupported)
-            {
-                return m_ObservedTouchInput;
-            }
-
-            return false;
+            return IsTouchControlsRuntimeAllowed();
         }
 
         private void ObserveTouchInput()
@@ -293,6 +366,158 @@ namespace Blocks.Gameplay.Core
                     }
                 }
             }
+#endif
+        }
+
+        private void InitializeTouchControlsPreference()
+        {
+            m_IsLikelyMobileWebGl = IsLikelyMobileWebGlPlatform();
+            var platformSignature = BuildTouchPlatformSignature();
+            bool detectedDefault = DetectDefaultTouchState();
+            bool touchRuntimeAllowed = IsTouchControlsRuntimeAllowed();
+            bool hasSavedPreference = PlayerPrefs.HasKey(PrefTouchEnabled);
+            var savedPlatformSignature = PlayerPrefs.GetString(PrefTouchPlatform, string.Empty);
+
+            if (!touchRuntimeAllowed)
+            {
+                m_TouchControlsEnabled = false;
+                PlayerPrefs.SetInt(PrefTouchEnabled, 0);
+                PlayerPrefs.SetString(PrefTouchPlatform, platformSignature);
+                PlayerPrefs.Save();
+                return;
+            }
+
+            if (!hasSavedPreference || !string.Equals(savedPlatformSignature, platformSignature, System.StringComparison.Ordinal))
+            {
+                m_TouchControlsEnabled = detectedDefault;
+                PlayerPrefs.SetInt(PrefTouchEnabled, m_TouchControlsEnabled ? 1 : 0);
+                PlayerPrefs.SetString(PrefTouchPlatform, platformSignature);
+                PlayerPrefs.Save();
+                return;
+            }
+
+            m_TouchControlsEnabled = PlayerPrefs.GetInt(PrefTouchEnabled, detectedDefault ? 1 : 0) != 0;
+        }
+
+        private void RefreshPlatformDetection()
+        {
+            if (Time.unscaledTime < m_NextPlatformProbeTime)
+            {
+                return;
+            }
+
+            m_NextPlatformProbeTime = Time.unscaledTime + 1.25f;
+            bool previousValue = m_IsLikelyMobileWebGl;
+            m_IsLikelyMobileWebGl = IsLikelyMobileWebGlPlatform();
+
+            if (!IsTouchControlsRuntimeAllowed() && m_TouchControlsEnabled)
+            {
+                m_TouchControlsEnabled = false;
+                PlayerPrefs.SetInt(PrefTouchEnabled, 0);
+                PlayerPrefs.SetString(PrefTouchPlatform, BuildTouchPlatformSignature());
+                PlayerPrefs.Save();
+            }
+
+            if (previousValue != m_IsLikelyMobileWebGl)
+            {
+                RefreshSettingsLabels();
+                UpdateTouchControlsVisibility();
+            }
+        }
+
+        private bool DetectDefaultTouchState()
+        {
+            return IsTouchControlsRuntimeAllowed();
+        }
+
+        private static bool IsNativeMobilePlatform()
+        {
+            if (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                return true;
+            }
+
+            return Application.platform == RuntimePlatform.IPhonePlayer
+                || Application.platform == RuntimePlatform.Android;
+        }
+
+        private bool IsLikelyMobileWebGlPlatform()
+        {
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                return false;
+            }
+
+            if (IsNativeMobilePlatform())
+            {
+                return true;
+            }
+
+            if (!Input.touchSupported)
+            {
+                return false;
+            }
+
+            var shorterSide = Mathf.Min(Screen.width, Screen.height);
+            if (shorterSide > 0 && shorterSide <= 1024)
+            {
+                return true;
+            }
+
+#if ENABLE_INPUT_SYSTEM
+            bool hasTouchscreen = Touchscreen.current != null;
+            bool hasMouse = Mouse.current != null;
+            bool hasKeyboard = Keyboard.current != null;
+            if (hasTouchscreen && !hasMouse && !hasKeyboard)
+            {
+                return true;
+            }
+#endif
+
+            return false;
+        }
+
+        private string BuildTouchPlatformSignature()
+        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                return m_IsLikelyMobileWebGl ? "WebGL-Mobile" : "WebGL-Desktop";
+            }
+
+            return $"{Application.platform}-{SystemInfo.deviceType}";
+        }
+
+        private bool IsTouchControlsRuntimeAllowed()
+        {
+            if (Application.isEditor)
+            {
+                return false;
+            }
+
+            if (IsNativeMobilePlatform())
+            {
+                return true;
+            }
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                return m_IsLikelyMobileWebGl;
+            }
+
+            return false;
+        }
+
+        private static bool HasTouchInputHardware()
+        {
+            if (Input.touchSupported || Input.touchCount > 0)
+            {
+                return true;
+            }
+
+#if ENABLE_INPUT_SYSTEM
+            return Touchscreen.current != null;
+#else
+            return false;
 #endif
         }
 
@@ -334,6 +559,11 @@ namespace Blocks.Gameplay.Core
 
         private void ToggleSettingsPanel()
         {
+            if (!m_SettingsOpen && !CanOpenSettings())
+            {
+                return;
+            }
+
             SetSettingsOpen(!m_SettingsOpen);
         }
 
@@ -426,6 +656,7 @@ namespace Blocks.Gameplay.Core
         private void BuildSettingsButton()
         {
             var root = CreateRect("SettingsButton", transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
+            m_SettingsButtonRoot = root;
             root.sizeDelta = new Vector2(76f, 76f);
             root.anchoredPosition = new Vector2(-38f, -38f);
 
@@ -446,9 +677,7 @@ namespace Blocks.Gameplay.Core
             var iconRect = CreateRect("GearIcon", root, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             iconRect.sizeDelta = new Vector2(40f, 40f);
             iconRect.anchoredPosition = Vector2.zero;
-            var icon = iconRect.gameObject.AddComponent<GearIconGraphic>();
-            icon.color = new Color(0.08f, 0.09f, 0.12f, 1f);
-            icon.raycastTarget = false;
+            CreateNeoIconVisual(iconRect, NeoGlyphKind.Settings, "Settings", new Color(0.08f, 0.09f, 0.12f, 1f));
         }
 
         private void BuildTouchControls()
@@ -456,6 +685,7 @@ namespace Blocks.Gameplay.Core
             m_TouchRoot = CreateRect("TouchControls", transform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0f, 0f));
             m_TouchRoot.offsetMin = Vector2.zero;
             m_TouchRoot.offsetMax = Vector2.zero;
+            m_TouchRoot.gameObject.SetActive(false);
 
             BuildMovePad();
             BuildLookZone();
@@ -502,14 +732,14 @@ namespace Blocks.Gameplay.Core
 
         private void BuildActionButtons()
         {
-            m_InteractButton = CreateNeoButton("InteractButton", m_TouchRoot, "ACT", new Vector2(1f, 0f), new Vector2(-128f, 160f), new Vector2(130f, 68f), new Color(0.99f, 0.88f, 0.3f, 1f));
+            m_InteractButton = CreateNeoButton("InteractButton", m_TouchRoot, "ACT", new Vector2(1f, 0f), new Vector2(-128f, 160f), new Vector2(136f, 68f), new Color(0.99f, 0.88f, 0.3f, 1f), NeoGlyphKind.Action, "Action");
             m_InteractButton.onClick.AddListener(HandleInteractPressed);
 
-            var jumpButton = CreateNeoButton("JumpButton", m_TouchRoot, "JUMP", new Vector2(1f, 0f), new Vector2(-128f, 80f), new Vector2(130f, 62f), new Color(0.72f, 0.93f, 1f, 1f));
+            var jumpButton = CreateNeoButton("JumpButton", m_TouchRoot, "JUMP", new Vector2(1f, 0f), new Vector2(-128f, 80f), new Vector2(136f, 62f), new Color(0.72f, 0.93f, 1f, 1f), NeoGlyphKind.Jump, "Jump");
             var jumpHold = jumpButton.gameObject.AddComponent<HoldSurface>();
             jumpHold.OnHeldStateChanged += HandleJumpHoldChanged;
 
-            var sprintButton = CreateNeoButton("SprintButton", m_TouchRoot, "RUN", new Vector2(1f, 0f), new Vector2(-270f, 80f), new Vector2(130f, 62f), new Color(1f, 0.74f, 0.67f, 1f));
+            var sprintButton = CreateNeoButton("SprintButton", m_TouchRoot, "RUN", new Vector2(1f, 0f), new Vector2(-274f, 80f), new Vector2(136f, 62f), new Color(1f, 0.74f, 0.67f, 1f), NeoGlyphKind.Sprint, "Sprint");
             var sprintHold = sprintButton.gameObject.AddComponent<HoldSurface>();
             sprintHold.OnHeldStateChanged += HandleSprintHoldChanged;
         }
@@ -527,22 +757,122 @@ namespace Blocks.Gameplay.Core
             Stretch(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -84f), new Vector2(-110f, -24f));
             title.color = new Color(0.07f, 0.08f, 0.12f, 1f);
 
-            var closeButton = CreateNeoButton("CloseButton", m_SettingsPanel, "CLOSE", new Vector2(1f, 1f), new Vector2(-88f, -44f), new Vector2(140f, 56f), new Color(0.78f, 0.81f, 0.89f, 1f));
+            var closeButton = CreateNeoButton("CloseButton", m_SettingsPanel, "CLOSE", new Vector2(1f, 1f), new Vector2(-88f, -44f), new Vector2(150f, 56f), new Color(0.78f, 0.81f, 0.89f, 1f), NeoGlyphKind.Close, "Close", 22);
             closeButton.onClick.AddListener(() => SetSettingsOpen(false));
 
-            m_TouchToggleButton = CreateNeoButton("TouchToggle", m_SettingsPanel, string.Empty, new Vector2(0.5f, 1f), new Vector2(0f, -160f), new Vector2(560f, 72f), new Color(0.98f, 0.88f, 0.52f, 1f));
+            m_TouchToggleButton = CreateNeoButton("TouchToggle", m_SettingsPanel, string.Empty, new Vector2(0.5f, 1f), new Vector2(0f, -160f), new Vector2(560f, 72f), new Color(0.98f, 0.88f, 0.52f, 1f), NeoGlyphKind.Touch, "Touch", 24);
             m_TouchToggleButton.onClick.AddListener(ToggleTouchControls);
             m_TouchToggleLabel = m_TouchToggleButton.GetComponentInChildren<Text>(true);
 
-            m_QualityButton = CreateNeoButton("QualityToggle", m_SettingsPanel, string.Empty, new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(560f, 72f), new Color(0.77f, 0.92f, 1f, 1f));
+            m_QualityButton = CreateNeoButton("QualityToggle", m_SettingsPanel, string.Empty, new Vector2(0.5f, 1f), new Vector2(0f, -248f), new Vector2(560f, 72f), new Color(0.77f, 0.92f, 1f, 1f), NeoGlyphKind.Quality, "Quality", 24);
             m_QualityButton.onClick.AddListener(ToggleQualityMode);
             m_QualityLabel = m_QualityButton.GetComponentInChildren<Text>(true);
 
-            var hint = CreateText("Hint", m_SettingsPanel, "Press ESC or tap the gear icon to close.", 24, FontStyle.Normal, TextAnchor.MiddleCenter);
+            var hint = CreateText("Hint", m_SettingsPanel, "Press Tab or Esc, or tap the gear icon, to close.", 24, FontStyle.Normal, TextAnchor.MiddleCenter);
             Stretch(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(24f, 24f), new Vector2(-24f, 72f));
             hint.color = new Color(0.08f, 0.09f, 0.12f, 0.9f);
 
             m_SettingsPanel.gameObject.SetActive(false);
+        }
+
+        private void EnforceSettingsAvailability()
+        {
+            if (m_SettingsOpen && !CanOpenSettings())
+            {
+                SetSettingsOpen(false);
+            }
+        }
+
+        private void UpdateSettingsButtonVisibility()
+        {
+            if (m_SettingsButtonRoot == null)
+            {
+                return;
+            }
+
+            bool shouldShow = !m_SettingsOpen && !IsSettingsButtonSuppressed();
+            if (m_LastSettingsButtonVisible == shouldShow)
+            {
+                return;
+            }
+
+            m_LastSettingsButtonVisible = shouldShow;
+            m_SettingsButtonRoot.gameObject.SetActive(shouldShow);
+        }
+
+        private bool CanOpenSettings()
+        {
+            return !IsSettingsButtonSuppressed();
+        }
+
+        private bool IsSettingsButtonSuppressed()
+        {
+            if (m_PlayerControlLock != null && m_PlayerControlLock.IsLocked)
+            {
+                return true;
+            }
+
+            if (m_ClassroomConversationPresentation != null && m_ClassroomConversationPresentation.IsConversationActive)
+            {
+                return true;
+            }
+
+            if (m_LabConversationFocus != null && m_LabConversationFocus.IsConversationActive)
+            {
+                return true;
+            }
+
+            if (m_ClassroomIntroCutscene != null && m_ClassroomIntroCutscene.IsPlaying)
+            {
+                return true;
+            }
+
+            if (m_LabShrinkSequence != null && m_LabShrinkSequence.IsPlaying)
+            {
+                return true;
+            }
+
+            if (m_LabFinalCutscene != null && m_LabFinalCutscene.IsPlaying)
+            {
+                return true;
+            }
+
+            var currentFocus = m_InteractionDirector != null ? m_InteractionDirector.CurrentFocus : null;
+            if (currentFocus != null &&
+                (currentFocus.GetComponent<StoryNpcAgent>() != null ||
+                 currentFocus.GetComponentInParent<StoryNpcAgent>() != null))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsInScene(GameObject target, Scene activeScene)
+        {
+            return target != null && activeScene.IsValid() && target.scene == activeScene;
+        }
+
+        private static T FindSceneObject<T>(Scene activeScene, bool includeInactive) where T : Component
+        {
+            if (!activeScene.IsValid())
+            {
+                return null;
+            }
+
+            var candidates = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate != null && IsInScene(candidate.gameObject, activeScene))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private void HandleMovePadDown(PointerEventData evt)
@@ -672,8 +1002,20 @@ namespace Blocks.Gameplay.Core
 
         private void ToggleTouchControls()
         {
+            if (!IsTouchControlsRuntimeAllowed())
+            {
+                m_TouchControlsEnabled = false;
+                PlayerPrefs.SetInt(PrefTouchEnabled, 0);
+                PlayerPrefs.SetString(PrefTouchPlatform, BuildTouchPlatformSignature());
+                PlayerPrefs.Save();
+                RefreshSettingsLabels();
+                UpdateTouchControlsVisibility();
+                return;
+            }
+
             m_TouchControlsEnabled = !m_TouchControlsEnabled;
             PlayerPrefs.SetInt(PrefTouchEnabled, m_TouchControlsEnabled ? 1 : 0);
+            PlayerPrefs.SetString(PrefTouchPlatform, BuildTouchPlatformSignature());
             PlayerPrefs.Save();
             RefreshSettingsLabels();
             UpdateTouchControlsVisibility();
@@ -719,7 +1061,14 @@ namespace Blocks.Gameplay.Core
         {
             if (m_TouchToggleLabel != null)
             {
-                m_TouchToggleLabel.text = m_TouchControlsEnabled ? "TOUCH CONTROLS: ON" : "TOUCH CONTROLS: OFF";
+                m_TouchToggleLabel.text = IsTouchControlsRuntimeAllowed()
+                    ? (m_TouchControlsEnabled ? "TOUCH CONTROLS: ON" : "TOUCH CONTROLS: OFF")
+                    : "TOUCH CONTROLS: MOBILE ONLY";
+            }
+
+            if (m_TouchToggleButton != null)
+            {
+                m_TouchToggleButton.interactable = IsTouchControlsRuntimeAllowed();
             }
 
             if (m_QualityLabel != null)
@@ -761,7 +1110,17 @@ namespace Blocks.Gameplay.Core
             return text;
         }
 
-        private static Button CreateNeoButton(string name, Transform parent, string label, Vector2 anchor, Vector2 anchoredPos, Vector2 size, Color fill)
+        private static Button CreateNeoButton(
+            string name,
+            Transform parent,
+            string label,
+            Vector2 anchor,
+            Vector2 anchoredPos,
+            Vector2 size,
+            Color fill,
+            NeoGlyphKind iconKind = NeoGlyphKind.None,
+            string iconResourceName = null,
+            int fontSize = 26)
         {
             var rect = CreateRect(name, parent, anchor, anchor, new Vector2(0.5f, 0.5f));
             rect.sizeDelta = size;
@@ -781,11 +1140,60 @@ namespace Blocks.Gameplay.Core
             colors.disabledColor = new Color(0.7f, 0.7f, 0.7f, 0.7f);
             button.colors = colors;
 
-            var text = CreateText("Label", rect, label, 26, FontStyle.Bold, TextAnchor.MiddleCenter);
-            Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var textAlignment = iconKind == NeoGlyphKind.None ? TextAnchor.MiddleCenter : TextAnchor.MiddleLeft;
+            var text = CreateText("Label", rect, label, fontSize, FontStyle.Bold, textAlignment);
+            if (iconKind == NeoGlyphKind.None)
+            {
+                Stretch(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            }
+            else
+            {
+                var iconRect = CreateRect("Icon", rect, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f));
+                var iconSize = Mathf.Min(size.y - 18f, 34f);
+                iconRect.sizeDelta = new Vector2(iconSize, iconSize);
+                iconRect.anchoredPosition = new Vector2(24f + (iconSize * 0.5f), 0f);
+                CreateNeoIconVisual(iconRect, iconKind, iconResourceName, new Color(0.08f, 0.09f, 0.12f, 1f));
+
+                Stretch(text.rectTransform, Vector2.zero, Vector2.one, new Vector2(iconSize + 34f, 0f), new Vector2(-10f, 0f));
+            }
+
             text.color = new Color(0.08f, 0.09f, 0.12f, 1f);
 
             return button;
+        }
+
+        private static Graphic CreateNeoIconVisual(RectTransform parent, NeoGlyphKind kind, string resourceName, Color tint)
+        {
+            Graphic graphic;
+            var sprite = string.IsNullOrWhiteSpace(resourceName) ? null : Resources.Load<Sprite>($"TouchIcons/{resourceName}");
+            if (IsUsableTouchIconSprite(sprite))
+            {
+                var image = parent.gameObject.AddComponent<Image>();
+                image.sprite = sprite;
+                image.preserveAspect = true;
+                image.color = tint;
+                graphic = image;
+            }
+            else
+            {
+                var glyph = parent.gameObject.AddComponent<NeoGlyphGraphic>();
+                glyph.Glyph = kind;
+                glyph.color = tint;
+                graphic = glyph;
+            }
+
+            graphic.raycastTarget = false;
+            return graphic;
+        }
+
+        private static bool IsUsableTouchIconSprite(Sprite sprite)
+        {
+            if (sprite == null || sprite.texture == null)
+            {
+                return false;
+            }
+
+            return sprite.rect.width > 1f && sprite.rect.height > 1f;
         }
 
         private static void Stretch(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
@@ -973,9 +1381,25 @@ namespace Blocks.Gameplay.Core
             }
         }
 
-        private sealed class GearIconGraphic : MaskableGraphic
+        private sealed class NeoGlyphGraphic : MaskableGraphic
         {
+            [SerializeField] private NeoGlyphKind glyph = NeoGlyphKind.Settings;
             [SerializeField, Range(6, 12)] private int teeth = 8;
+
+            public NeoGlyphKind Glyph
+            {
+                get => glyph;
+                set
+                {
+                    if (glyph == value)
+                    {
+                        return;
+                    }
+
+                    glyph = value;
+                    SetVerticesDirty();
+                }
+            }
 
             protected override void OnPopulateMesh(VertexHelper vh)
             {
@@ -983,12 +1407,40 @@ namespace Blocks.Gameplay.Core
                 Rect rect = GetPixelAdjustedRect();
                 Vector2 center = rect.center;
                 float radius = Mathf.Min(rect.width, rect.height) * 0.5f;
+                switch (glyph)
+                {
+                    case NeoGlyphKind.Settings:
+                        DrawSettings(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Jump:
+                        DrawJump(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Sprint:
+                        DrawSprint(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Action:
+                        DrawAction(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Touch:
+                        DrawTouch(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Quality:
+                        DrawQuality(vh, center, radius);
+                        break;
+                    case NeoGlyphKind.Close:
+                        DrawClose(vh, center, radius);
+                        break;
+                }
+            }
+
+            private void DrawSettings(VertexHelper vh, Vector2 center, float radius)
+            {
                 float outer = radius * 0.72f;
                 float inner = radius * 0.46f;
                 float hole = radius * 0.2f;
 
                 AddRing(vh, center, inner, outer, 36, color);
-                AddRing(vh, center, 0f, hole, 28, new Color(0.98f, 0.88f, 0.3f, 1f));
+                AddRing(vh, center, 0f, hole, 28, color);
 
                 int safeTeeth = Mathf.Max(6, teeth);
                 for (int index = 0; index < safeTeeth; index++)
@@ -1008,6 +1460,89 @@ namespace Blocks.Gameplay.Core
                         tipCenter - tangent * toothHalfWidth,
                         color);
                 }
+            }
+
+            private void DrawJump(VertexHelper vh, Vector2 center, float radius)
+            {
+                float thickness = radius * 0.18f;
+                AddLine(vh, center + new Vector2(0f, radius * 0.34f), center + new Vector2(0f, -radius * 0.18f), thickness, color);
+                AddTriangle(
+                    vh,
+                    center + new Vector2(0f, radius * 0.62f),
+                    center + new Vector2(-radius * 0.33f, radius * 0.24f),
+                    center + new Vector2(radius * 0.33f, radius * 0.24f),
+                    color);
+                AddLine(vh, center + new Vector2(-radius * 0.42f, -radius * 0.42f), center + new Vector2(radius * 0.42f, -radius * 0.42f), thickness * 0.72f, color);
+            }
+
+            private void DrawSprint(VertexHelper vh, Vector2 center, float radius)
+            {
+                float thickness = radius * 0.13f;
+                DrawChevron(vh, center + new Vector2(-radius * 0.08f, 0f), radius * 0.46f, radius * 0.64f, thickness, color);
+                DrawChevron(vh, center + new Vector2(radius * 0.22f, 0f), radius * 0.46f, radius * 0.64f, thickness, color);
+                AddLine(vh, center + new Vector2(-radius * 0.74f, -radius * 0.18f), center + new Vector2(-radius * 0.34f, -radius * 0.18f), thickness * 0.85f, color);
+                AddLine(vh, center + new Vector2(-radius * 0.7f, radius * 0.18f), center + new Vector2(-radius * 0.42f, radius * 0.18f), thickness * 0.85f, color);
+            }
+
+            private void DrawAction(VertexHelper vh, Vector2 center, float radius)
+            {
+                float thickness = radius * 0.12f;
+                AddRing(vh, center, radius * 0.24f, radius * 0.38f, 32, color);
+                AddLine(vh, center + new Vector2(-radius * 0.08f, radius * 0.72f), center + new Vector2(radius * 0.08f, radius * 0.3f), thickness, color);
+                AddLine(vh, center + new Vector2(-radius * 0.72f, 0f), center + new Vector2(-radius * 0.3f, 0f), thickness, color);
+                AddLine(vh, center + new Vector2(radius * 0.3f, 0f), center + new Vector2(radius * 0.72f, 0f), thickness, color);
+                AddLine(vh, center + new Vector2(0f, -radius * 0.3f), center + new Vector2(0f, -radius * 0.72f), thickness, color);
+            }
+
+            private void DrawTouch(VertexHelper vh, Vector2 center, float radius)
+            {
+                AddRing(vh, center + new Vector2(radius * 0.22f, radius * 0.26f), radius * 0.16f, radius * 0.28f, 28, color);
+                AddLine(vh, center + new Vector2(-radius * 0.04f, -radius * 0.5f), center + new Vector2(-radius * 0.04f, radius * 0.26f), radius * 0.2f, color);
+                AddLine(vh, center + new Vector2(radius * 0.18f, -radius * 0.28f), center + new Vector2(radius * 0.18f, radius * 0.12f), radius * 0.16f, color);
+                AddLine(vh, center + new Vector2(-radius * 0.04f, -radius * 0.52f), center + new Vector2(radius * 0.28f, -radius * 0.52f), radius * 0.18f, color);
+                AddLine(vh, center + new Vector2(-radius * 0.22f, -radius * 0.16f), center + new Vector2(-radius * 0.04f, -radius * 0.34f), radius * 0.16f, color);
+            }
+
+            private void DrawQuality(VertexHelper vh, Vector2 center, float radius)
+            {
+                float thickness = radius * 0.12f;
+                AddRing(vh, center, radius * 0.12f, radius * 0.24f, 24, color);
+                AddLine(vh, center + new Vector2(0f, radius * 0.72f), center + new Vector2(0f, radius * 0.28f), thickness, color);
+                AddLine(vh, center + new Vector2(0f, -radius * 0.72f), center + new Vector2(0f, -radius * 0.28f), thickness, color);
+                AddLine(vh, center + new Vector2(-radius * 0.72f, 0f), center + new Vector2(-radius * 0.28f, 0f), thickness, color);
+                AddLine(vh, center + new Vector2(radius * 0.28f, 0f), center + new Vector2(radius * 0.72f, 0f), thickness, color);
+                AddLine(vh, center + new Vector2(-radius * 0.52f, -radius * 0.52f), center + new Vector2(-radius * 0.2f, -radius * 0.2f), thickness * 0.82f, color);
+                AddLine(vh, center + new Vector2(radius * 0.2f, radius * 0.2f), center + new Vector2(radius * 0.52f, radius * 0.52f), thickness * 0.82f, color);
+                AddLine(vh, center + new Vector2(-radius * 0.52f, radius * 0.52f), center + new Vector2(-radius * 0.2f, radius * 0.2f), thickness * 0.82f, color);
+                AddLine(vh, center + new Vector2(radius * 0.2f, -radius * 0.2f), center + new Vector2(radius * 0.52f, -radius * 0.52f), thickness * 0.82f, color);
+            }
+
+            private void DrawClose(VertexHelper vh, Vector2 center, float radius)
+            {
+                float thickness = radius * 0.18f;
+                AddLine(vh, center + new Vector2(-radius * 0.56f, -radius * 0.56f), center + new Vector2(radius * 0.56f, radius * 0.56f), thickness, color);
+                AddLine(vh, center + new Vector2(-radius * 0.56f, radius * 0.56f), center + new Vector2(radius * 0.56f, -radius * 0.56f), thickness, color);
+            }
+
+            private static void DrawChevron(VertexHelper vh, Vector2 center, float width, float height, float thickness, Color tint)
+            {
+                var left = center + new Vector2(-width * 0.5f, -height * 0.5f);
+                var mid = center + new Vector2(width * 0.1f, 0f);
+                var top = center + new Vector2(-width * 0.5f, height * 0.5f);
+                AddLine(vh, left, mid, thickness, tint);
+                AddLine(vh, mid, top, thickness, tint);
+            }
+
+            private static void AddLine(VertexHelper vh, Vector2 start, Vector2 end, float thickness, Color tint)
+            {
+                var delta = end - start;
+                if (delta.sqrMagnitude <= 0.0001f)
+                {
+                    return;
+                }
+
+                var tangent = new Vector2(-delta.y, delta.x).normalized * (thickness * 0.5f);
+                AddQuad(vh, start - tangent, start + tangent, end + tangent, end - tangent, tint);
             }
 
             private static void AddRing(VertexHelper vh, Vector2 center, float innerRadius, float outerRadius, int segments, Color tint)

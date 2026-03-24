@@ -94,6 +94,16 @@ namespace Blocks.Gameplay.Core
             OnClientDisconnectCallback += HandleClientDisconnect;
             OnServerStarted += HandleServerStarted;
 
+            // Unity Transport does not support running a host/server inside a WebGL player build.
+            // Keep the runtime in local/offline mode and let scene bootstraps position a fallback camera.
+            if (Application.platform == RuntimePlatform.WebGLPlayer && !Application.isEditor)
+            {
+                NetworkState.ConnectionState = ConnectionStates.None;
+                UpdateViewModel();
+                Debug.Log("[GameNetworkManager] WebGL runtime detected. Host startup is disabled.");
+                return;
+            }
+
             // Auto-start an offline single-player host on a flexible port to avoid socket conflicts
             if (TryGetComponent<Unity.Netcode.Transports.UTP.UnityTransport>(out var transport))
             {

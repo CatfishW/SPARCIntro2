@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ItemInteraction;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Blocks.Gameplay.Core.Story
@@ -386,22 +387,48 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveConversationController()
         {
-            if (conversationPresentationController != null)
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (conversationPresentationController != null && conversationPresentationController.gameObject.scene == activeScene)
             {
                 return;
             }
 
-            conversationPresentationController = FindFirstObjectByType<ClassroomStoryConversationPresentationController>(FindObjectsInactive.Include);
+            conversationPresentationController = FindSceneObject<ClassroomStoryConversationPresentationController>(activeScene, includeInactive: true);
         }
 
         private void ResolveInteractionDirector()
         {
-            if (interactionDirector != null)
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (interactionDirector != null && interactionDirector.gameObject.scene == activeScene)
             {
                 return;
             }
 
-            interactionDirector = FindFirstObjectByType<InteractionDirector>(FindObjectsInactive.Include);
+            interactionDirector = FindSceneObject<InteractionDirector>(activeScene, includeInactive: true);
+        }
+
+        private static T FindSceneObject<T>(Scene scene, bool includeInactive)
+            where T : Component
+        {
+            if (!scene.IsValid())
+            {
+                return null;
+            }
+
+            var candidates = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate != null && candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private static Font ResolveBuiltinFont()

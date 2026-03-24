@@ -15,4 +15,7 @@ MonoBehaviour:
   bindings:
   - CueId: BedroomMorningCue
     CueDisplayName: BedroomMorningCue
-    PlayableAsset: {fileID: 11400000, guid: be50bc230f2fe44eda9c86b10b0b775f, type: 2}
+    PlayableAsset: {fileID: 11400000, guid: 371fd3555ab534752a152c3639d0bf74, type: 2}
+  - CueId: BedroomDoor
+    CueDisplayName: BedroomDoor
+    PlayableAsset: {fileID: 11400000, guid: c6ae1f33df0eb4606bf2290f02346a32, type: 2}

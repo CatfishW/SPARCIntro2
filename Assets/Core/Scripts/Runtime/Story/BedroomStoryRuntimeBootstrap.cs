@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using System.Collections.Generic;
 using Blocks.Gameplay.Core;
 using ModularStoryFlow.Runtime.Actions;
 using ModularStoryFlow.Runtime.Bridges;
@@ -10,6 +11,7 @@ using ModularStoryFlow.Runtime.Player;
 using ModularStoryFlow.Runtime.State;
 using ModularStoryFlow.Runtime.Variables;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,6 +35,7 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private string laptopObjectPath = "_Environment/Room/MacBook";
         [SerializeField] private string savedProjectConfigPath = "Assets/StoryFlowBedroomGenerated/Config/StoryFlowProjectConfig.asset";
         [SerializeField] private string savedGraphPath = "Assets/StoryFlowBedroomGenerated/Graphs/BedroomIntroStory.asset";
+        [SerializeField] private bool enableWebGlLitFallback = true;
 
         private StoryFlowProjectConfig runtimeConfig;
         private StoryGraphAsset runtimeGraph;
@@ -96,6 +99,17 @@ namespace Blocks.Gameplay.Core.Story
             {
                 player.StartStory(graphToStart);
             }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (enableWebGlLitFallback)
+            {
+                StartCoroutine(ApplyWebGlMaterialFallbackRoutine());
+            }
+#endif
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogWebBootstrapDiagnosticsRoutine());
+#endif
         }
 
         private void OnDestroy()
@@ -449,28 +463,306 @@ namespace Blocks.Gameplay.Core.Story
                 gameObject.scene,
                 TryComputeWakeUpPose,
                 timeoutSeconds: 12f);
+
+            // In WebGL/local-offline mode there may be no spawned Netcode player object.
+            // Force a sane gameplay camera pose so players never start in a skybox-only view.
+            if (!StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(gameObject.scene, out _))
+            {
+                if (TryComputeBedroomCameraPose(out var cameraPosition, out var cameraRotation))
+                {
+                    ApplyFallbackCameraPose(cameraPosition, cameraRotation);
+                }
+            }
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        private IEnumerator ApplyWebGlMaterialFallbackRoutine()
+        {
+            ApplyWebGlMaterialFallback("t+0");
+            yield return null;
+            yield return new WaitForSeconds(1.5f);
+            ApplyWebGlMaterialFallback("t+1.5");
+        }
+
+        private void ApplyWebGlMaterialFallback(string stamp)
+        {
+            var fallbackShader = FindSupportedWebGlFallbackShader();
+            if (fallbackShader == null)
+            {
+                Debug.LogWarning("[BedroomWebDiag] No supported fallback shader found. Cannot apply lit fallback.");
+                return;
+            }
+
+            var replacements = 0;
+            replacements += ApplyFallbackToRenderers(FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None), fallbackShader);
+            replacements += ApplyFallbackToRenderers(FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None), fallbackShader);
+            Debug.Log($"[BedroomWebDiag {stamp}] Applied WebGL lit fallback materials: {replacements} using '{fallbackShader.name}'");
+        }
+
+        private int ApplyFallbackToRenderers(Renderer[] renderers, Shader fallbackShader)
+        {
+            var replacements = 0;
+            if (renderers == null || fallbackShader == null)
+            {
+                return replacements;
+            }
+
+            for (var rendererIndex = 0; rendererIndex < renderers.Length; rendererIndex++)
+            {
+                var renderer = renderers[rendererIndex];
+                if (renderer == null || renderer.gameObject.scene != gameObject.scene)
+                {
+                    continue;
+                }
+
+                var sharedMaterials = renderer.sharedMaterials;
+                if (sharedMaterials == null || sharedMaterials.Length == 0)
+                {
+                    continue;
+                }
+
+                List<Material> rewrittenMaterials = null;
+                for (var materialIndex = 0; materialIndex < sharedMaterials.Length; materialIndex++)
+                {
+                    var material = sharedMaterials[materialIndex];
+                    if (!ShouldReplaceWebGlMaterial(material))
+                    {
+                        continue;
+                    }
+
+                    rewrittenMaterials ??= new List<Material>(sharedMaterials);
+                    var replacement = new Material(fallbackShader)
+                    {
+                        name = $"{material.name}_WebGlFallback"
+                    };
+
+                    if (material.HasProperty("_BaseMap"))
+                    {
+                        var baseMap = material.GetTexture("_BaseMap");
+                        if (replacement.HasProperty("_BaseMap"))
+                        {
+                            replacement.SetTexture("_BaseMap", baseMap);
+                        }
+
+                        if (replacement.HasProperty("_MainTex"))
+                        {
+                            replacement.SetTexture("_MainTex", baseMap);
+                        }
+                    }
+                    else if (material.HasProperty("_MainTex"))
+                    {
+                        var mainTexture = material.GetTexture("_MainTex");
+                        if (replacement.HasProperty("_MainTex"))
+                        {
+                            replacement.SetTexture("_MainTex", mainTexture);
+                        }
+
+                        if (replacement.HasProperty("_BaseMap"))
+                        {
+                            replacement.SetTexture("_BaseMap", mainTexture);
+                        }
+                    }
+
+                    if (material.HasProperty("_BaseColor"))
+                    {
+                        var baseColor = material.GetColor("_BaseColor");
+                        if (replacement.HasProperty("_BaseColor"))
+                        {
+                            replacement.SetColor("_BaseColor", baseColor);
+                        }
+
+                        if (replacement.HasProperty("_Color"))
+                        {
+                            replacement.SetColor("_Color", baseColor);
+                        }
+                    }
+                    else if (material.HasProperty("_Color"))
+                    {
+                        var color = material.GetColor("_Color");
+                        if (replacement.HasProperty("_Color"))
+                        {
+                            replacement.SetColor("_Color", color);
+                        }
+
+                        if (replacement.HasProperty("_BaseColor"))
+                        {
+                            replacement.SetColor("_BaseColor", color);
+                        }
+                    }
+
+                    rewrittenMaterials[materialIndex] = replacement;
+                    replacements++;
+                }
+
+                if (rewrittenMaterials != null)
+                {
+                    renderer.sharedMaterials = rewrittenMaterials.ToArray();
+                }
+            }
+
+            return replacements;
+        }
+
+        private static bool ShouldReplaceWebGlMaterial(Material material)
+        {
+            if (material == null)
+            {
+                return false;
+            }
+
+            var shader = material.shader;
+            if (shader == null)
+            {
+                return true;
+            }
+
+            if (!shader.isSupported)
+            {
+                return true;
+            }
+
+            var shaderName = shader.name ?? string.Empty;
+            return shaderName.StartsWith("Universal Render Pipeline/", System.StringComparison.OrdinalIgnoreCase)
+                   && shaderName.IndexOf("Unlit", System.StringComparison.OrdinalIgnoreCase) < 0;
+        }
+
+        private static Shader FindSupportedWebGlFallbackShader()
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Unlit");
+            if (shader != null && shader.isSupported)
+            {
+                return shader;
+            }
+
+            shader = Shader.Find("Unlit/Texture");
+            if (shader != null && shader.isSupported)
+            {
+                return shader;
+            }
+
+            shader = Shader.Find("Unlit/Color");
+            if (shader != null && shader.isSupported)
+            {
+                return shader;
+            }
+
+            shader = Shader.Find("Sprites/Default");
+            return shader != null && shader.isSupported ? shader : null;
+        }
+
+        private IEnumerator LogWebBootstrapDiagnosticsRoutine()
+        {
+            yield return new WaitForSeconds(3f);
+            LogWebBootstrapDiagnostics("t+3");
+            yield return new WaitForSeconds(12f);
+            LogWebBootstrapDiagnostics("t+15");
+        }
+
+        private void LogWebBootstrapDiagnostics(string stamp)
+        {
+            var scene = gameObject.scene;
+            var cameraSummary = string.Empty;
+            var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < cameras.Length; index++)
+            {
+                var cam = cameras[index];
+                if (cam == null)
+                {
+                    continue;
+                }
+
+                cameraSummary += $"{cam.name}@{cam.gameObject.scene.name} pos={cam.transform.position} rot={cam.transform.eulerAngles} depth={cam.depth} enabled={cam.enabled} mask={cam.cullingMask}; ";
+            }
+
+            var rendererCount = 0;
+            var activeRendererCount = 0;
+            var meshRenderers = FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < meshRenderers.Length; index++)
+            {
+                var meshRenderer = meshRenderers[index];
+                if (meshRenderer == null || meshRenderer.gameObject.scene != scene)
+                {
+                    continue;
+                }
+
+                rendererCount++;
+                if (meshRenderer.enabled && meshRenderer.gameObject.activeInHierarchy)
+                {
+                    activeRendererCount++;
+                }
+            }
+
+            var skinnedCount = 0;
+            var skinnedRenderers = FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < skinnedRenderers.Length; index++)
+            {
+                var skinned = skinnedRenderers[index];
+                if (skinned == null || skinned.gameObject.scene != scene)
+                {
+                    continue;
+                }
+
+                skinnedCount++;
+            }
+
+            var bed = FindTransformByPath(bedObjectPath) ?? GameObject.Find("Bed")?.transform;
+            var laptop = FindTransformByPath(laptopObjectPath) ?? GameObject.Find("MacBook")?.transform;
+            var hasPlayer = StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(scene, out var movement);
+
+            Debug.Log($"[BedroomWebDiag {stamp}] scene={scene.name} hasPlayer={hasPlayer} player={(movement != null ? movement.transform.position.ToString() : "null")} bed={(bed != null ? bed.position.ToString() : "null")} laptop={(laptop != null ? laptop.position.ToString() : "null")} meshRenderers={rendererCount} activeMeshRenderers={activeRendererCount} skinnedRenderers={skinnedCount} cameras={cameraSummary}");
+        }
+#endif
 
         private bool TryComputeWakeUpPose(out Vector3 position, out Quaternion rotation)
         {
             position = Vector3.zero;
             rotation = Quaternion.identity;
 
-            var wakeUpAnchor = GameObject.Find(wakeUpAnchorPath);
+            var bedObject = FindTransformByPath(bedObjectPath)?.gameObject ?? GameObject.Find(bedObjectPath) ?? GameObject.Find("Bed");
+            var wakeUpAnchor = FindTransformByPath(wakeUpAnchorPath);
             if (wakeUpAnchor != null)
             {
-                position = wakeUpAnchor.transform.position;
-                rotation = wakeUpAnchor.transform.rotation;
+                var anchorIsPlausible = true;
+                if (bedObject != null && TryGetObjectBounds(bedObject, out var bedAnchorBounds))
+                {
+                    // Some authored spawn pads are intentionally disabled, but others are far outside the playable room.
+                    // Validate distance so WebGL never boots into an empty-horizon camera.
+                    anchorIsPlausible = Vector3.Distance(wakeUpAnchor.position, bedAnchorBounds.center) <= 6.5f;
+                }
+
+                if (anchorIsPlausible)
+                {
+                    position = wakeUpAnchor.position;
+                    rotation = wakeUpAnchor.rotation;
+                    return true;
+                }
+            }
+
+            if (bedObject == null || !TryGetObjectBounds(bedObject, out var bedBounds))
+            {
+                var fallbackCamera = Camera.main;
+                if (fallbackCamera == null)
+                {
+                    var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    if (cameras != null && cameras.Length > 0)
+                    {
+                        fallbackCamera = cameras[0];
+                    }
+                }
+
+                if (fallbackCamera != null)
+                {
+                    position = fallbackCamera.transform.position;
+                    rotation = fallbackCamera.transform.rotation;
+                    return true;
+                }
+
+                position = new Vector3(0f, wakeUpVerticalOffset, 0f);
+                rotation = Quaternion.identity;
                 return true;
             }
 
-            var bedObject = GameObject.Find(bedObjectPath) ?? GameObject.Find("Bed");
-            if (bedObject == null || !TryGetObjectBounds(bedObject, out var bedBounds))
-            {
-                return false;
-            }
-
-            var laptopObject = GameObject.Find(laptopObjectPath) ?? GameObject.Find("MacBook");
+            var laptopObject = FindTransformByPath(laptopObjectPath)?.gameObject ?? GameObject.Find(laptopObjectPath) ?? GameObject.Find("MacBook");
             Vector3 facingDirection;
             if (laptopObject != null && TryGetObjectBounds(laptopObject, out var laptopBounds))
             {
@@ -489,12 +781,160 @@ namespace Blocks.Gameplay.Core.Story
 
             facingDirection.Normalize();
 
-            var horizontalExtent = Mathf.Max(bedBounds.extents.x, bedBounds.extents.z);
+            var horizontalExtent = Mathf.Clamp(Mathf.Max(bedBounds.extents.x, bedBounds.extents.z), 0.35f, 1.55f);
             position = bedBounds.center + (facingDirection * (horizontalExtent + wakeUpSpawnClearance));
             position.y = bedBounds.min.y + wakeUpVerticalOffset;
             // Face back toward the bed so the third-person camera opens into the room instead of clipping into furniture.
             rotation = Quaternion.LookRotation(-facingDirection, Vector3.up);
             return true;
+        }
+
+        private bool TryComputeBedroomCameraPose(out Vector3 position, out Quaternion rotation)
+        {
+            position = Vector3.zero;
+            rotation = Quaternion.identity;
+
+            var laptop = FindTransformByPath(laptopObjectPath) ?? GameObject.Find(laptopObjectPath)?.transform ?? GameObject.Find("MacBook")?.transform;
+            if (laptop != null)
+            {
+                position = laptop.position + new Vector3(-1.35f, 1.45f, -1.15f);
+                var lookDirection = laptop.position - position;
+                if (lookDirection.sqrMagnitude > 0.0001f)
+                {
+                    rotation = Quaternion.LookRotation(lookDirection.normalized, Vector3.up);
+                    return true;
+                }
+            }
+
+            if (TryComputeWakeUpPose(out var wakePosition, out var wakeRotation))
+            {
+                position = wakePosition + new Vector3(0f, 1.45f, 0f);
+                rotation = wakeRotation;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ApplyFallbackCameraPose(Vector3 position, Quaternion rotation)
+        {
+            Camera fallbackCamera = null;
+
+            if (Camera.main != null && Camera.main.gameObject.scene == gameObject.scene)
+            {
+                fallbackCamera = Camera.main;
+            }
+
+            if (fallbackCamera == null)
+            {
+                var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                for (var index = 0; index < cameras.Length; index++)
+                {
+                    var candidate = cameras[index];
+                    if (candidate != null && candidate.gameObject.scene == gameObject.scene)
+                    {
+                        fallbackCamera = candidate;
+                        break;
+                    }
+                }
+            }
+
+            if (fallbackCamera == null)
+            {
+                return;
+            }
+
+            fallbackCamera.transform.SetPositionAndRotation(position, rotation);
+            fallbackCamera.cullingMask = ~0;
+        }
+
+        private static Transform FindTransformByPath(string hierarchyPath)
+        {
+            if (string.IsNullOrWhiteSpace(hierarchyPath))
+            {
+                return null;
+            }
+
+            var segments = hierarchyPath.Split('/');
+            if (segments.Length == 0)
+            {
+                return null;
+            }
+
+            for (var sceneIndex = 0; sceneIndex < SceneManager.sceneCount; sceneIndex++)
+            {
+                var scene = SceneManager.GetSceneAt(sceneIndex);
+                if (!scene.IsValid() || !scene.isLoaded)
+                {
+                    continue;
+                }
+
+                var roots = scene.GetRootGameObjects();
+                for (var rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+                {
+                    var root = roots[rootIndex];
+                    if (!NameMatches(root.name, segments[0]))
+                    {
+                        continue;
+                    }
+
+                    var current = root.transform;
+                    for (var segmentIndex = 1; segmentIndex < segments.Length && current != null; segmentIndex++)
+                    {
+                        current = FindChildBySegment(current, segments[segmentIndex]);
+                    }
+
+                    if (current != null)
+                    {
+                        return current;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static Transform FindChildBySegment(Transform parent, string segment)
+        {
+            if (parent == null || string.IsNullOrWhiteSpace(segment))
+            {
+                return null;
+            }
+
+            var direct = parent.Find(segment);
+            if (direct != null)
+            {
+                return direct;
+            }
+
+            for (var index = 0; index < parent.childCount; index++)
+            {
+                var child = parent.GetChild(index);
+                if (NameMatches(child.name, segment))
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool NameMatches(string actualName, string expectedSegment)
+        {
+            if (string.IsNullOrWhiteSpace(actualName) || string.IsNullOrWhiteSpace(expectedSegment))
+            {
+                return false;
+            }
+
+            if (string.Equals(actualName, expectedSegment, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return actualName.StartsWith(expectedSegment + " ", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment + "(", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment + "_", System.StringComparison.OrdinalIgnoreCase)
+                || actualName.StartsWith(expectedSegment, System.StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool TryGetObjectBounds(GameObject target, out Bounds bounds)

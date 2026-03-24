@@ -15,10 +15,10 @@ MonoBehaviour:
   nodeId: node_a1a874ad28ea43d884e9a0c93a4c7ebf
   editorPosition:
     serializedVersion: 2
-    x: 3200
-    y: 120
-    width: 280
-    height: 220
+    x: 3510.968
+    y: 416.0718
+    width: 213
+    height: 254.00015
   notes: 
   actions:
   - {fileID: 11400000, guid: 9093f080b5a284e7ab0b55eab6926682, type: 2}

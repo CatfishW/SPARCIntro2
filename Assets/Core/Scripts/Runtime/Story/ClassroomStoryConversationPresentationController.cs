@@ -504,7 +504,12 @@ namespace Blocks.Gameplay.Core.Story
                 return localPlayerManager != null ? localPlayerManager.transform : null;
             }
 
-            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
+            var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (npcRegistry == null || npcRegistry.gameObject.scene != activeScene)
+            {
+                npcRegistry = FindSceneObject<StoryNpcRegistry>(activeScene, includeInactive: true);
+            }
+
             if (npcRegistry == null)
             {
                 return null;
@@ -530,10 +535,32 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveRuntimeReferences()
         {
-            controlLock = controlLock != null ? controlLock : GetComponent<ClassroomPlayerControlLock>();
-            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
-            ambientController = ambientController != null ? ambientController : FindFirstObjectByType<ClassroomNpcAmbientController>();
             var activeScene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+
+            if (controlLock != null && controlLock.gameObject.scene != activeScene)
+            {
+                controlLock = null;
+            }
+
+            if (npcRegistry != null && npcRegistry.gameObject.scene != activeScene)
+            {
+                npcRegistry = null;
+            }
+
+            if (ambientController != null && ambientController.gameObject.scene != activeScene)
+            {
+                ambientController = null;
+            }
+
+            controlLock = controlLock != null
+                ? controlLock
+                : FindSceneObject<ClassroomPlayerControlLock>(activeScene, includeInactive: true);
+            npcRegistry = npcRegistry != null
+                ? npcRegistry
+                : FindSceneObject<StoryNpcRegistry>(activeScene, includeInactive: true);
+            ambientController = ambientController != null
+                ? ambientController
+                : FindSceneObject<ClassroomNpcAmbientController>(activeScene, includeInactive: true);
 
             if (gameplayCamera == null || gameplayCamera.gameObject.scene != activeScene)
             {
@@ -558,8 +585,6 @@ namespace Blocks.Gameplay.Core.Story
             {
                 CorePlayerManager ownerInActiveScene = null;
                 CorePlayerManager firstInActiveScene = null;
-                CorePlayerManager ownerAnywhere = null;
-                CorePlayerManager firstAnywhere = null;
 
                 var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < players.Length; index++)
@@ -568,11 +593,6 @@ namespace Blocks.Gameplay.Core.Story
                     if (candidate == null)
                     {
                         continue;
-                    }
-
-                    if (firstAnywhere == null)
-                    {
-                        firstAnywhere = candidate;
                     }
 
                     var candidateScene = candidate.gameObject.scene;
@@ -590,14 +610,9 @@ namespace Blocks.Gameplay.Core.Story
                             break;
                         }
                     }
-
-                    if (candidate.IsOwner && ownerAnywhere == null)
-                    {
-                        ownerAnywhere = candidate;
-                    }
                 }
 
-                localPlayerManager = ownerInActiveScene ?? firstInActiveScene ?? ownerAnywhere ?? firstAnywhere;
+                localPlayerManager = ownerInActiveScene ?? firstInActiveScene;
             }
 
             if (previousPlayerManager != localPlayerManager)
@@ -649,7 +664,36 @@ namespace Blocks.Gameplay.Core.Story
                 }
             }
 
-            return fallback != null ? fallback : Camera.main;
+            if (fallback != null)
+            {
+                return fallback;
+            }
+
+            var main = Camera.main;
+            return main != null && main.gameObject.scene == activeScene ? main : null;
+        }
+
+        private static T FindSceneObject<T>(Scene activeScene, bool includeInactive)
+            where T : Component
+        {
+            if (!activeScene.IsValid())
+            {
+                return null;
+            }
+
+            var candidates = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate != null && candidate.gameObject.scene == activeScene)
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private void ApplyConversationVisibility()

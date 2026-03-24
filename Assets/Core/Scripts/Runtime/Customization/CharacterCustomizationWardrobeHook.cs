@@ -1,5 +1,6 @@
 using ItemInteraction;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
@@ -162,22 +163,33 @@ namespace Blocks.Gameplay.Core.Customization
                 interactableItem = GetComponent<InteractableItem>();
             }
 
+            var scene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (customizationPanel != null && customizationPanel.gameObject.scene != scene)
+            {
+                customizationPanel = null;
+            }
+
             if (customizationPanel == null)
             {
-                customizationPanel = FindFirstObjectByType<CharacterCustomizationPanel>(FindObjectsInactive.Include);
+                customizationPanel = FindSceneObject<CharacterCustomizationPanel>(scene, includeInactive: true);
                 if (customizationPanel == null)
                 {
-                    customizationPanel = CreateRuntimePanel();
+                    customizationPanel = CreateRuntimePanel(scene);
                 }
             }
         }
 
-        private CharacterCustomizationPanel CreateRuntimePanel()
+        private CharacterCustomizationPanel CreateRuntimePanel(Scene scene)
         {
             var panelObject = GameObject.Find(RuntimePanelObjectName);
             if (panelObject == null)
             {
                 panelObject = new GameObject(RuntimePanelObjectName);
+            }
+
+            if (scene.IsValid() && panelObject.scene != scene)
+            {
+                SceneManager.MoveGameObjectToScene(panelObject, scene);
             }
 
             if (panelObject.GetComponent<UIDocument>() == null)
@@ -197,6 +209,30 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             return panel;
+        }
+
+        private static T FindSceneObject<T>(Scene scene, bool includeInactive)
+            where T : Component
+        {
+            if (!scene.IsValid())
+            {
+                return null;
+            }
+
+            var candidates = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate != null && candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private void NormalizeLookOptionSlot(InteractionOption primaryOption)

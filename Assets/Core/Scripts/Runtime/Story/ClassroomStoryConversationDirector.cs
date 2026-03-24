@@ -8,6 +8,7 @@ using ItemInteraction;
 using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Events;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -204,14 +205,21 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ResolveSceneReferences()
         {
-            npcRegistry = npcRegistry != null ? npcRegistry : FindFirstObjectByType<StoryNpcRegistry>();
+            var activeScene = SceneManager.GetActiveScene();
+
+            if (!IsInScene(npcRegistry, activeScene))
+            {
+                npcRegistry = FindSceneObject<StoryNpcRegistry>(activeScene, includeInactive: true);
+            }
+
             teacherNpc = teacherNpc != null ? teacherNpc : ResolveNpc(ClassroomStoryNpcIds.Teacher);
             friendNpc = friendNpc != null ? friendNpc : ResolveNpc(ClassroomStoryNpcIds.Friend);
             skepticNpc = skepticNpc != null ? skepticNpc : ResolveNpc(ClassroomStoryNpcIds.Skeptic);
 
-            presentationController = presentationController != null
-                ? presentationController
-                : FindFirstObjectByType<ClassroomStoryConversationPresentationController>();
+            if (!IsInScene(presentationController, activeScene))
+            {
+                presentationController = FindSceneObject<ClassroomStoryConversationPresentationController>(activeScene, includeInactive: true);
+            }
 
             objectivePresenter = objectivePresenter != null
                 ? objectivePresenter
@@ -614,6 +622,8 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            ResolveSceneReferences();
+
             if (!ReferencesRegisteredNpc(payload.Agent))
             {
                 return;
@@ -749,6 +759,7 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            ResolveSceneReferences();
             activeConversationRoutine = StartCoroutine(RunConversationRoutine(routine, enablePresentation));
         }
 
@@ -1890,6 +1901,40 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return component;
+        }
+
+        private static bool IsInScene(Component component, Scene scene)
+        {
+            if (component == null || !scene.IsValid())
+            {
+                return false;
+            }
+
+            return component.gameObject.scene == scene;
+        }
+
+        private static T FindSceneObject<T>(Scene scene, bool includeInactive)
+            where T : Component
+        {
+            if (!scene.IsValid())
+            {
+                return null;
+            }
+
+            var candidates = FindObjectsByType<T>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+
+            for (var index = 0; index < candidates.Length; index++)
+            {
+                var candidate = candidates[index];
+                if (candidate != null && candidate.gameObject.scene == scene)
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private static InteractableItem EnsureInteractable(

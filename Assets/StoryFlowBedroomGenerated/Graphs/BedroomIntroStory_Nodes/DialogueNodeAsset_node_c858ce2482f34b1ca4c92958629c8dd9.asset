@@ -21,7 +21,7 @@ MonoBehaviour:
     height: 220
   notes: 
   speakerId: 
-  speakerDisplayName: 
+  speakerDisplayName: You
   body: ...What day is it today?
   portraitKey: 
   moodTag: 

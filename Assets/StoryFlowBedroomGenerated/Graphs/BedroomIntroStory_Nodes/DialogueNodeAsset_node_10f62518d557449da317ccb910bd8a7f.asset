@@ -21,7 +21,7 @@ MonoBehaviour:
     height: 220
   notes: 
   speakerId: 
-  speakerDisplayName: 
+  speakerDisplayName: You
   body: Maybe I should check my laptop... then head to school.
   portraitKey: 
   moodTag: 

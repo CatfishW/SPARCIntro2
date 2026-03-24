@@ -23,7 +23,8 @@ namespace ItemInteraction
 
         [Header("Runtime State")]
         [SerializeField] private bool lockInteractions;
-        [SerializeField, Min(0f)] private float promptResumeDelaySeconds = 0.45f;
+        [SerializeField, Min(0f)] private float promptResumeDelaySeconds = 1.05f;
+        [SerializeField, Min(0f)] private float externalBusyResumeDelaySeconds = 0.95f;
 
         private readonly List<InteractionOption> visibleOptions = new List<InteractionOption>(8);
         private InteractableItem currentFocus;
@@ -37,6 +38,7 @@ namespace ItemInteraction
         private readonly List<MonoBehaviour> externalBusyBehaviours = new List<MonoBehaviour>(16);
         private readonly List<MonoBehaviour> uiBuffer = new List<MonoBehaviour>(64);
         private float promptResumeBlockedUntilUnscaledTime;
+        private bool wasExternalBusyLastFrame;
 
         private static readonly string[] BusyOpenTypeNames =
         {
@@ -79,8 +81,20 @@ namespace ItemInteraction
 
             if (wasLocked && promptResumeDelaySeconds > 0f)
             {
-                promptResumeBlockedUntilUnscaledTime = Time.unscaledTime + promptResumeDelaySeconds;
+                BlockPromptResume(promptResumeDelaySeconds);
             }
+        }
+
+        public void BlockPromptResume(float seconds)
+        {
+            if (seconds <= 0f)
+            {
+                return;
+            }
+
+            promptResumeBlockedUntilUnscaledTime = Mathf.Max(
+                promptResumeBlockedUntilUnscaledTime,
+                Time.unscaledTime + seconds);
         }
 
         public bool TryOpenInspection(InteractableItem item, InteractionOption option)
@@ -113,6 +127,8 @@ namespace ItemInteraction
         private void Awake()
         {
             lockInteractions = false;
+            promptResumeDelaySeconds = Mathf.Max(promptResumeDelaySeconds, 0.9f);
+            externalBusyResumeDelaySeconds = Mathf.Max(externalBusyResumeDelaySeconds, 0.8f);
 
             if (gameplayCamera == null)
             {
@@ -135,6 +151,7 @@ namespace ItemInteraction
         {
             lockInteractions = false;
             promptResumeBlockedUntilUnscaledTime = 0f;
+            wasExternalBusyLastFrame = false;
         }
 
         private void EnsurePresenters()
@@ -180,8 +197,18 @@ namespace ItemInteraction
                 return;
             }
 
-            if (HasExternalInteractionBusy())
+            var externalBusy = HasExternalInteractionBusy();
+            if (externalBusy)
             {
+                wasExternalBusyLastFrame = true;
+                ClearFocus();
+                return;
+            }
+
+            if (wasExternalBusyLastFrame)
+            {
+                wasExternalBusyLastFrame = false;
+                BlockPromptResume(externalBusyResumeDelaySeconds);
                 ClearFocus();
                 return;
             }

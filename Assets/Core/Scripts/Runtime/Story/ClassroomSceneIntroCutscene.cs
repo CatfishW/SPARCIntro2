@@ -36,6 +36,7 @@ namespace Blocks.Gameplay.Core.Story
         private bool lockAcquired;
 
         public bool HasPlayed => hasPlayed;
+        public bool IsPlaying => isPlaying;
 
         private void Awake()
         {

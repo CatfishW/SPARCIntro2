@@ -49,7 +49,8 @@ MonoBehaviour:
   - {fileID: 7833122117494664109}
   - {fileID: -4056039214171381736}
   m_RendererFeatureMap: ad6b866f10d7b46c18a04214d30db6c7
-  m_UseNativeRenderPass: 1
+  m_UseNativeRenderPass: 0
+  xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 3
   m_PrepassLayerMask:
@@ -69,7 +70,7 @@ MonoBehaviour:
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
-  m_RenderingMode: 2
+  m_RenderingMode: 0
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
   m_DepthAttachmentFormat: 0

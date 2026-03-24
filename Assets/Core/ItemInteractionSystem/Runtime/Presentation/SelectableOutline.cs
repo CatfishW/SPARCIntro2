@@ -13,6 +13,7 @@ namespace ItemInteraction
 
         private readonly List<Renderer> outlineRenderers = new List<Renderer>();
         private readonly List<GameObject> cloneObjects = new List<GameObject>();
+        private static bool s_LoggedMissingOutlineShader;
         private Material outlineMaterial;
         private MaterialPropertyBlock propertyBlock;
         private bool built;
@@ -83,7 +84,14 @@ namespace ItemInteraction
             var shader = Shader.Find("ItemInteraction/InteractionOutline");
             if (shader == null)
             {
-                Debug.LogError("ItemInteraction: outline shader not found.", this);
+                if (!s_LoggedMissingOutlineShader)
+                {
+                    s_LoggedMissingOutlineShader = true;
+                    Debug.LogWarning("ItemInteraction: outline shader not found. Outline rendering disabled.");
+                }
+
+                // Prevent repeated retries and log spam when the shader is stripped/missing.
+                built = true;
                 return;
             }
 

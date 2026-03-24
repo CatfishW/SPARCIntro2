@@ -21,7 +21,7 @@ MonoBehaviour:
     height: 220
   notes: 
   speakerId: 
-  speakerDisplayName: 
+  speakerDisplayName: You
   body: Feels like I'm forgetting something.
   portraitKey: 
   moodTag: 
