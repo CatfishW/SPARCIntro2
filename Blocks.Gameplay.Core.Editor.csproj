@@ -52,6 +52,7 @@
     <Compile Include="Assets/Core/Scripts/Editor/Build/Intro2WebGlBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/Customization/CharacterCustomizationCatalogGenerator.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/CorePlayerManagerEditor.cs" />
+    <Compile Include="Assets/Core/Scripts/Editor/Build/Intro2AndroidBuilder.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/StatsConfigEditor.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/SoundDefEditor.cs" />
     <Compile Include="Assets/Core/Scripts/Editor/CoreMovementEditor.cs" />
