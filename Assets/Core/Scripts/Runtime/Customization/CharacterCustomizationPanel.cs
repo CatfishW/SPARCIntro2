@@ -131,6 +131,7 @@ namespace Blocks.Gameplay.Core.Customization
         private void Awake()
         {
             m_UIDocument = GetComponent<UIDocument>();
+            EnsureStandaloneDocumentHost();
             EnsureBuilt();
         }
 
@@ -238,6 +239,27 @@ namespace Blocks.Gameplay.Core.Customization
         public void Open()
         {
             Show();
+        }
+
+        public bool RebuildAndShow()
+        {
+            m_IsBuilt = false;
+            m_Root = null;
+
+            if (m_UIDocument == null)
+            {
+                m_UIDocument = GetComponent<UIDocument>();
+            }
+
+            if (m_UIDocument != null)
+            {
+                m_UIDocument.enabled = false;
+                m_UIDocument.enabled = true;
+            }
+
+            EnsureBuilt();
+            Show();
+            return m_IsOpen;
         }
 
         public void Hide()
@@ -350,6 +372,7 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
+            EnsureStandaloneDocumentHost();
             EnsureDocumentCanRender();
             m_UIDocument.sortingOrder = documentSortingOrder;
 
@@ -481,6 +504,37 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             m_UIDocument.panelSettings = m_RuntimePanelSettings;
+        }
+
+        private void EnsureStandaloneDocumentHost()
+        {
+            if (transform == null)
+            {
+                return;
+            }
+
+            var parent = transform.parent;
+            if (parent == null)
+            {
+                return;
+            }
+
+            var parentHasUiDocument =
+                parent.GetComponent<UIDocument>() != null ||
+                parent.GetComponentInParent<UIDocument>() != null;
+
+            if (!parentHasUiDocument)
+            {
+                return;
+            }
+
+            // Keep the customization panel out of nested UIDocument hierarchies to avoid hidden/invalid roots.
+            transform.SetParent(null, false);
+            var contextScene = GetContextScene();
+            if (contextScene.IsValid() && gameObject.scene != contextScene)
+            {
+                SceneManager.MoveGameObjectToScene(gameObject, contextScene);
+            }
         }
 
         private void DetachFromParentDocument()

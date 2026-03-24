@@ -35,6 +35,7 @@ namespace Blocks.Gameplay.Core
         private RectTransform m_CanvasRect;
         private RectTransform m_TouchRoot;
         private RectTransform m_SettingsButtonRoot;
+        private RectTransform m_SettingsIconRoot;
         private RectTransform m_SettingsPanel;
         private RectTransform m_MovePad;
         private RectTransform m_MoveHandle;
@@ -138,6 +139,7 @@ namespace Blocks.Gameplay.Core
             ResolveRuntimeReferences();
             EnforceSettingsAvailability();
             UpdateSettingsButtonVisibility();
+            EnsureSettingsIconVisualIntegrity();
             HandleMenuToggleShortcut();
             RefreshPlatformDetection();
             ObserveTouchInput();
@@ -673,10 +675,10 @@ namespace Blocks.Gameplay.Core
             m_SettingsButton.onClick.AddListener(ToggleSettingsPanel);
 
             var iconRect = CreateRect("GearIcon", root, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            m_SettingsIconRoot = iconRect;
             iconRect.sizeDelta = new Vector2(40f, 40f);
             iconRect.anchoredPosition = Vector2.zero;
-            // Force procedural glyph on settings button to avoid blank SVG sprite imports.
-            CreateNeoIconVisual(iconRect, NeoGlyphKind.Settings, null, new Color(0.08f, 0.09f, 0.12f, 1f));
+            CreateSettingsCogIcon(iconRect, new Color(0.08f, 0.09f, 0.12f, 1f));
         }
 
         private void BuildTouchControls()
@@ -1191,6 +1193,57 @@ namespace Blocks.Gameplay.Core
 
             graphic.raycastTarget = false;
             return graphic;
+        }
+
+        private static void CreateSettingsCogIcon(RectTransform parent, Color tint)
+        {
+            if (parent == null)
+            {
+                return;
+            }
+
+            for (var index = parent.childCount - 1; index >= 0; index--)
+            {
+                var child = parent.GetChild(index);
+                if (child != null)
+                {
+                    if (Application.isPlaying)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                    else
+                    {
+                        DestroyImmediate(child.gameObject);
+                    }
+                }
+            }
+
+            var glyph = CreateText("GearUnicode", parent, "\u2699", 34, FontStyle.Bold, TextAnchor.MiddleCenter);
+            Stretch(glyph.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            glyph.color = tint;
+            glyph.raycastTarget = false;
+
+            var ringRect = CreateRect("GearRing", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            ringRect.sizeDelta = new Vector2(22f, 22f);
+            var ring = ringRect.gameObject.AddComponent<Image>();
+            ring.color = new Color(tint.r, tint.g, tint.b, 0.24f);
+            ring.raycastTarget = false;
+            var ringOutline = ringRect.gameObject.AddComponent<Outline>();
+            ringOutline.effectColor = new Color(tint.r, tint.g, tint.b, 0.95f);
+            ringOutline.effectDistance = new Vector2(1f, -1f);
+        }
+
+        private void EnsureSettingsIconVisualIntegrity()
+        {
+            if (m_SettingsIconRoot == null)
+            {
+                return;
+            }
+
+            if (m_SettingsIconRoot.childCount == 0)
+            {
+                CreateSettingsCogIcon(m_SettingsIconRoot, new Color(0.08f, 0.09f, 0.12f, 1f));
+            }
         }
 
         private static bool IsUsableTouchIconSprite(Sprite sprite)

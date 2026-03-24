@@ -22,6 +22,12 @@ namespace Blocks.Gameplay.Core.Customization
         [FormerlySerializedAs("enabled")]
         [SerializeField] private bool optionEnabled = true;
         [SerializeField] private bool installOnAwake = true;
+        [SerializeField] private float deferredInstallDelaySeconds = 0.45f;
+        [SerializeField] private InteractionDirector interactionDirector;
+
+        private bool m_DeferredInstallPending;
+        private float m_DeferredInstallAt;
+        private int m_LastHandleInvokedFrame = -1;
 
         private void Reset()
         {
@@ -36,12 +42,33 @@ namespace Blocks.Gameplay.Core.Customization
             }
         }
 
+        private void Start()
+        {
+            if (!installOnAwake || !Application.isPlaying)
+            {
+                return;
+            }
+
+            // Some scene bootstrap scripts rewrite interaction options in Start; re-install after them.
+            m_DeferredInstallPending = true;
+            m_DeferredInstallAt = Time.unscaledTime + Mathf.Max(0.05f, deferredInstallDelaySeconds);
+        }
+
         private void OnEnable()
         {
             if (installOnAwake)
             {
                 InstallOption();
+
+                if (Application.isPlaying)
+                {
+                    m_DeferredInstallPending = true;
+                    m_DeferredInstallAt = Time.unscaledTime + Mathf.Max(0.05f, deferredInstallDelaySeconds);
+                }
             }
+
+            ResolveDependencies();
+            BindDirectorInvocation();
         }
 
         private void OnDisable()
@@ -61,6 +88,8 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 option.onInvoked.RemoveListener(HandleInvoked);
             }
+
+            UnbindDirectorInvocation();
         }
 
         private void OnValidate()
@@ -69,6 +98,22 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 InstallOption();
             }
+        }
+
+        private void Update()
+        {
+            if (!m_DeferredInstallPending || !Application.isPlaying)
+            {
+                return;
+            }
+
+            if (Time.unscaledTime < m_DeferredInstallAt)
+            {
+                return;
+            }
+
+            m_DeferredInstallPending = false;
+            InstallOption();
         }
 
         public void InstallOption()
@@ -122,6 +167,7 @@ namespace Blocks.Gameplay.Core.Customization
             option.onInvoked.AddListener(HandleInvoked);
             interactableItem.OptionTriggered -= HandleOptionTriggered;
             interactableItem.OptionTriggered += HandleOptionTriggered;
+            BindDirectorInvocation();
         }
 
         private void HandleInvoked()
@@ -133,6 +179,13 @@ namespace Blocks.Gameplay.Core.Customization
                 Debug.LogWarning("[CharacterCustomizationWardrobeHook] Change Character was triggered but no panel could be resolved or created.", this);
                 return;
             }
+
+            if (Time.frameCount == m_LastHandleInvokedFrame)
+            {
+                return;
+            }
+
+            m_LastHandleInvokedFrame = Time.frameCount;
 
             if (!customizationPanel.gameObject.activeSelf)
             {
@@ -174,6 +227,11 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             var scene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (interactionDirector == null || interactionDirector.gameObject.scene != scene)
+            {
+                interactionDirector = FindSceneObject<InteractionDirector>(scene, includeInactive: true);
+            }
+
             if (customizationPanel != null && customizationPanel.gameObject.scene != scene)
             {
                 customizationPanel = null;
@@ -238,7 +296,12 @@ namespace Blocks.Gameplay.Core.Customization
                 return false;
             }
 
-            return panel.IsOpen;
+            if (panel.IsOpen)
+            {
+                return true;
+            }
+
+            return panel.RebuildAndShow();
         }
 
         private bool TryRecoverAndShowPanel(Scene scene)
@@ -370,6 +433,42 @@ namespace Blocks.Gameplay.Core.Customization
 
             interactableItem.options.RemoveAt(currentIndex);
             interactableItem.options.Insert(0, primaryOption);
+        }
+
+        private void BindDirectorInvocation()
+        {
+            if (interactionDirector == null)
+            {
+                return;
+            }
+
+            interactionDirector.OptionInvoked -= HandleDirectorOptionInvoked;
+            interactionDirector.OptionInvoked += HandleDirectorOptionInvoked;
+        }
+
+        private void UnbindDirectorInvocation()
+        {
+            if (interactionDirector == null)
+            {
+                return;
+            }
+
+            interactionDirector.OptionInvoked -= HandleDirectorOptionInvoked;
+        }
+
+        private void HandleDirectorOptionInvoked(InteractionInvocation invocation)
+        {
+            if (invocation == null || invocation.Target != interactableItem)
+            {
+                return;
+            }
+
+            if (!string.Equals(invocation.OptionId, optionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            HandleInvoked();
         }
     }
 }
