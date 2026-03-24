@@ -42,9 +42,13 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void Update()
         {
-            if (!m_Initialized || !m_PlayerSpawned)
+            if (HasMissingRuntimeDependencies())
             {
                 TryLateBind();
+            }
+            else if (m_PlayerSpawned)
+            {
+                ApplyResolvedPresetIfNeeded();
             }
         }
 
@@ -61,6 +65,7 @@ namespace Blocks.Gameplay.Core.Customization
             CacheDependencies();
             SubscribeToState();
             m_PlayerSpawned = true;
+            m_AppliedPresetId = string.Empty;
             ResolveInitialPreset();
         }
 
@@ -74,7 +79,7 @@ namespace Blocks.Gameplay.Core.Customization
         {
             if (newState == PlayerLifeState.Respawned || newState == PlayerLifeState.InitialSpawn)
             {
-                ApplyPreset(m_PlayerState != null ? m_PlayerState.CharacterPresetId : string.Empty);
+                ApplyResolvedPresetIfNeeded(forceApply: true);
             }
         }
 
@@ -134,6 +139,12 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 OnPlayerSpawn();
             }
+
+            CacheDependencies();
+            if (m_PlayerSpawned)
+            {
+                ApplyResolvedPresetIfNeeded();
+            }
         }
 
         private void CacheDependencies()
@@ -173,45 +184,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void ResolveInitialPreset()
         {
-            CharacterCustomizationCatalog catalog = ActiveCatalog;
-            if (catalog == null || m_PlayerState == null)
-            {
-                return;
-            }
-
-            string desiredPresetId = m_PlayerState.CharacterPresetId;
-
-            if (string.IsNullOrWhiteSpace(desiredPresetId) && IsOwner && applyPersistedPresetOnSpawn)
-            {
-                string persistedPresetId = CharacterCustomizationStorage.LoadSelectedPresetId();
-                if (!string.IsNullOrWhiteSpace(persistedPresetId))
-                {
-                    desiredPresetId = persistedPresetId;
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(desiredPresetId) && applyCatalogDefaultPresetOnSpawn)
-            {
-                desiredPresetId = catalog.DefaultPresetId;
-            }
-
-            if (string.IsNullOrWhiteSpace(desiredPresetId))
-            {
-                m_AppliedPresetId = string.Empty;
-                return;
-            }
-
-            if (IsOwner)
-            {
-                if (!string.IsNullOrWhiteSpace(desiredPresetId) &&
-                    !string.Equals(m_PlayerState.CharacterPresetId, desiredPresetId, StringComparison.Ordinal))
-                {
-                    m_PlayerState.SetCharacterPresetId(desiredPresetId);
-                    return;
-                }
-            }
-
-            ApplyPreset(desiredPresetId);
+            ApplyResolvedPresetIfNeeded(forceApply: true);
         }
 
         private void HandleCharacterPresetChanged(string presetId)
@@ -226,7 +199,77 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void HandleCatalogChanged(CharacterCustomizationCatalog _)
         {
-            ApplyPreset(m_PlayerState != null ? m_PlayerState.CharacterPresetId : string.Empty, true);
+            ApplyResolvedPresetIfNeeded(forceApply: true);
+        }
+
+        private bool HasMissingRuntimeDependencies()
+        {
+            return !m_Initialized ||
+                   !m_PlayerSpawned ||
+                   m_PlayerManager == null ||
+                   m_PlayerState == null ||
+                   m_CoreAnimator == null;
+        }
+
+        private void ApplyResolvedPresetIfNeeded(bool forceApply = false)
+        {
+            CharacterCustomizationCatalog catalog = ActiveCatalog;
+            if (!m_PlayerSpawned || catalog == null || m_PlayerState == null)
+            {
+                return;
+            }
+
+            string desiredPresetId = ResolveDesiredPresetId(catalog);
+            if (string.IsNullOrWhiteSpace(desiredPresetId))
+            {
+                return;
+            }
+
+            if (IsOwner && string.IsNullOrWhiteSpace(m_PlayerState.CharacterPresetId))
+            {
+                m_PlayerState.SetCharacterPresetId(desiredPresetId);
+                return;
+            }
+
+            if (m_CoreAnimator == null)
+            {
+                CacheDependencies();
+                if (m_CoreAnimator == null)
+                {
+                    return;
+                }
+            }
+
+            if (forceApply || !string.Equals(m_AppliedPresetId, desiredPresetId, StringComparison.Ordinal))
+            {
+                ApplyPreset(desiredPresetId, forceApply);
+            }
+        }
+
+        private string ResolveDesiredPresetId(CharacterCustomizationCatalog catalog)
+        {
+            if (catalog == null)
+            {
+                return string.Empty;
+            }
+
+            string desiredPresetId = m_PlayerState != null ? m_PlayerState.CharacterPresetId : string.Empty;
+
+            if (string.IsNullOrWhiteSpace(desiredPresetId) && IsOwner)
+            {
+                string persistedPresetId = CharacterCustomizationStorage.LoadSelectedPresetId();
+                if (!string.IsNullOrWhiteSpace(persistedPresetId))
+                {
+                    desiredPresetId = persistedPresetId;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(desiredPresetId) && applyCatalogDefaultPresetOnSpawn)
+            {
+                desiredPresetId = catalog.DefaultPresetId;
+            }
+
+            return desiredPresetId;
         }
 
         private void ApplyPreset(string presetId, bool forceReapply = false)

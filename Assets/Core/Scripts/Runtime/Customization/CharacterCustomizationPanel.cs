@@ -4,7 +4,9 @@ using System.Reflection;
 using Blocks.Gameplay.Core;
 using ItemInteraction;
 using Unity.Netcode;
+using UnityEngine.Animations;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -19,6 +21,7 @@ namespace Blocks.Gameplay.Core.Customization
     public sealed class CharacterCustomizationPanel : MonoBehaviour
     {
         private static readonly FieldInfo ParentUiField = typeof(UIDocument).GetField("m_ParentUI", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static Font s_RuntimeUiFont;
 
         [Header("Catalog")]
         [SerializeField] private CharacterCustomizationCatalog catalogOverride;
@@ -46,12 +49,15 @@ namespace Blocks.Gameplay.Core.Customization
         private VisualElement m_LeftPane;
         private VisualElement m_RightPane;
         private VisualElement m_PreviewFrame;
+        private VisualElement m_PreviewHud;
         private ListView m_ListView;
         private TextField m_SearchField;
         private Label m_TitleLabel;
         private Label m_StatusLabel;
         private Label m_SelectionLabel;
         private Label m_DetailLabel;
+        private Label m_AnimationStatusLabel;
+        private Label m_PresetCountLabel;
         private Image m_PreviewImage;
         private Button m_ApplyButton;
         private Button m_RandomizeButton;
@@ -74,6 +80,17 @@ namespace Blocks.Gameplay.Core.Customization
         private Light m_PreviewLight;
         private GameObject m_PreviewModelInstance;
         private float m_PreviewSpinAngle;
+        private PlayableGraph m_PreviewAnimationGraph;
+        private AnimationMixerPlayable m_PreviewAnimationMixer;
+        private AnimationClipPlayable m_PreviewPrimaryPlayable;
+        private AnimationClipPlayable m_PreviewSecondaryPlayable;
+        private readonly List<AnimationClip> m_PreviewCycleClips = new List<AnimationClip>();
+        private readonly HashSet<AnimationClip> m_PreviewClipDeduplication = new HashSet<AnimationClip>();
+        private int m_CurrentPreviewClipIndex = -1;
+        private int m_NextPreviewClipIndex = -1;
+        private float m_NextPreviewClipSwitchAt;
+        private float m_PreviewBlendStartedAt;
+        private bool m_PreviewBlendActive;
 
         private CorePlayerManager m_LocalPlayerManager;
         private CorePlayerState m_LocalPlayerState;
@@ -95,6 +112,10 @@ namespace Blocks.Gameplay.Core.Customization
         private StandaloneInputModule m_StandaloneInputModule;
         private PanelSettings m_RuntimePanelSettings;
 
+        private const float PreviewAnimationBlendDurationSeconds = 0.3f;
+        private const float PreviewAnimationMinimumShowcaseSeconds = 2.4f;
+        private const float PreviewAnimationMaximumShowcaseSeconds = 4.1f;
+
         public bool IsOpen => m_IsOpen;
 
         private Scene GetContextScene()
@@ -107,6 +128,52 @@ namespace Blocks.Gameplay.Core.Customization
         private static bool IsInScene(GameObject target, Scene scene)
         {
             return target != null && scene.IsValid() && target.scene == scene;
+        }
+
+        private static Font GetRuntimeUiFont()
+        {
+            if (s_RuntimeUiFont != null)
+            {
+                return s_RuntimeUiFont;
+            }
+
+            s_RuntimeUiFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (s_RuntimeUiFont == null)
+            {
+                s_RuntimeUiFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            }
+
+            return s_RuntimeUiFont;
+        }
+
+        private static void ApplyRuntimeFont(VisualElement element)
+        {
+            if (element == null)
+            {
+                return;
+            }
+
+            var runtimeFont = GetRuntimeUiFont();
+            if (runtimeFont == null)
+            {
+                return;
+            }
+
+            element.style.unityFontDefinition = FontDefinition.FromFont(runtimeFont);
+        }
+
+        private static void ApplyRuntimeFontTree(VisualElement root)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            ApplyRuntimeFont(root);
+            foreach (var child in root.Children())
+            {
+                ApplyRuntimeFontTree(child);
+            }
         }
 
         private static T FindSceneComponent<T>(Scene scene, bool includeInactive) where T : Component
@@ -150,6 +217,8 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void OnDestroy()
         {
+            StopPreviewAnimationPlayback();
+
             if (m_RuntimePanelSettings != null)
             {
                 DestroySmart(m_RuntimePanelSettings);
@@ -187,6 +256,8 @@ namespace Blocks.Gameplay.Core.Customization
                     m_PreviewDirty = true;
                 }
             }
+
+            UpdatePreviewAnimationCycle();
 
             if (m_PreviewDirty)
             {
@@ -412,38 +483,41 @@ namespace Blocks.Gameplay.Core.Customization
             m_Overlay.style.flexDirection = FlexDirection.Column;
             m_Overlay.style.justifyContent = Justify.Center;
             m_Overlay.style.alignItems = Align.Center;
-            m_Overlay.style.backgroundColor = new Color(0.03f, 0.02f, 0.015f, 0.74f);
-            m_Overlay.style.paddingLeft = 32f;
-            m_Overlay.style.paddingRight = 32f;
-            m_Overlay.style.paddingTop = 32f;
-            m_Overlay.style.paddingBottom = 32f;
+            m_Overlay.style.backgroundColor = new Color(0.03f, 0.02f, 0.015f, 0.8f);
+            m_Overlay.style.paddingLeft = 26f;
+            m_Overlay.style.paddingRight = 26f;
+            m_Overlay.style.paddingTop = 26f;
+            m_Overlay.style.paddingBottom = 26f;
             m_Overlay.pickingMode = PickingMode.Position;
             m_Overlay.focusable = true;
             m_Root.Add(m_Overlay);
 
             m_Window = new VisualElement();
-            m_Window.style.width = new Length(82f, LengthUnit.Percent);
-            m_Window.style.height = new Length(80f, LengthUnit.Percent);
-            m_Window.style.maxWidth = 1320f;
-            m_Window.style.maxHeight = 820f;
+            m_Window.style.width = new Length(97f, LengthUnit.Percent);
+            m_Window.style.height = new Length(95f, LengthUnit.Percent);
+            m_Window.style.minWidth = 1380f;
+            m_Window.style.minHeight = 860f;
+            m_Window.style.maxWidth = 3360f;
+            m_Window.style.maxHeight = 1920f;
             m_Window.style.flexDirection = FlexDirection.Column;
-            m_Window.style.backgroundColor = new Color(0.085f, 0.075f, 0.065f, 0.975f);
-            m_Window.style.borderTopLeftRadius = 24f;
-            m_Window.style.borderTopRightRadius = 24f;
-            m_Window.style.borderBottomLeftRadius = 24f;
-            m_Window.style.borderBottomRightRadius = 24f;
-            m_Window.style.borderLeftWidth = 1f;
-            m_Window.style.borderRightWidth = 1f;
-            m_Window.style.borderTopWidth = 1f;
-            m_Window.style.borderBottomWidth = 1f;
-            m_Window.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
-            m_Window.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
-            m_Window.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
-            m_Window.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.42f);
-            m_Window.style.paddingLeft = 24f;
-            m_Window.style.paddingRight = 24f;
-            m_Window.style.paddingTop = 20f;
-            m_Window.style.paddingBottom = 20f;
+            m_Window.style.backgroundColor = new Color(0.965f, 0.928f, 0.855f, 0.985f);
+            m_Window.style.borderTopLeftRadius = 22f;
+            m_Window.style.borderTopRightRadius = 22f;
+            m_Window.style.borderBottomLeftRadius = 22f;
+            m_Window.style.borderBottomRightRadius = 22f;
+            m_Window.style.borderLeftWidth = 5f;
+            m_Window.style.borderRightWidth = 5f;
+            m_Window.style.borderTopWidth = 5f;
+            m_Window.style.borderBottomWidth = 9f;
+            m_Window.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_Window.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_Window.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_Window.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_Window.style.paddingLeft = 28f;
+            m_Window.style.paddingRight = 28f;
+            m_Window.style.paddingTop = 24f;
+            m_Window.style.paddingBottom = 24f;
+            m_Window.style.overflow = Overflow.Hidden;
             m_Window.pickingMode = PickingMode.Position;
             m_Window.focusable = true;
             m_Window.tabIndex = 0;
@@ -455,6 +529,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             BuildHeader();
             BuildContent();
+            ApplyRuntimeFontTree(m_Window);
 
             try
             {
@@ -554,33 +629,96 @@ namespace Blocks.Gameplay.Core.Customization
         {
             m_Header = new VisualElement();
             m_Header.style.flexDirection = FlexDirection.Row;
-            m_Header.style.alignItems = Align.Center;
+            m_Header.style.alignItems = Align.FlexStart;
             m_Header.style.justifyContent = Justify.SpaceBetween;
-            m_Header.style.paddingBottom = 16f;
-            m_Header.style.borderBottomWidth = 1f;
-            m_Header.style.borderBottomColor = new Color(1f, 1f, 1f, 0.08f);
+            m_Header.style.paddingBottom = 18f;
+            m_Header.style.borderBottomWidth = 4f;
+            m_Header.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_Window.Add(m_Header);
 
             var titleGroup = new VisualElement();
             titleGroup.style.flexDirection = FlexDirection.Column;
             titleGroup.style.flexGrow = 1f;
+            titleGroup.style.marginRight = 18f;
             m_Header.Add(titleGroup);
 
+            var badgeRow = new VisualElement();
+            badgeRow.style.flexDirection = FlexDirection.Row;
+            badgeRow.style.alignItems = Align.Center;
+            badgeRow.style.marginBottom = 12f;
+            titleGroup.Add(badgeRow);
+
+            var wardrobeChip = new Label("WARDROBE");
+            ApplyRuntimeFont(wardrobeChip);
+            wardrobeChip.style.paddingLeft = 18f;
+            wardrobeChip.style.paddingRight = 18f;
+            wardrobeChip.style.paddingTop = 10f;
+            wardrobeChip.style.paddingBottom = 10f;
+            wardrobeChip.style.marginRight = 12f;
+            wardrobeChip.style.backgroundColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            wardrobeChip.style.color = new Color(0.98f, 0.95f, 0.88f, 1f);
+            wardrobeChip.style.unityFontStyleAndWeight = FontStyle.Bold;
+            wardrobeChip.style.fontSize = 15f;
+            wardrobeChip.style.letterSpacing = 1.8f;
+            wardrobeChip.style.borderTopLeftRadius = 14f;
+            wardrobeChip.style.borderTopRightRadius = 14f;
+            wardrobeChip.style.borderBottomLeftRadius = 14f;
+            wardrobeChip.style.borderBottomRightRadius = 14f;
+            badgeRow.Add(wardrobeChip);
+
+            m_PresetCountLabel = new Label("00 LOOKS");
+            ApplyRuntimeFont(m_PresetCountLabel);
+            m_PresetCountLabel.style.paddingLeft = 14f;
+            m_PresetCountLabel.style.paddingRight = 14f;
+            m_PresetCountLabel.style.paddingTop = 9f;
+            m_PresetCountLabel.style.paddingBottom = 9f;
+            m_PresetCountLabel.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            m_PresetCountLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_PresetCountLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            m_PresetCountLabel.style.fontSize = 13f;
+            m_PresetCountLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            m_PresetCountLabel.style.borderTopLeftRadius = 12f;
+            m_PresetCountLabel.style.borderTopRightRadius = 12f;
+            m_PresetCountLabel.style.borderBottomLeftRadius = 12f;
+            m_PresetCountLabel.style.borderBottomRightRadius = 12f;
+            badgeRow.Add(m_PresetCountLabel);
+
             m_TitleLabel = new Label("Change Character");
-            m_TitleLabel.style.fontSize = 26f;
+            ApplyRuntimeFont(m_TitleLabel);
+            m_TitleLabel.style.fontSize = 58f;
             m_TitleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            m_TitleLabel.style.color = new Color(0.99f, 0.96f, 0.9f, 1f);
-            m_TitleLabel.style.marginBottom = 4f;
+            m_TitleLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_TitleLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+            m_TitleLabel.style.minHeight = 68f;
+            m_TitleLabel.style.marginBottom = 6f;
             titleGroup.Add(m_TitleLabel);
 
-            m_StatusLabel = new Label("Select a preset and apply it to your player.");
-            m_StatusLabel.style.fontSize = 13f;
-            m_StatusLabel.style.color = new Color(0.95f, 0.88f, 0.78f, 0.92f);
+            m_StatusLabel = new Label("Preview a look, then apply it once. Your choice persists across the connected story scenes.");
+            ApplyRuntimeFont(m_StatusLabel);
+            m_StatusLabel.style.fontSize = 18f;
+            m_StatusLabel.style.color = new Color(0.16f, 0.14f, 0.1f, 0.92f);
+            m_StatusLabel.style.whiteSpace = WhiteSpace.Normal;
+            m_StatusLabel.style.unityTextAlign = TextAnchor.UpperLeft;
+            m_StatusLabel.style.minHeight = 50f;
             titleGroup.Add(m_StatusLabel);
 
-            m_CloseButton = CreateActionButton("Close", Hide, new Color(0.34f, 0.38f, 0.43f, 1f));
-            m_CloseButton.style.minWidth = 120f;
-            m_Header.Add(m_CloseButton);
+            var rightControls = new VisualElement();
+            rightControls.style.flexDirection = FlexDirection.Column;
+            rightControls.style.alignItems = Align.FlexEnd;
+            rightControls.style.minWidth = 220f;
+            m_Header.Add(rightControls);
+
+            var helperLabel = new Label("Preview cycles through motion");
+            ApplyRuntimeFont(helperLabel);
+            helperLabel.style.fontSize = 14f;
+            helperLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            helperLabel.style.color = new Color(0.24f, 0.22f, 0.17f, 0.9f);
+            helperLabel.style.marginBottom = 10f;
+            rightControls.Add(helperLabel);
+
+            m_CloseButton = CreateActionButton("Close", Hide, new Color(0.95f, 0.72f, 0.62f, 1f));
+            m_CloseButton.style.minWidth = 144f;
+            rightControls.Add(m_CloseButton);
         }
 
         private void BuildContent()
@@ -591,44 +729,81 @@ namespace Blocks.Gameplay.Core.Customization
             m_Content.style.marginTop = 18f;
             m_Window.Add(m_Content);
 
-            BuildSidebar();
             BuildDetailsPane();
+            BuildSidebar();
         }
 
         private void BuildSidebar()
         {
             m_LeftPane = new VisualElement();
-            m_LeftPane.style.width = 360f;
+            m_LeftPane.style.width = 580f;
             m_LeftPane.style.flexShrink = 0f;
             m_LeftPane.style.flexDirection = FlexDirection.Column;
-            m_LeftPane.style.paddingRight = 14f;
+            m_LeftPane.style.marginLeft = 24f;
+            m_LeftPane.style.paddingLeft = 22f;
+            m_LeftPane.style.paddingRight = 22f;
+            m_LeftPane.style.paddingTop = 22f;
+            m_LeftPane.style.paddingBottom = 22f;
+            m_LeftPane.style.backgroundColor = new Color(0.94f, 0.88f, 0.73f, 1f);
+            m_LeftPane.style.borderLeftWidth = 4f;
+            m_LeftPane.style.borderRightWidth = 4f;
+            m_LeftPane.style.borderTopWidth = 4f;
+            m_LeftPane.style.borderBottomWidth = 8f;
+            m_LeftPane.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_LeftPane.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_LeftPane.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_LeftPane.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_LeftPane.style.borderTopLeftRadius = 18f;
+            m_LeftPane.style.borderTopRightRadius = 18f;
+            m_LeftPane.style.borderBottomLeftRadius = 18f;
+            m_LeftPane.style.borderBottomRightRadius = 18f;
             m_Content.Add(m_LeftPane);
 
+            var sidebarTitle = new Label("Preset Library");
+            ApplyRuntimeFont(sidebarTitle);
+            sidebarTitle.style.fontSize = 28f;
+            sidebarTitle.style.unityFontStyleAndWeight = FontStyle.Bold;
+            sidebarTitle.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            sidebarTitle.style.unityTextAlign = TextAnchor.MiddleLeft;
+            sidebarTitle.style.marginBottom = 4f;
+            m_LeftPane.Add(sidebarTitle);
+
+            var sidebarSubtitle = new Label("Search, preview, then lock the look you want to carry into later scenes.");
+            ApplyRuntimeFont(sidebarSubtitle);
+            sidebarSubtitle.style.fontSize = 16f;
+            sidebarSubtitle.style.color = new Color(0.2f, 0.17f, 0.12f, 0.92f);
+            sidebarSubtitle.style.whiteSpace = WhiteSpace.Normal;
+            sidebarSubtitle.style.unityTextAlign = TextAnchor.UpperLeft;
+            sidebarSubtitle.style.marginBottom = 14f;
+            m_LeftPane.Add(sidebarSubtitle);
+
             m_SearchField = new TextField();
+            ApplyRuntimeFont(m_SearchField);
             m_SearchField.label = string.Empty;
             m_SearchField.value = string.Empty;
             m_SearchField.isDelayed = true;
-            m_SearchField.style.height = 36f;
-            m_SearchField.style.marginBottom = 14f;
-            m_SearchField.style.borderTopLeftRadius = 10f;
-            m_SearchField.style.borderTopRightRadius = 10f;
-            m_SearchField.style.borderBottomLeftRadius = 10f;
-            m_SearchField.style.borderBottomRightRadius = 10f;
-            m_SearchField.style.backgroundColor = new Color(0.15f, 0.14f, 0.12f, 0.97f);
-            m_SearchField.style.color = new Color(0.98f, 0.93f, 0.86f, 1f);
-            m_SearchField.style.borderLeftWidth = 1f;
-            m_SearchField.style.borderRightWidth = 1f;
-            m_SearchField.style.borderTopWidth = 1f;
-            m_SearchField.style.borderBottomWidth = 1f;
-            m_SearchField.style.borderLeftColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
-            m_SearchField.style.borderRightColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
-            m_SearchField.style.borderTopColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
-            m_SearchField.style.borderBottomColor = new Color(0.98f, 0.82f, 0.61f, 0.34f);
-            m_SearchField.style.paddingLeft = 8f;
-            m_SearchField.style.paddingRight = 8f;
+            m_SearchField.style.height = 56f;
+            m_SearchField.style.marginBottom = 16f;
+            m_SearchField.style.borderTopLeftRadius = 12f;
+            m_SearchField.style.borderTopRightRadius = 12f;
+            m_SearchField.style.borderBottomLeftRadius = 12f;
+            m_SearchField.style.borderBottomRightRadius = 12f;
+            m_SearchField.style.backgroundColor = new Color(1f, 0.98f, 0.93f, 1f);
+            m_SearchField.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SearchField.style.borderLeftWidth = 3f;
+            m_SearchField.style.borderRightWidth = 3f;
+            m_SearchField.style.borderTopWidth = 3f;
+            m_SearchField.style.borderBottomWidth = 5f;
+            m_SearchField.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SearchField.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SearchField.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SearchField.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SearchField.style.paddingLeft = 10f;
+            m_SearchField.style.paddingRight = 10f;
             m_SearchField.tooltip = "Search presets by name or id";
-            m_SearchField.style.unityFontStyleAndWeight = FontStyle.Normal;
+            m_SearchField.style.unityFontStyleAndWeight = FontStyle.Bold;
             m_SearchField.style.unityTextAlign = TextAnchor.MiddleLeft;
+            m_SearchField.style.fontSize = 18f;
             m_SearchField.focusable = true;
             m_SearchField.RegisterValueChangedCallback(OnSearchChanged);
             m_LeftPane.Add(m_SearchField);
@@ -636,16 +811,18 @@ namespace Blocks.Gameplay.Core.Customization
             var searchInput = m_SearchField.Q(TextField.textInputUssName);
             if (searchInput != null)
             {
+                ApplyRuntimeFont(searchInput);
                 searchInput.style.backgroundColor = Color.clear;
-                searchInput.style.color = new Color(0.98f, 0.93f, 0.86f, 1f);
-                searchInput.style.unityFontStyleAndWeight = FontStyle.Normal;
+                searchInput.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+                searchInput.style.unityFontStyleAndWeight = FontStyle.Bold;
+                searchInput.style.fontSize = 18f;
             }
 
             m_ListView = new ListView
             {
                 selectionType = SelectionType.Single,
                 virtualizationMethod = CollectionVirtualizationMethod.FixedHeight,
-                fixedItemHeight = 64f,
+                fixedItemHeight = 116f,
                 showBoundCollectionSize = false,
                 showFoldoutHeader = false,
                 reorderable = false,
@@ -653,19 +830,11 @@ namespace Blocks.Gameplay.Core.Customization
                 bindItem = BindPresetRow
             };
             m_ListView.style.flexGrow = 1f;
-            m_ListView.style.borderTopLeftRadius = 16f;
-            m_ListView.style.borderTopRightRadius = 16f;
-            m_ListView.style.borderBottomLeftRadius = 16f;
-            m_ListView.style.borderBottomRightRadius = 16f;
-            m_ListView.style.backgroundColor = new Color(0.08f, 0.07f, 0.06f, 0.92f);
-            m_ListView.style.borderLeftWidth = 1f;
-            m_ListView.style.borderRightWidth = 1f;
-            m_ListView.style.borderTopWidth = 1f;
-            m_ListView.style.borderBottomWidth = 1f;
-            m_ListView.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
-            m_ListView.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
-            m_ListView.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
-            m_ListView.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.22f);
+            m_ListView.style.backgroundColor = Color.clear;
+            m_ListView.style.borderLeftWidth = 0f;
+            m_ListView.style.borderRightWidth = 0f;
+            m_ListView.style.borderTopWidth = 0f;
+            m_ListView.style.borderBottomWidth = 0f;
             m_ListView.selectionChanged += OnSelectionChanged;
             m_LeftPane.Add(m_ListView);
         }
@@ -678,61 +847,139 @@ namespace Blocks.Gameplay.Core.Customization
             m_RightPane.style.justifyContent = Justify.FlexStart;
             m_RightPane.style.minWidth = 0f;
             m_RightPane.style.minHeight = 0f;
-            m_RightPane.style.marginLeft = 20f;
+            m_RightPane.style.marginRight = 6f;
             m_Content.Add(m_RightPane);
 
             m_PreviewFrame = new VisualElement();
             m_PreviewFrame.style.flexGrow = 1f;
-            m_PreviewFrame.style.minHeight = 220f;
+            m_PreviewFrame.style.minHeight = 720f;
             m_PreviewFrame.style.flexShrink = 1f;
-            m_PreviewFrame.style.backgroundColor = new Color(0.05f, 0.05f, 0.05f, 0.95f);
-            m_PreviewFrame.style.borderTopLeftRadius = 20f;
-            m_PreviewFrame.style.borderTopRightRadius = 20f;
-            m_PreviewFrame.style.borderBottomLeftRadius = 20f;
-            m_PreviewFrame.style.borderBottomRightRadius = 20f;
+            m_PreviewFrame.style.backgroundColor = new Color(0.08f, 0.09f, 0.12f, 1f);
+            m_PreviewFrame.style.borderTopLeftRadius = 18f;
+            m_PreviewFrame.style.borderTopRightRadius = 18f;
+            m_PreviewFrame.style.borderBottomLeftRadius = 18f;
+            m_PreviewFrame.style.borderBottomRightRadius = 18f;
             m_PreviewFrame.style.paddingLeft = 18f;
             m_PreviewFrame.style.paddingRight = 18f;
             m_PreviewFrame.style.paddingTop = 18f;
             m_PreviewFrame.style.paddingBottom = 18f;
-            m_PreviewFrame.style.borderLeftWidth = 1f;
-            m_PreviewFrame.style.borderRightWidth = 1f;
-            m_PreviewFrame.style.borderTopWidth = 1f;
-            m_PreviewFrame.style.borderBottomWidth = 1f;
-            m_PreviewFrame.style.borderLeftColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
-            m_PreviewFrame.style.borderRightColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
-            m_PreviewFrame.style.borderTopColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
-            m_PreviewFrame.style.borderBottomColor = new Color(0.95f, 0.78f, 0.52f, 0.26f);
+            m_PreviewFrame.style.borderLeftWidth = 4f;
+            m_PreviewFrame.style.borderRightWidth = 4f;
+            m_PreviewFrame.style.borderTopWidth = 4f;
+            m_PreviewFrame.style.borderBottomWidth = 8f;
+            m_PreviewFrame.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_PreviewFrame.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_PreviewFrame.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_PreviewFrame.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_RightPane.Add(m_PreviewFrame);
+
+            m_PreviewHud = new VisualElement();
+            m_PreviewHud.style.flexDirection = FlexDirection.Row;
+            m_PreviewHud.style.justifyContent = Justify.SpaceBetween;
+            m_PreviewHud.style.alignItems = Align.Center;
+            m_PreviewHud.style.marginBottom = 12f;
+            m_PreviewFrame.Add(m_PreviewHud);
+
+            var previewChip = new Label("LIVE PREVIEW");
+            ApplyRuntimeFont(previewChip);
+            previewChip.style.paddingLeft = 16f;
+            previewChip.style.paddingRight = 16f;
+            previewChip.style.paddingTop = 9f;
+            previewChip.style.paddingBottom = 9f;
+            previewChip.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            previewChip.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            previewChip.style.unityFontStyleAndWeight = FontStyle.Bold;
+            previewChip.style.fontSize = 14f;
+            previewChip.style.borderTopLeftRadius = 12f;
+            previewChip.style.borderTopRightRadius = 12f;
+            previewChip.style.borderBottomLeftRadius = 12f;
+            previewChip.style.borderBottomRightRadius = 12f;
+            m_PreviewHud.Add(previewChip);
+
+            m_AnimationStatusLabel = new Label("ANIMATION • STANDBY");
+            ApplyRuntimeFont(m_AnimationStatusLabel);
+            m_AnimationStatusLabel.style.paddingLeft = 14f;
+            m_AnimationStatusLabel.style.paddingRight = 14f;
+            m_AnimationStatusLabel.style.paddingTop = 8f;
+            m_AnimationStatusLabel.style.paddingBottom = 8f;
+            m_AnimationStatusLabel.style.backgroundColor = new Color(0.15f, 0.56f, 0.9f, 1f);
+            m_AnimationStatusLabel.style.color = new Color(1f, 0.99f, 0.95f, 1f);
+            m_AnimationStatusLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            m_AnimationStatusLabel.style.fontSize = 13f;
+            m_AnimationStatusLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            m_AnimationStatusLabel.style.borderTopLeftRadius = 12f;
+            m_AnimationStatusLabel.style.borderTopRightRadius = 12f;
+            m_AnimationStatusLabel.style.borderBottomLeftRadius = 12f;
+            m_AnimationStatusLabel.style.borderBottomRightRadius = 12f;
+            m_PreviewHud.Add(m_AnimationStatusLabel);
 
             m_PreviewImage = new Image();
             m_PreviewImage.scaleMode = ScaleMode.ScaleToFit;
             m_PreviewImage.style.flexGrow = 1f;
+            m_PreviewImage.style.minHeight = 640f;
+            m_PreviewImage.style.backgroundColor = new Color(0.04f, 0.05f, 0.08f, 1f);
+            m_PreviewImage.style.borderTopLeftRadius = 16f;
+            m_PreviewImage.style.borderTopRightRadius = 16f;
+            m_PreviewImage.style.borderBottomLeftRadius = 16f;
+            m_PreviewImage.style.borderBottomRightRadius = 16f;
+            m_PreviewImage.style.borderLeftWidth = 3f;
+            m_PreviewImage.style.borderRightWidth = 3f;
+            m_PreviewImage.style.borderTopWidth = 3f;
+            m_PreviewImage.style.borderBottomWidth = 6f;
+            m_PreviewImage.style.borderLeftColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            m_PreviewImage.style.borderRightColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            m_PreviewImage.style.borderTopColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            m_PreviewImage.style.borderBottomColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PreviewImage.style.unityBackgroundImageTintColor = Color.white;
             m_PreviewImage.pickingMode = PickingMode.Ignore;
             m_PreviewFrame.Add(m_PreviewImage);
 
+            var selectionCard = new VisualElement();
+            selectionCard.style.marginTop = 18f;
+            selectionCard.style.paddingLeft = 18f;
+            selectionCard.style.paddingRight = 18f;
+            selectionCard.style.paddingTop = 16f;
+            selectionCard.style.paddingBottom = 16f;
+            selectionCard.style.backgroundColor = new Color(1f, 0.98f, 0.93f, 1f);
+            selectionCard.style.borderLeftWidth = 4f;
+            selectionCard.style.borderRightWidth = 4f;
+            selectionCard.style.borderTopWidth = 4f;
+            selectionCard.style.borderBottomWidth = 8f;
+            selectionCard.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            selectionCard.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            selectionCard.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            selectionCard.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            selectionCard.style.borderTopLeftRadius = 18f;
+            selectionCard.style.borderTopRightRadius = 18f;
+            selectionCard.style.borderBottomLeftRadius = 18f;
+            selectionCard.style.borderBottomRightRadius = 18f;
+            m_RightPane.Add(selectionCard);
+
             m_SelectionLabel = new Label("Select a character.");
-            m_SelectionLabel.style.fontSize = 22f;
+            ApplyRuntimeFont(m_SelectionLabel);
+            m_SelectionLabel.style.fontSize = 42f;
             m_SelectionLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            m_SelectionLabel.style.color = Color.white;
-            m_SelectionLabel.style.marginTop = 16f;
+            m_SelectionLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SelectionLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
             m_SelectionLabel.style.marginBottom = 6f;
-            m_RightPane.Add(m_SelectionLabel);
+            selectionCard.Add(m_SelectionLabel);
 
             m_DetailLabel = new Label("Browse the available character models and apply the one you want.");
+            ApplyRuntimeFont(m_DetailLabel);
             m_DetailLabel.style.whiteSpace = WhiteSpace.Normal;
-            m_DetailLabel.style.fontSize = 14f;
-            m_DetailLabel.style.color = new Color(0.93f, 0.86f, 0.78f, 0.85f);
+            m_DetailLabel.style.fontSize = 19f;
+            m_DetailLabel.style.color = new Color(0.2f, 0.17f, 0.12f, 0.95f);
+            m_DetailLabel.style.unityTextAlign = TextAnchor.UpperLeft;
+            m_DetailLabel.style.minHeight = 96f;
             m_DetailLabel.style.marginBottom = 16f;
-            m_RightPane.Add(m_DetailLabel);
+            selectionCard.Add(m_DetailLabel);
 
             var actionsRow = new VisualElement();
             actionsRow.style.flexDirection = FlexDirection.Row;
-            actionsRow.style.marginTop = 10f;
             actionsRow.style.flexShrink = 0f;
-            m_RightPane.Add(actionsRow);
+            selectionCard.Add(actionsRow);
 
-            m_RandomizeButton = CreateActionButton("Randomize", RandomizeSelection, new Color(0.31f, 0.52f, 0.76f, 1f));
+            m_RandomizeButton = CreateActionButton("Randomize", RandomizeSelection, new Color(0.35f, 0.58f, 0.95f, 1f));
             m_RandomizeButton.style.flexGrow = 1f;
             m_RandomizeButton.style.marginRight = 12f;
             actionsRow.Add(m_RandomizeButton);
@@ -766,7 +1013,7 @@ namespace Blocks.Gameplay.Core.Customization
             var cameraObject = new GameObject("PreviewCamera", typeof(Camera));
             cameraObject.hideFlags = HideFlags.HideInHierarchy;
             cameraObject.transform.SetParent(m_PreviewRigRoot.transform, false);
-            cameraObject.transform.localPosition = new Vector3(0f, 1.15f, -2.8f);
+            cameraObject.transform.localPosition = new Vector3(0f, 1.04f, -2.36f);
             cameraObject.transform.localRotation = Quaternion.identity;
             m_PreviewCamera = cameraObject.GetComponent<Camera>();
             m_PreviewCamera.enabled = false;
@@ -783,11 +1030,11 @@ namespace Blocks.Gameplay.Core.Customization
             var lightObject = new GameObject("PreviewLight", typeof(Light));
             lightObject.hideFlags = HideFlags.HideInHierarchy;
             lightObject.transform.SetParent(m_PreviewRigRoot.transform, false);
-            lightObject.transform.localPosition = new Vector3(2f, 2.5f, -2.2f);
-            lightObject.transform.localRotation = Quaternion.Euler(45f, 225f, 0f);
+            lightObject.transform.localPosition = new Vector3(1.6f, 2.2f, -1.8f);
+            lightObject.transform.localRotation = Quaternion.Euler(38f, 214f, 0f);
             m_PreviewLight = lightObject.GetComponent<Light>();
             m_PreviewLight.type = LightType.Directional;
-            m_PreviewLight.intensity = 1.4f;
+            m_PreviewLight.intensity = 1.7f;
             m_PreviewLight.color = new Color(1f, 0.98f, 0.94f, 1f);
 
             m_PreviewAnimator = m_PreviewModelRoot.gameObject.AddComponent<Animator>();
@@ -800,6 +1047,8 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void TearDownPreview()
         {
+            StopPreviewAnimationPlayback();
+
             if (m_PreviewTexture != null)
             {
                 m_PreviewTexture.Release();
@@ -879,6 +1128,8 @@ namespace Blocks.Gameplay.Core.Customization
                     m_AllPresets.Add(preset);
                 }
             }
+
+            UpdatePresetCountLabel();
         }
 
         private void RefreshLocalPlayerReferences()
@@ -1141,6 +1392,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             m_ListView.itemsSource = m_FilteredPresets;
             m_ListView.Rebuild();
+            UpdatePresetCountLabel();
 
             if (m_SelectedPreset != null)
             {
@@ -1215,6 +1467,11 @@ namespace Blocks.Gameplay.Core.Customization
             if (m_SelectedPreset == null || m_SelectedPreset.characterPrefab == null || m_PreviewAnimator == null)
             {
                 m_DetailLabel.text = "Select a character preset to preview it here.";
+                if (m_AnimationStatusLabel != null)
+                {
+                    m_AnimationStatusLabel.text = "ANIMATION • STANDBY";
+                }
+                StopPreviewAnimationPlayback();
                 if (m_PreviewImage != null)
                 {
                     m_PreviewImage.image = m_PreviewTexture;
@@ -1249,26 +1506,28 @@ namespace Blocks.Gameplay.Core.Customization
                 var localCenter = m_PreviewSpinRoot != null
                     ? m_PreviewSpinRoot.InverseTransformPoint(bounds.center)
                     : bounds.center;
-                m_PreviewModelRoot.localPosition = -localCenter + new Vector3(0f, 0.12f, 0f);
+                m_PreviewModelRoot.localPosition = -localCenter + new Vector3(0f, -0.04f, 0f);
 
-                var radius = Mathf.Max(bounds.extents.magnitude, 0.4f);
+                var radius = Mathf.Max(Mathf.Max(bounds.extents.x, bounds.extents.y), 0.45f);
                 var fieldOfViewRadians = previewFieldOfView * Mathf.Deg2Rad * 0.5f;
                 var distance = radius / Mathf.Tan(fieldOfViewRadians);
                 m_PreviewCamera.fieldOfView = previewFieldOfView;
-                m_PreviewCamera.transform.localPosition = new Vector3(0f, Mathf.Max(0.9f, bounds.extents.y * 0.18f), -distance * 1.15f);
+                m_PreviewCamera.transform.localPosition = new Vector3(0f, Mathf.Clamp(bounds.extents.y * 0.12f, 0.82f, 1.02f), -distance * 0.88f);
                 m_PreviewCamera.transform.localRotation = Quaternion.identity;
                 if (m_PreviewRigRoot != null)
                 {
-                    var lookTargetWorld = m_PreviewRigRoot.transform.TransformPoint(new Vector3(0f, Mathf.Max(0.9f, bounds.extents.y * 0.6f), 0f));
+                    var lookTargetWorld = m_PreviewRigRoot.transform.TransformPoint(new Vector3(0f, Mathf.Clamp(bounds.extents.y * 0.6f, 0.92f, 1.35f), 0f));
                     m_PreviewCamera.transform.LookAt(lookTargetWorld, Vector3.up);
                 }
             }
+
+            RebuildPreviewAnimationPlaylist();
 
             m_PreviewCamera.targetTexture = m_PreviewTexture;
             m_PreviewImage.image = m_PreviewTexture;
             SetPreviewCameraActive(m_IsOpen);
 
-            m_DetailLabel.text = $"{m_SelectedPreset.DisplayName}\nID: {m_SelectedPreset.id}\nPrefab: {m_SelectedPreset.sourceAssetPath}";
+            m_DetailLabel.text = $"Preset ID: {m_SelectedPreset.id}\nSource: {GetCompactSourceLabel(m_SelectedPreset)}\nApplies to your local player and carries forward when later scenes spawn your rig.";
             if (m_IsOpen)
             {
                 RequestPreviewRender();
@@ -1328,6 +1587,318 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             UpdateStatus();
+        }
+
+        private void UpdatePresetCountLabel()
+        {
+            if (m_PresetCountLabel == null)
+            {
+                return;
+            }
+
+            int visibleCount = m_FilteredPresets.Count > 0 || !string.IsNullOrWhiteSpace(m_SearchText)
+                ? m_FilteredPresets.Count
+                : m_AllPresets.Count;
+            m_PresetCountLabel.text = $"{visibleCount:00} LOOKS";
+        }
+
+        private void RebuildPreviewAnimationPlaylist()
+        {
+            StopPreviewAnimationPlayback();
+
+            if (m_PreviewAnimator == null)
+            {
+                return;
+            }
+
+            m_PreviewCycleClips.Clear();
+            m_PreviewClipDeduplication.Clear();
+
+            CollectPreviewAnimationClips(m_PreviewAnimator.runtimeAnimatorController);
+            if (m_LocalPlayerAnimator != null && m_LocalPlayerAnimator.runtimeAnimatorController != m_PreviewAnimator.runtimeAnimatorController)
+            {
+                CollectPreviewAnimationClips(m_LocalPlayerAnimator.runtimeAnimatorController);
+            }
+
+            if (m_PreviewCycleClips.Count == 0)
+            {
+                if (m_AnimationStatusLabel != null)
+                {
+                    m_AnimationStatusLabel.text = "ANIMATION • STATIC";
+                }
+
+                return;
+            }
+
+            EnsurePreviewAnimationGraph();
+            PlayPreviewClipImmediate(0);
+        }
+
+        private void CollectPreviewAnimationClips(RuntimeAnimatorController controller)
+        {
+            if (controller == null)
+            {
+                return;
+            }
+
+            AddPreviewClipsByKeywords(controller, "idle", "stand");
+            AddPreviewClipsByKeywords(controller, "walk", "run", "move");
+            AddPreviewClipsByKeywords(controller, "emoji", "smile", "hi", "nice", "showmanship", "reaction", "dance");
+
+            foreach (var clip in controller.animationClips)
+            {
+                TryRegisterPreviewClip(clip);
+                if (m_PreviewCycleClips.Count >= 6)
+                {
+                    break;
+                }
+            }
+        }
+
+        private void AddPreviewClipsByKeywords(RuntimeAnimatorController controller, params string[] keywords)
+        {
+            if (controller == null || keywords == null || keywords.Length == 0)
+            {
+                return;
+            }
+
+            foreach (var clip in controller.animationClips)
+            {
+                if (clip == null)
+                {
+                    continue;
+                }
+
+                var clipName = clip.name ?? string.Empty;
+                for (int index = 0; index < keywords.Length; index++)
+                {
+                    if (clipName.IndexOf(keywords[index], StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        TryRegisterPreviewClip(clip);
+                        break;
+                    }
+                }
+
+                if (m_PreviewCycleClips.Count >= 6)
+                {
+                    return;
+                }
+            }
+        }
+
+        private void TryRegisterPreviewClip(AnimationClip clip)
+        {
+            if (clip == null || clip.empty || !m_PreviewClipDeduplication.Add(clip))
+            {
+                return;
+            }
+
+            m_PreviewCycleClips.Add(clip);
+        }
+
+        private void EnsurePreviewAnimationGraph()
+        {
+            if (m_PreviewAnimator == null || m_PreviewAnimationGraph.IsValid())
+            {
+                return;
+            }
+
+            m_PreviewAnimationGraph = PlayableGraph.Create("CharacterCustomizationPreviewAnimation");
+            m_PreviewAnimationGraph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+            var output = AnimationPlayableOutput.Create(m_PreviewAnimationGraph, "PreviewOutput", m_PreviewAnimator);
+            m_PreviewAnimationMixer = AnimationMixerPlayable.Create(m_PreviewAnimationGraph, 2);
+            output.SetSourcePlayable(m_PreviewAnimationMixer);
+            m_PreviewAnimationMixer.SetInputWeight(0, 0f);
+            m_PreviewAnimationMixer.SetInputWeight(1, 0f);
+            m_PreviewAnimationGraph.Play();
+        }
+
+        private void PlayPreviewClipImmediate(int clipIndex)
+        {
+            if (!m_PreviewAnimationGraph.IsValid() ||
+                clipIndex < 0 ||
+                clipIndex >= m_PreviewCycleClips.Count)
+            {
+                return;
+            }
+
+            DisconnectPreviewPlayable(ref m_PreviewPrimaryPlayable, 0, true);
+            DisconnectPreviewPlayable(ref m_PreviewSecondaryPlayable, 1, true);
+
+            var clip = m_PreviewCycleClips[clipIndex];
+            m_PreviewPrimaryPlayable = CreatePreviewClipPlayable(clip);
+            m_PreviewAnimationGraph.Connect(m_PreviewPrimaryPlayable, 0, m_PreviewAnimationMixer, 0);
+            m_PreviewAnimationMixer.SetInputWeight(0, 1f);
+            m_PreviewAnimationMixer.SetInputWeight(1, 0f);
+            m_CurrentPreviewClipIndex = clipIndex;
+            m_NextPreviewClipIndex = -1;
+            m_PreviewBlendActive = false;
+            m_NextPreviewClipSwitchAt = Time.unscaledTime + GetPreviewShowcaseDuration(clip);
+            UpdatePreviewAnimationLabel(clip);
+            m_PreviewDirty = true;
+        }
+
+        private void UpdatePreviewAnimationCycle()
+        {
+            if (!m_IsOpen || !m_PreviewAnimationGraph.IsValid() || m_PreviewCycleClips.Count == 0)
+            {
+                return;
+            }
+
+            if (m_PreviewBlendActive)
+            {
+                var normalized = Mathf.Clamp01((Time.unscaledTime - m_PreviewBlendStartedAt) / PreviewAnimationBlendDurationSeconds);
+                m_PreviewAnimationMixer.SetInputWeight(0, 1f - normalized);
+                m_PreviewAnimationMixer.SetInputWeight(1, normalized);
+                m_PreviewDirty = true;
+
+                if (normalized >= 1f)
+                {
+                    FinishPreviewBlend();
+                }
+
+                return;
+            }
+
+            if (m_PreviewCycleClips.Count <= 1 || Time.unscaledTime < m_NextPreviewClipSwitchAt)
+            {
+                return;
+            }
+
+            int nextIndex = (m_CurrentPreviewClipIndex + 1) % m_PreviewCycleClips.Count;
+            BeginPreviewBlend(nextIndex);
+        }
+
+        private void BeginPreviewBlend(int nextClipIndex)
+        {
+            if (!m_PreviewAnimationGraph.IsValid() ||
+                nextClipIndex < 0 ||
+                nextClipIndex >= m_PreviewCycleClips.Count ||
+                nextClipIndex == m_CurrentPreviewClipIndex)
+            {
+                return;
+            }
+
+            DisconnectPreviewPlayable(ref m_PreviewSecondaryPlayable, 1, true);
+            m_PreviewSecondaryPlayable = CreatePreviewClipPlayable(m_PreviewCycleClips[nextClipIndex]);
+            m_PreviewAnimationGraph.Connect(m_PreviewSecondaryPlayable, 0, m_PreviewAnimationMixer, 1);
+            m_PreviewAnimationMixer.SetInputWeight(0, 1f);
+            m_PreviewAnimationMixer.SetInputWeight(1, 0f);
+            m_PreviewBlendStartedAt = Time.unscaledTime;
+            m_PreviewBlendActive = true;
+            m_NextPreviewClipIndex = nextClipIndex;
+            UpdatePreviewAnimationLabel(m_PreviewCycleClips[nextClipIndex]);
+            m_PreviewDirty = true;
+        }
+
+        private void FinishPreviewBlend()
+        {
+            if (!m_PreviewAnimationGraph.IsValid() || m_NextPreviewClipIndex < 0 || !m_PreviewSecondaryPlayable.IsValid())
+            {
+                return;
+            }
+
+            DisconnectPreviewPlayable(ref m_PreviewPrimaryPlayable, 0, true);
+            if (m_PreviewAnimationMixer.IsValid())
+            {
+                m_PreviewAnimationMixer.DisconnectInput(0);
+                m_PreviewAnimationMixer.DisconnectInput(1);
+                m_PreviewAnimationGraph.Connect(m_PreviewSecondaryPlayable, 0, m_PreviewAnimationMixer, 0);
+                m_PreviewAnimationMixer.SetInputWeight(0, 1f);
+                m_PreviewAnimationMixer.SetInputWeight(1, 0f);
+            }
+
+            m_PreviewPrimaryPlayable = m_PreviewSecondaryPlayable;
+            m_PreviewSecondaryPlayable = default;
+            m_CurrentPreviewClipIndex = m_NextPreviewClipIndex;
+            m_NextPreviewClipIndex = -1;
+            m_PreviewBlendActive = false;
+            var currentClip = m_PreviewCycleClips[m_CurrentPreviewClipIndex];
+            m_NextPreviewClipSwitchAt = Time.unscaledTime + GetPreviewShowcaseDuration(currentClip);
+            UpdatePreviewAnimationLabel(currentClip);
+            m_PreviewDirty = true;
+        }
+
+        private void StopPreviewAnimationPlayback()
+        {
+            if (m_PreviewAnimationGraph.IsValid())
+            {
+                DisconnectPreviewPlayable(ref m_PreviewPrimaryPlayable, 0, true);
+                DisconnectPreviewPlayable(ref m_PreviewSecondaryPlayable, 1, true);
+                m_PreviewAnimationGraph.Destroy();
+            }
+
+            m_PreviewAnimationMixer = default;
+            m_PreviewAnimationGraph = default;
+            m_CurrentPreviewClipIndex = -1;
+            m_NextPreviewClipIndex = -1;
+            m_PreviewBlendActive = false;
+            m_PreviewBlendStartedAt = 0f;
+            m_NextPreviewClipSwitchAt = 0f;
+        }
+
+        private AnimationClipPlayable CreatePreviewClipPlayable(AnimationClip clip)
+        {
+            var playable = AnimationClipPlayable.Create(m_PreviewAnimationGraph, clip);
+            playable.SetApplyFootIK(false);
+            playable.SetApplyPlayableIK(false);
+            playable.SetSpeed(1f);
+            return playable;
+        }
+
+        private void DisconnectPreviewPlayable(ref AnimationClipPlayable playable, int inputIndex, bool destroyPlayable)
+        {
+            if (m_PreviewAnimationMixer.IsValid())
+            {
+                m_PreviewAnimationMixer.DisconnectInput(inputIndex);
+                m_PreviewAnimationMixer.SetInputWeight(inputIndex, 0f);
+            }
+
+            if (destroyPlayable && playable.IsValid())
+            {
+                playable.Destroy();
+            }
+
+            playable = default;
+        }
+
+        private float GetPreviewShowcaseDuration(AnimationClip clip)
+        {
+            float clipLength = clip != null ? clip.length : PreviewAnimationMinimumShowcaseSeconds;
+            return Mathf.Clamp(clipLength * 0.9f, PreviewAnimationMinimumShowcaseSeconds, PreviewAnimationMaximumShowcaseSeconds);
+        }
+
+        private void UpdatePreviewAnimationLabel(AnimationClip clip)
+        {
+            if (m_AnimationStatusLabel == null)
+            {
+                return;
+            }
+
+            if (clip == null)
+            {
+                m_AnimationStatusLabel.text = "ANIMATION • STATIC";
+                return;
+            }
+
+            var cleanName = clip.name.Replace("Anim@", string.Empty).Replace('_', ' ').Trim();
+            m_AnimationStatusLabel.text = $"ANIMATION • {cleanName.ToUpperInvariant()}";
+        }
+
+        private static string GetCompactSourceLabel(CharacterCustomizationPreset preset)
+        {
+            if (preset == null || string.IsNullOrWhiteSpace(preset.sourceAssetPath))
+            {
+                return "Catalog preset";
+            }
+
+            var path = preset.sourceAssetPath;
+            int slashIndex = Mathf.Max(path.LastIndexOf('/'), path.LastIndexOf('\\'));
+            string fileName = slashIndex >= 0 && slashIndex + 1 < path.Length
+                ? path.Substring(slashIndex + 1)
+                : path;
+            int dotIndex = fileName.LastIndexOf('.');
+            return dotIndex > 0 ? fileName.Substring(0, dotIndex) : fileName;
         }
 
         private void SetVisible(bool visible)
@@ -1522,18 +2093,29 @@ namespace Blocks.Gameplay.Core.Customization
         private VisualElement CreatePresetRow()
         {
             var row = new VisualElement();
+            ApplyRuntimeFont(row);
             row.style.flexDirection = FlexDirection.Row;
             row.style.alignItems = Align.Center;
             row.style.justifyContent = Justify.SpaceBetween;
-            row.style.height = 52f;
+            row.style.height = 108f;
             row.style.paddingLeft = 14f;
             row.style.paddingRight = 14f;
-            row.style.marginBottom = 8f;
+            row.style.paddingTop = 10f;
+            row.style.paddingBottom = 10f;
+            row.style.marginBottom = 10f;
             row.style.borderTopLeftRadius = 14f;
             row.style.borderTopRightRadius = 14f;
             row.style.borderBottomLeftRadius = 14f;
             row.style.borderBottomRightRadius = 14f;
-            row.style.backgroundColor = new Color(1f, 0.98f, 0.92f, 0.05f);
+            row.style.backgroundColor = new Color(1f, 0.98f, 0.94f, 1f);
+            row.style.borderLeftWidth = 3f;
+            row.style.borderRightWidth = 3f;
+            row.style.borderTopWidth = 3f;
+            row.style.borderBottomWidth = 6f;
+            row.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            row.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            row.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            row.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             row.pickingMode = PickingMode.Position;
             row.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -1545,38 +2127,63 @@ namespace Blocks.Gameplay.Core.Customization
                 }
             });
 
+            var indexBadge = new Label("01") { name = "preset-index" };
+            ApplyRuntimeFont(indexBadge);
+            indexBadge.style.minWidth = 50f;
+            indexBadge.style.height = 50f;
+            indexBadge.style.marginRight = 12f;
+            indexBadge.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            indexBadge.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            indexBadge.style.unityFontStyleAndWeight = FontStyle.Bold;
+            indexBadge.style.fontSize = 16f;
+            indexBadge.style.unityTextAlign = TextAnchor.MiddleCenter;
+            indexBadge.style.flexShrink = 0f;
+            indexBadge.style.borderTopLeftRadius = 10f;
+            indexBadge.style.borderTopRightRadius = 10f;
+            indexBadge.style.borderBottomLeftRadius = 10f;
+            indexBadge.style.borderBottomRightRadius = 10f;
+            row.Add(indexBadge);
+
             var nameColumn = new VisualElement();
             nameColumn.style.flexGrow = 1f;
             nameColumn.style.flexDirection = FlexDirection.Column;
             row.Add(nameColumn);
 
             var nameLabel = new Label { name = "preset-name" };
-            nameLabel.style.fontSize = 15f;
+            ApplyRuntimeFont(nameLabel);
+            nameLabel.style.fontSize = 22f;
             nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            nameLabel.style.color = Color.white;
+            nameLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            nameLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+            nameLabel.style.whiteSpace = WhiteSpace.Normal;
             nameLabel.style.marginBottom = 2f;
             nameColumn.Add(nameLabel);
 
             var idLabel = new Label { name = "preset-id" };
-            idLabel.style.fontSize = 12f;
-            idLabel.style.color = new Color(0.95f, 0.87f, 0.74f, 0.72f);
+            ApplyRuntimeFont(idLabel);
+            idLabel.style.fontSize = 14f;
+            idLabel.style.color = new Color(0.28f, 0.24f, 0.17f, 0.88f);
+            idLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+            idLabel.style.whiteSpace = WhiteSpace.Normal;
             nameColumn.Add(idLabel);
 
             var badge = new Label("PREVIEW");
+            ApplyRuntimeFont(badge);
             badge.name = "preset-badge";
-            badge.style.fontSize = 11f;
+            badge.style.fontSize = 13f;
             badge.style.unityFontStyleAndWeight = FontStyle.Bold;
             badge.style.letterSpacing = 1.4f;
             badge.style.paddingLeft = 10f;
             badge.style.paddingRight = 10f;
             badge.style.paddingTop = 5f;
             badge.style.paddingBottom = 5f;
-            badge.style.borderTopLeftRadius = 999f;
-            badge.style.borderTopRightRadius = 999f;
-            badge.style.borderBottomLeftRadius = 999f;
-            badge.style.borderBottomRightRadius = 999f;
-            badge.style.backgroundColor = new Color(1f, 0.9f, 0.74f, 0.18f);
-            badge.style.color = new Color(1f, 0.93f, 0.84f, 0.9f);
+            badge.style.borderTopLeftRadius = 10f;
+            badge.style.borderTopRightRadius = 10f;
+            badge.style.borderBottomLeftRadius = 10f;
+            badge.style.borderBottomRightRadius = 10f;
+            badge.style.backgroundColor = new Color(0.2f, 0.17f, 0.12f, 1f);
+            badge.style.color = new Color(1f, 0.98f, 0.92f, 1f);
+            badge.style.unityTextAlign = TextAnchor.MiddleCenter;
             row.Add(badge);
 
             return row;
@@ -1599,12 +2206,8 @@ namespace Blocks.Gameplay.Core.Customization
 
             var selected = m_SelectedPreset != null && string.Equals(m_SelectedPreset.id, preset.id, StringComparison.OrdinalIgnoreCase);
             element.style.backgroundColor = selected
-                ? new Color(0.32f, 0.23f, 0.14f, 0.92f)
-                : new Color(1f, 0.98f, 0.92f, 0.05f);
-            element.style.borderLeftWidth = selected ? 4f : 1f;
-            element.style.borderLeftColor = selected
-                ? new Color(1f, 0.84f, 0.52f, 1f)
-                : new Color(1f, 0.94f, 0.82f, 0.08f);
+                ? new Color(0.99f, 0.9f, 0.46f, 1f)
+                : new Color(1f, 0.98f, 0.94f, 1f);
 
             var nameLabel = element.Q<Label>("preset-name");
             if (nameLabel != null)
@@ -1615,7 +2218,19 @@ namespace Blocks.Gameplay.Core.Customization
             var idLabel = element.Q<Label>("preset-id");
             if (idLabel != null)
             {
-                idLabel.text = preset.id;
+                idLabel.text = $"ID {preset.id}";
+            }
+
+            var indexBadge = element.Q<Label>("preset-index");
+            if (indexBadge != null)
+            {
+                indexBadge.text = (index + 1).ToString("00");
+                indexBadge.style.backgroundColor = selected
+                    ? new Color(0.15f, 0.56f, 0.9f, 1f)
+                    : new Color(0.99f, 0.83f, 0.26f, 1f);
+                indexBadge.style.color = selected
+                    ? new Color(1f, 0.99f, 0.95f, 1f)
+                    : new Color(0.08f, 0.07f, 0.05f, 1f);
             }
 
             var badge = element.Q<Label>("preset-badge");
@@ -1623,11 +2238,11 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 badge.text = selected ? "SELECTED" : "PREVIEW";
                 badge.style.backgroundColor = selected
-                    ? new Color(1f, 0.84f, 0.52f, 0.22f)
-                    : new Color(1f, 0.9f, 0.74f, 0.18f);
+                    ? new Color(0.08f, 0.07f, 0.05f, 1f)
+                    : new Color(1f, 0.98f, 0.92f, 1f);
                 badge.style.color = selected
-                    ? new Color(1f, 0.95f, 0.9f, 1f)
-                    : new Color(1f, 0.93f, 0.84f, 0.9f);
+                    ? new Color(1f, 0.98f, 0.92f, 1f)
+                    : new Color(0.08f, 0.07f, 0.05f, 1f);
             }
         }
 
@@ -1637,29 +2252,32 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 text = label
             };
+            ApplyRuntimeFont(button);
 
-            button.style.height = 44f;
+            button.style.height = 60f;
             button.style.minWidth = 120f;
-            button.style.borderTopLeftRadius = 14f;
-            button.style.borderTopRightRadius = 14f;
-            button.style.borderBottomLeftRadius = 14f;
-            button.style.borderBottomRightRadius = 14f;
-            button.style.borderLeftWidth = 1f;
-            button.style.borderRightWidth = 1f;
-            button.style.borderTopWidth = 1f;
-            button.style.borderBottomWidth = 1f;
-            button.style.borderLeftColor = new Color(1f, 0.92f, 0.78f, 0.2f);
-            button.style.borderRightColor = new Color(1f, 0.92f, 0.78f, 0.2f);
-            button.style.borderTopColor = new Color(1f, 0.92f, 0.78f, 0.2f);
-            button.style.borderBottomColor = new Color(1f, 0.92f, 0.78f, 0.2f);
+            button.style.borderTopLeftRadius = 12f;
+            button.style.borderTopRightRadius = 12f;
+            button.style.borderBottomLeftRadius = 12f;
+            button.style.borderBottomRightRadius = 12f;
+            button.style.borderLeftWidth = 3f;
+            button.style.borderRightWidth = 3f;
+            button.style.borderTopWidth = 3f;
+            button.style.borderBottomWidth = 6f;
+            button.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            button.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            button.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            button.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             button.style.backgroundColor = accentColor;
-            button.style.color = Color.white;
+            button.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             button.style.unityFontStyleAndWeight = FontStyle.Bold;
-            button.style.fontSize = 15f;
+            button.style.fontSize = 18f;
             button.pickingMode = PickingMode.Position;
             button.focusable = true;
             button.tabIndex = 0;
             button.style.unityTextAlign = TextAnchor.MiddleCenter;
+            button.style.whiteSpace = WhiteSpace.NoWrap;
+            button.style.flexShrink = 0f;
 
             var hoverColor = Color.Lerp(accentColor, Color.white, 0.12f);
             var pressedColor = Color.Lerp(accentColor, Color.black, 0.18f);

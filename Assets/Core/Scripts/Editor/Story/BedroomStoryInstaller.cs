@@ -632,11 +632,21 @@ namespace Blocks.Gameplay.Core.Story.Editor
                 return;
             }
 
-            var panelTransform = playerRoot.transform.Find(CustomizationPanelObjectName);
-            var panelObject = panelTransform != null ? panelTransform.gameObject : new GameObject(CustomizationPanelObjectName);
-            if (panelObject.transform.parent != playerRoot.transform)
+            var panelObject = GameObject.Find(CustomizationPanelObjectName);
+            if (panelObject == null)
             {
-                panelObject.transform.SetParent(playerRoot.transform, false);
+                var panelTransform = playerRoot.transform.Find(CustomizationPanelObjectName);
+                panelObject = panelTransform != null ? panelTransform.gameObject : new GameObject(CustomizationPanelObjectName);
+            }
+
+            if (playerRoot.scene.IsValid() && panelObject.scene != playerRoot.scene)
+            {
+                SceneManager.MoveGameObjectToScene(panelObject, playerRoot.scene);
+            }
+
+            if (panelObject.transform.parent != null)
+            {
+                panelObject.transform.SetParent(null, false);
             }
 
             var uiDocument = panelObject.GetComponent<UIDocument>() ?? panelObject.AddComponent<UIDocument>();

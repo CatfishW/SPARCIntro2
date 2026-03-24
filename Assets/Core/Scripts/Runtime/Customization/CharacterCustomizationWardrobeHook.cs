@@ -232,19 +232,68 @@ namespace Blocks.Gameplay.Core.Customization
                 interactionDirector = FindSceneObject<InteractionDirector>(scene, includeInactive: true);
             }
 
-            if (customizationPanel != null && customizationPanel.gameObject.scene != scene)
+            if (!IsUsablePanel(customizationPanel, scene))
             {
                 customizationPanel = null;
             }
 
             if (customizationPanel == null)
             {
-                customizationPanel = FindSceneObject<CharacterCustomizationPanel>(scene, includeInactive: true);
+                customizationPanel = FindBestPanel(scene);
                 if (customizationPanel == null)
                 {
                     customizationPanel = CreateRuntimePanel(scene);
                 }
             }
+        }
+
+        private static bool IsUsablePanel(CharacterCustomizationPanel panel, Scene scene)
+        {
+            if (panel == null || !scene.IsValid() || panel.gameObject.scene != scene)
+            {
+                return false;
+            }
+
+            var current = panel.transform.parent;
+            while (current != null)
+            {
+                if (current.GetComponent<UIDocument>() != null)
+                {
+                    return false;
+                }
+
+                current = current.parent;
+            }
+
+            return true;
+        }
+
+        private static CharacterCustomizationPanel FindBestPanel(Scene scene)
+        {
+            if (!scene.IsValid())
+            {
+                return null;
+            }
+
+            CharacterCustomizationPanel standaloneFallback = null;
+            var panels = FindObjectsByType<CharacterCustomizationPanel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int index = 0; index < panels.Length; index++)
+            {
+                var panel = panels[index];
+                if (!IsUsablePanel(panel, scene))
+                {
+                    continue;
+                }
+
+                if (string.Equals(panel.gameObject.name, RuntimePanelObjectName, StringComparison.Ordinal))
+                {
+                    return panel;
+                }
+
+                standaloneFallback ??= panel;
+            }
+
+            return standaloneFallback;
         }
 
         private CharacterCustomizationPanel CreateRuntimePanel(Scene scene)
@@ -258,6 +307,11 @@ namespace Blocks.Gameplay.Core.Customization
             if (scene.IsValid() && panelObject.scene != scene)
             {
                 SceneManager.MoveGameObjectToScene(panelObject, scene);
+            }
+
+            if (panelObject.transform.parent != null)
+            {
+                panelObject.transform.SetParent(null, false);
             }
 
             if (panelObject.GetComponent<UIDocument>() == null)
@@ -306,7 +360,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private bool TryRecoverAndShowPanel(Scene scene)
         {
-            var scenePanel = FindSceneObject<CharacterCustomizationPanel>(scene, includeInactive: true);
+            var scenePanel = FindBestPanel(scene);
             if (scenePanel != null)
             {
                 customizationPanel = scenePanel;
