@@ -1,0 +1,40 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "ItemInteractionSystem.Runtime/1.0.0": {
+        "dependencies": {
+          "ModularStoryFlow.Runtime.Core": "1.0.0"
+        },
+        "runtime": {
+          "ItemInteractionSystem.Runtime.dll": {}
+        }
+      },
+      "ModularStoryFlow.Runtime.Core/1.0.0": {
+        "runtime": {
+          "ModularStoryFlow.Runtime.Core.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ItemInteractionSystem.Runtime/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModularStoryFlow.Runtime.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

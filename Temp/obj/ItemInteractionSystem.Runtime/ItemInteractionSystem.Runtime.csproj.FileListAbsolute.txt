@@ -1,0 +1,10 @@
+/Users/zladwu/My project/Temp/bin/Debug/ItemInteractionSystem.Runtime.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/ItemInteractionSystem.Runtime.dll
+/Users/zladwu/My project/Temp/bin/Debug/ItemInteractionSystem.Runtime.pdb
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.sourcelink.json
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInte.E3A23FCF.Up2Date
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.dll
+/Users/zladwu/My project/Temp/obj/ItemInteractionSystem.Runtime/ItemInteractionSystem.Runtime.pdb

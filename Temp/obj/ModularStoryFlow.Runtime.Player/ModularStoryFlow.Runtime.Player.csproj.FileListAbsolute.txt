@@ -1,0 +1,10 @@
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Player.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Player.dll
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Player.pdb
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.sourcelink.json
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularS.C7A75440.Up2Date
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.dll
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/ModularStoryFlow.Runtime.Player.pdb

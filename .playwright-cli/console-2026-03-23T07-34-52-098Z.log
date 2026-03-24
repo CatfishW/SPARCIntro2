@@ -1,0 +1,742 @@
+Total messages: 192 (Errors: 0, Warnings: 2)
+
+[LOG] Input Manager initialize...
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Input System initialize...
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/DeathSparksGraph/Hit Circle/Hit Circle shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/LaserHitGraph/Sparks/Sparks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/RocketHitGraph/Decals/Decals shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/LaserHitGraph/Electric Arcs/Electric Arc shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/LaserHitGraph/Debris/Debris shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/DeathSparksGraph/Cube Dissolve/Cube Dissolve shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/RocketHitGraph/Sparks/sparks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/RocketHitGraph/Streaks/Streaks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/LaserHitGraph/Streaks/Streaks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/RocketHitGraph/Debris/Debris shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Hidden/VFX/LaserHitGraph/Decals/Decals shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] UnloadTime: 0.899999 ms
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[WARNING] ItemInteraction: outline shader not found. Outline rendering disabled.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Audio context resumed after 1.288 seconds. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] [UnityCache] 'https://ai.agaii.org/Intro2/Build/Intro2.data.br' successfully downloaded but not stored in the browser cache due to the error: UnknownError: Failed to execute 'put' on 'Cache': Unexpected internal error. @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[LOG] [GameNetworkManager] WebGL runtime detected. Host startup is disabled.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Trying to get length of sound which is not loaded yet. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:112: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:112: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:113: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:114: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:115: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:116: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:118: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:117: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:120: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] WARNING: 0:2: 'GL_EXT_shader_texture_lod' : extension is not supported
+WARNING: 0:3: 'GL_ARB_shader_storage_buffer_object' : extension is not supported
+WARNING: 0:4: 'GL_ARB_shader_image_load_store' : extension is not supported
+WARNING: 0:5: 'GL_EXT_shader_framebuffer_fetch' : extension is not supported
+ERROR: 0:119: 'readonly' : Illegal use of reserved word
+
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[LOG] Note: Creation of internal variant of shader 'Universal Render Pipeline/Lit' failed.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8

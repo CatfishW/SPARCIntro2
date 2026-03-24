@@ -1,0 +1,246 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj": {}
+  },
+  "projects": {
+    "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj",
+        "projectName": "ModularStoryFlow.Runtime.Channels",
+        "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj",
+        "packagesPath": "/Users/zladwu/.nuget/packages/",
+        "outputPath": "/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/zladwu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj": {
+                "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/sdk/10.0.103/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj",
+        "projectName": "ModularStoryFlow.Runtime.Core",
+        "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj",
+        "packagesPath": "/Users/zladwu/.nuget/packages/",
+        "outputPath": "/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Core/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/zladwu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/sdk/10.0.103/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj",
+        "projectName": "ModularStoryFlow.Runtime.Player",
+        "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Player.csproj",
+        "packagesPath": "/Users/zladwu/.nuget/packages/",
+        "outputPath": "/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Player/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/zladwu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj": {
+                "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Channels.csproj"
+              },
+              "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj": {
+                "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj"
+              },
+              "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj": {
+                "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/sdk/10.0.103/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj",
+        "projectName": "ModularStoryFlow.Runtime.Save",
+        "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Save.csproj",
+        "packagesPath": "/Users/zladwu/.nuget/packages/",
+        "outputPath": "/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Save/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/zladwu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj": {
+                "projectPath": "/Users/zladwu/My project/ModularStoryFlow.Runtime.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.103/libexec/sdk/10.0.103/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Channels.deps.json
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Channels.dll
+/Users/zladwu/My project/Temp/bin/Debug/ModularStoryFlow.Runtime.Channels.pdb
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.csproj.AssemblyReference.cache
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.csproj.CoreCompileInputs.cache
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.sourcelink.json
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularS.6D9A890C.Up2Date
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.dll
+/Users/zladwu/My project/Temp/obj/ModularStoryFlow.Runtime.Channels/ModularStoryFlow.Runtime.Channels.pdb

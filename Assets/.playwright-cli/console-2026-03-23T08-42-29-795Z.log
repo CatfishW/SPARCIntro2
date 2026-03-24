@@ -1,0 +1,6 @@
+Total messages: 192 (Errors: 0, Warnings: 2)
+Returning 2 messages for level "warning"
+
+[WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8
+[WARNING] ItemInteraction: outline shader not found. Outline rendering disabled.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:8

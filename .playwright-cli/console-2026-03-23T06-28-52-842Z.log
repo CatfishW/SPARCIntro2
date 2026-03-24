@@ -1,0 +1,11 @@
+[   33380ms] Invalid or unexpected token
+[  177537ms] [ERROR] Failed to parse binary data file Build/Intro2.data.br (with "Content-Type: application/octet-stream"), because it is still brotli-compressed. It should have been uncompressed by the browser, but it was unable to do so since the web server provided the compressed content without specifying the HTTP Response Header "Content-Encoding: br" that would have informed the browser that decompression is needed. Please verify your web server hosting configuration to add the missing "Content-Encoding: br" HTTP Response Header. @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177543ms] [ERROR] Malformed data? Downloaded binary data file Build/Intro2.data.br (ArrayBuffer size: 530740447) and browser should have decompressed it, but it might have not. Dumping raw HTTP Response Headers if it might help debug: @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177545ms] [ERROR] accept-ranges: bytes @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] content-length: 530740447 @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] content-type: application/octet-stream @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] date: Mon, 23 Mar 2026 06:28:53 GMT @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] etag: "69c0d016-1fa274df" @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] last-modified: Mon, 23 Mar 2026 05:31:02 GMT @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] server: nginx @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[  177546ms] [ERROR] strict-transport-security: max-age=31536000 @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
