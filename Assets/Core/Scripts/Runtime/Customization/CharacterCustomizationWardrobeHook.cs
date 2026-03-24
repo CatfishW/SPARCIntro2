@@ -1,3 +1,4 @@
+using System;
 using ItemInteraction;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -138,7 +139,16 @@ namespace Blocks.Gameplay.Core.Customization
                 customizationPanel.gameObject.SetActive(true);
             }
 
-            customizationPanel.Show();
+            if (TryShowPanel(customizationPanel))
+            {
+                return;
+            }
+
+            var scene = gameObject.scene.IsValid() ? gameObject.scene : SceneManager.GetActiveScene();
+            if (!TryRecoverAndShowPanel(scene))
+            {
+                Debug.LogWarning("[CharacterCustomizationWardrobeHook] Change Character option was invoked, but the customization panel did not open.", this);
+            }
         }
 
         private void HandleOptionTriggered(InteractionInvocation invocation)
@@ -181,7 +191,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private CharacterCustomizationPanel CreateRuntimePanel(Scene scene)
         {
-            var panelObject = GameObject.Find(RuntimePanelObjectName);
+            var panelObject = FindSceneObjectByName(scene, RuntimePanelObjectName);
             if (panelObject == null)
             {
                 panelObject = new GameObject(RuntimePanelObjectName);
@@ -211,6 +221,63 @@ namespace Blocks.Gameplay.Core.Customization
             return panel;
         }
 
+        private bool TryShowPanel(CharacterCustomizationPanel panel)
+        {
+            if (panel == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                panel.Show();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception, this);
+                return false;
+            }
+
+            return panel.IsOpen;
+        }
+
+        private bool TryRecoverAndShowPanel(Scene scene)
+        {
+            var scenePanel = FindSceneObject<CharacterCustomizationPanel>(scene, includeInactive: true);
+            if (scenePanel != null)
+            {
+                customizationPanel = scenePanel;
+                if (!customizationPanel.gameObject.activeSelf)
+                {
+                    customizationPanel.gameObject.SetActive(true);
+                }
+
+                if (TryShowPanel(customizationPanel))
+                {
+                    return true;
+                }
+            }
+
+            var runtimePanelObject = FindSceneObjectByName(scene, RuntimePanelObjectName);
+            if (runtimePanelObject != null)
+            {
+                Destroy(runtimePanelObject);
+            }
+
+            customizationPanel = CreateRuntimePanel(scene);
+            if (customizationPanel == null)
+            {
+                return false;
+            }
+
+            if (!customizationPanel.gameObject.activeSelf)
+            {
+                customizationPanel.gameObject.SetActive(true);
+            }
+
+            return TryShowPanel(customizationPanel);
+        }
+
         private static T FindSceneObject<T>(Scene scene, bool includeInactive)
             where T : Component
         {
@@ -229,6 +296,41 @@ namespace Blocks.Gameplay.Core.Customization
                 if (candidate != null && candidate.gameObject.scene == scene)
                 {
                     return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        private static GameObject FindSceneObjectByName(Scene scene, string objectName)
+        {
+            if (!scene.IsValid() || string.IsNullOrWhiteSpace(objectName))
+            {
+                return null;
+            }
+
+            var roots = scene.GetRootGameObjects();
+            for (var rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+            {
+                var root = roots[rootIndex];
+                if (root == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(root.name, objectName, StringComparison.Ordinal))
+                {
+                    return root;
+                }
+
+                var transforms = root.GetComponentsInChildren<Transform>(true);
+                for (var index = 0; index < transforms.Length; index++)
+                {
+                    var candidate = transforms[index];
+                    if (candidate != null && string.Equals(candidate.name, objectName, StringComparison.Ordinal))
+                    {
+                        return candidate.gameObject;
+                    }
                 }
             }
 

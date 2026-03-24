@@ -275,30 +275,28 @@ namespace Blocks.Gameplay.Core
 
         private void HandleMenuToggleShortcut()
         {
+            bool tabPressed = false;
+            bool escapePressed = false;
+
             if (Keyboard.current != null)
             {
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                {
-                    ToggleSettingsPanel();
-                    return;
-                }
-
-                if (Keyboard.current.tabKey.wasPressedThisFrame)
-                {
-                    ToggleSettingsPanel();
-                    return;
-                }
+                escapePressed |= Keyboard.current.escapeKey.wasPressedThisFrame;
+                tabPressed |= Keyboard.current.tabKey.wasPressedThisFrame;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            escapePressed |= Input.GetKeyDown(KeyCode.Escape);
+            tabPressed |= Input.GetKeyDown(KeyCode.Tab);
+
+            if (tabPressed)
             {
                 ToggleSettingsPanel();
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Tab))
+            // Esc should only close an already open settings panel.
+            if (escapePressed && m_SettingsOpen)
             {
-                ToggleSettingsPanel();
+                SetSettingsOpen(false);
             }
         }
 
@@ -677,7 +675,8 @@ namespace Blocks.Gameplay.Core
             var iconRect = CreateRect("GearIcon", root, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             iconRect.sizeDelta = new Vector2(40f, 40f);
             iconRect.anchoredPosition = Vector2.zero;
-            CreateNeoIconVisual(iconRect, NeoGlyphKind.Settings, "Settings", new Color(0.08f, 0.09f, 0.12f, 1f));
+            // Force procedural glyph on settings button to avoid blank SVG sprite imports.
+            CreateNeoIconVisual(iconRect, NeoGlyphKind.Settings, null, new Color(0.08f, 0.09f, 0.12f, 1f));
         }
 
         private void BuildTouchControls()
@@ -768,7 +767,7 @@ namespace Blocks.Gameplay.Core
             m_QualityButton.onClick.AddListener(ToggleQualityMode);
             m_QualityLabel = m_QualityButton.GetComponentInChildren<Text>(true);
 
-            var hint = CreateText("Hint", m_SettingsPanel, "Press Tab or Esc, or tap the gear icon, to close.", 24, FontStyle.Normal, TextAnchor.MiddleCenter);
+            var hint = CreateText("Hint", m_SettingsPanel, "Press Tab to open/close. Press Esc to close.", 24, FontStyle.Normal, TextAnchor.MiddleCenter);
             Stretch(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(24f, 24f), new Vector2(-24f, 72f));
             hint.color = new Color(0.08f, 0.09f, 0.12f, 0.9f);
 
@@ -1173,6 +1172,14 @@ namespace Blocks.Gameplay.Core
                 image.preserveAspect = true;
                 image.color = tint;
                 graphic = image;
+
+                // Keep a procedural fallback on top so icon still renders if SVG import ends up blank.
+                var fallbackRect = CreateRect("GlyphFallback", parent, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f));
+                Stretch(fallbackRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+                var fallbackGlyph = fallbackRect.gameObject.AddComponent<NeoGlyphGraphic>();
+                fallbackGlyph.Glyph = kind;
+                fallbackGlyph.color = new Color(tint.r, tint.g, tint.b, 0.92f);
+                fallbackGlyph.raycastTarget = false;
             }
             else
             {

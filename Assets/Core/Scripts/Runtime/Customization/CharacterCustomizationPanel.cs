@@ -35,6 +35,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         [Header("UI")]
         [SerializeField] private int documentSortingOrder = 1200;
+        [SerializeField] private PanelSettings panelSettingsOverride;
 
         private UIDocument m_UIDocument;
         private VisualElement m_Root;
@@ -92,6 +93,7 @@ namespace Blocks.Gameplay.Core.Customization
         private EventSystem m_EventSystem;
         private InputSystemUIInputModule m_InputModule;
         private StandaloneInputModule m_StandaloneInputModule;
+        private PanelSettings m_RuntimePanelSettings;
 
         public bool IsOpen => m_IsOpen;
 
@@ -143,6 +145,15 @@ namespace Blocks.Gameplay.Core.Customization
             Hide();
             ReleaseInteractionLock();
             TearDownPreview();
+        }
+
+        private void OnDestroy()
+        {
+            if (m_RuntimePanelSettings != null)
+            {
+                DestroySmart(m_RuntimePanelSettings);
+                m_RuntimePanelSettings = null;
+            }
         }
 
         private void Update()
@@ -348,6 +359,7 @@ namespace Blocks.Gameplay.Core.Customization
                 // UI Toolkit can transiently report null root when panel settings are still being resolved.
                 m_UIDocument.enabled = false;
                 m_UIDocument.enabled = true;
+                EnsureDocumentCanRender(forceRecreateRuntimeSettings: true);
                 m_Root = m_UIDocument.rootVisualElement;
             }
 
@@ -433,7 +445,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_IsBuilt = true;
         }
 
-        private void EnsureDocumentCanRender()
+        private void EnsureDocumentCanRender(bool forceRecreateRuntimeSettings = false)
         {
             if (m_UIDocument == null)
             {
@@ -444,39 +456,31 @@ namespace Blocks.Gameplay.Core.Customization
 
             DetachFromParentDocument();
 
-            if (m_UIDocument.panelSettings != null)
+            if (panelSettingsOverride != null)
+            {
+                m_UIDocument.panelSettings = panelSettingsOverride;
+                return;
+            }
+
+            if (!forceRecreateRuntimeSettings && m_UIDocument.panelSettings != null && m_UIDocument.panelSettings == m_RuntimePanelSettings)
             {
                 return;
             }
 
-            if (m_UIDocument.parentUI != null &&
-                m_UIDocument.parentUI.panelSettings != null &&
-                IsInScene(m_UIDocument.parentUI.gameObject, contextScene))
+            if (m_RuntimePanelSettings != null && forceRecreateRuntimeSettings)
             {
-                m_UIDocument.panelSettings = m_UIDocument.parentUI.panelSettings;
-                return;
+                DestroySmart(m_RuntimePanelSettings);
+                m_RuntimePanelSettings = null;
             }
 
-            var documents = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            for (int index = 0; index < documents.Length; index++)
+            if (m_RuntimePanelSettings == null)
             {
-                var candidate = documents[index];
-                if (candidate == null ||
-                    candidate == m_UIDocument ||
-                    candidate.panelSettings == null ||
-                    !IsInScene(candidate.gameObject, contextScene))
-                {
-                    continue;
-                }
-
-                m_UIDocument.panelSettings = candidate.panelSettings;
-                return;
+                m_RuntimePanelSettings = ScriptableObject.CreateInstance<PanelSettings>();
+                m_RuntimePanelSettings.name = $"CharacterCustomizationRuntimePanelSettings_{contextScene.name}";
+                m_RuntimePanelSettings.hideFlags = HideFlags.DontSave;
             }
 
-            var runtimePanelSettings = ScriptableObject.CreateInstance<PanelSettings>();
-            runtimePanelSettings.name = "CharacterCustomizationRuntimePanelSettings";
-            runtimePanelSettings.hideFlags = HideFlags.DontSave;
-            m_UIDocument.panelSettings = runtimePanelSettings;
+            m_UIDocument.panelSettings = m_RuntimePanelSettings;
         }
 
         private void DetachFromParentDocument()
