@@ -41,6 +41,8 @@ namespace Blocks.Gameplay.Core
 
         // Lifecycle Management
         private Coroutine m_EliminatedCoroutine;
+        private Coroutine m_HudCreationRetryCoroutine;
+        private bool m_HudSetupComplete;
 
         // Constants
         private const int k_MaxNotifications = 3;
@@ -83,10 +85,16 @@ namespace Blocks.Gameplay.Core
 
             if (!ValidateComponents()) return;
 
-            CreateHUD();
-            Initialize();
-            RegisterEventListeners();
-            StartCoroutine(InitialHUDUpdate());
+            if (TryCreateHUD())
+            {
+                CompleteOwnerHudSetup();
+                return;
+            }
+
+            if (m_HudCreationRetryCoroutine == null)
+            {
+                m_HudCreationRetryCoroutine = StartCoroutine(WaitForHUDDocumentRoutine());
+            }
         }
 
         /// <summary>
@@ -104,8 +112,15 @@ namespace Blocks.Gameplay.Core
         {
             if (IsOwner)
             {
+                if (m_HudCreationRetryCoroutine != null)
+                {
+                    StopCoroutine(m_HudCreationRetryCoroutine);
+                    m_HudCreationRetryCoroutine = null;
+                }
+
                 UnregisterEventListeners();
                 ClearAllNotifications();
+                m_HudSetupComplete = false;
             }
         }
 
@@ -253,20 +268,34 @@ namespace Blocks.Gameplay.Core
         /// <summary>
         /// Creates and initializes the HUD using the UIDocument component.
         /// </summary>
-        private void CreateHUD()
+        private bool TryCreateHUD()
         {
             m_UIDocument = GetComponent<UIDocument>();
             if (m_UIDocument == null)
             {
                 Debug.LogError("CoreHUD requires a UIDocument component.", this);
-                return;
+                return false;
             }
 
             var root = m_UIDocument.rootVisualElement;
+            if (root == null)
+            {
+                m_UIDocument.enabled = false;
+                m_UIDocument.enabled = true;
+                root = m_UIDocument.rootVisualElement;
+            }
+
+            if (root == null)
+            {
+                Debug.LogWarning("CoreHUD UIDocument root is not ready yet. Retrying next frame.", this);
+                return false;
+            }
+
             CacheUIElements(root);
             ConfigureUIElements();
             QueryHUDElements(root);
             SetHUDDefaults();
+            return true;
         }
 
         /// <summary>
@@ -480,6 +509,37 @@ namespace Blocks.Gameplay.Core
                     });
                 }
             }
+        }
+
+        private IEnumerator WaitForHUDDocumentRoutine()
+        {
+            const int maxRetryFrames = 30;
+
+            for (int frame = 0; frame < maxRetryFrames && !m_HudSetupComplete; frame++)
+            {
+                yield return null;
+
+                if (TryCreateHUD())
+                {
+                    CompleteOwnerHudSetup();
+                    break;
+                }
+            }
+
+            m_HudCreationRetryCoroutine = null;
+        }
+
+        private void CompleteOwnerHudSetup()
+        {
+            if (m_HudSetupComplete)
+            {
+                return;
+            }
+
+            m_HudSetupComplete = true;
+            Initialize();
+            RegisterEventListeners();
+            StartCoroutine(InitialHUDUpdate());
         }
 
         /// <summary>

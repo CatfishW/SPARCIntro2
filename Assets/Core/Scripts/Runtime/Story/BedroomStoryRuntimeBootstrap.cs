@@ -11,6 +11,7 @@ using ModularStoryFlow.Runtime.Player;
 using ModularStoryFlow.Runtime.State;
 using ModularStoryFlow.Runtime.Variables;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -35,7 +36,11 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private string laptopObjectPath = "_Environment/Room/MacBook";
         [SerializeField] private string savedProjectConfigPath = "Assets/StoryFlowBedroomGenerated/Config/StoryFlowProjectConfig.asset";
         [SerializeField] private string savedGraphPath = "Assets/StoryFlowBedroomGenerated/Graphs/BedroomIntroStory.asset";
+        [SerializeField] private StoryFlowProjectConfig embeddedProjectConfig;
+        [SerializeField] private StoryGraphAsset embeddedGraph;
         [SerializeField] private bool enableWebGlLitFallback = true;
+        [SerializeField, Min(1f)] private float maxWakeUpAnchorDistanceFromBedroomReference = 6.5f;
+        [SerializeField, Min(1f)] private float maxAllowedSpawnDistanceFromBedroomReference = 8.5f;
 
         private StoryFlowProjectConfig runtimeConfig;
         private StoryGraphAsset runtimeGraph;
@@ -222,6 +227,16 @@ namespace Blocks.Gameplay.Core.Story
 
             uiRoot?.Configure(runtimeChannels);
 
+            timelineBridge = timelineBridge != null ? timelineBridge : Object.FindFirstObjectByType<StoryTimelineDirectorBridge>();
+            if (IsWebGlSafeMode())
+            {
+                DisableTimelineBridgeForWebGl(timelineBridge);
+            }
+            else
+            {
+                timelineBridge?.Configure(runtimeConfig, runtimeConfig != null ? runtimeConfig.TimelineCatalog : null);
+            }
+
             if (interactionBridge != null)
             {
                 interactionBridge.Configure(runtimeChannels, null, null, sceneTransition);
@@ -231,9 +246,18 @@ namespace Blocks.Gameplay.Core.Story
 
         private bool TryLoadPersistedProject()
         {
-#if UNITY_EDITOR
-            var loadedConfig = AssetDatabase.LoadAssetAtPath<StoryFlowProjectConfig>(savedProjectConfigPath);
-            var loadedGraph = AssetDatabase.LoadAssetAtPath<StoryGraphAsset>(savedGraphPath);
+#if !UNITY_EDITOR
+            return false;
+#else
+            var loadedConfig = embeddedProjectConfig;
+            var loadedGraph = embeddedGraph;
+
+            if (loadedConfig == null || loadedGraph == null)
+            {
+                loadedConfig = AssetDatabase.LoadAssetAtPath<StoryFlowProjectConfig>(savedProjectConfigPath);
+                loadedGraph = AssetDatabase.LoadAssetAtPath<StoryGraphAsset>(savedGraphPath);
+            }
+
             if (loadedConfig == null || loadedGraph == null)
             {
                 return false;
@@ -243,8 +267,6 @@ namespace Blocks.Gameplay.Core.Story
             runtimeGraph = loadedGraph;
             runtimeChannels = loadedConfig.Channels;
             return runtimeChannels != null;
-#else
-            return false;
 #endif
         }
 
@@ -258,21 +280,21 @@ namespace Blocks.Gameplay.Core.Story
 
             var start = CreateNode<StartNodeAsset>();
             var fadeDelay = CreateDelayNode(0.6f);
-            var introDialogue = CreateDialogueNode(string.Empty, "...What day is it today?", true, 1.85f);
-            var secondDialogue = CreateDialogueNode(string.Empty, "Feels like I'm forgetting something.", true, 1.85f);
-            var objectiveDialogue = CreateDialogueNode(string.Empty, "Maybe I should check my laptop... then head to school.", true, 2.25f);
+            var introDialogue = CreateDialogueNode("You", "...What day is it today?", true, 2.2f);
+            var secondDialogue = CreateDialogueNode("You", "Feels like I'm forgetting something.", true, 2.2f);
+            var objectiveDialogue = CreateDialogueNode("You", "Maybe I should check my laptop... then head to school.", true, 2.55f);
             var objectiveAction = CreateActionNode(CreateSetStateAction(progression, "LaptopObjectiveActive"));
             var waitLaptop = CreateWaitSignalNode(CreateSignal(BedroomStorySignals.LaptopChecked));
             var laptopResolvedAction = CreateActionNode(CreateCompositeAction(
                 CreateSetVariableAction(laptopChecked, true),
                 CreateSetStateAction(progression, "LaptopResolved")));
-            var readyDialogue = CreateDialogueNode(string.Empty, "Right... I need to go.", true, 1.45f);
-            var leaveDialogue = CreateDialogueNode(string.Empty, "Better head out now.", true, 1.6f);
+            var readyDialogue = CreateDialogueNode("You", "Right... I need to go.", true, 2.1f);
+            var leaveDialogue = CreateDialogueNode("You", "Better head out now.", true, 2.25f);
             var doorReadyAction = CreateActionNode(CreateCompositeAction(
                 CreateSetVariableAction(introReady, true),
                 CreateSetStateAction(progression, "DoorReady")));
             var waitDoor = CreateWaitSignalNode(CreateSignal(BedroomStorySignals.DoorConfirmed));
-            var exitDialogue = CreateDialogueNode(string.Empty, "Alright... here goes.", true, 1.35f);
+            var exitDialogue = CreateDialogueNode("You", "Alright... here goes.", true, 1.9f);
             var transitionAction = CreateActionNode(CreateCompositeAction(CreateSetStateAction(progression, "TransitionCommitted")));
             var end = CreateNode<EndNodeAsset>();
 
@@ -309,6 +331,33 @@ namespace Blocks.Gameplay.Core.Story
 
             graph.EnsureStableIds();
             return graph;
+        }
+
+        private static void DisableTimelineBridgeForWebGl(StoryTimelineDirectorBridge bridge)
+        {
+            if (bridge == null)
+            {
+                return;
+            }
+
+            var director = bridge.GetComponent<PlayableDirector>();
+            if (director != null)
+            {
+                director.enabled = false;
+            }
+
+            bridge.enabled = false;
+        }
+
+        private static bool IsWebGlSafeMode()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return true;
+#elif UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return false;
+#endif
         }
 
         private static T CreateNode<T>() where T : StoryNodeAsset
@@ -464,14 +513,39 @@ namespace Blocks.Gameplay.Core.Story
                 TryComputeWakeUpPose,
                 timeoutSeconds: 12f);
 
+            if (TryComputeWakeUpPose(out var position, out var rotation))
+            {
+                StorySceneLocalPlayerSpawner.TryEnsureLocalPlayerAtPose(
+                    gameObject.scene,
+                    position,
+                    rotation,
+                    out var ensuredMovement);
+                if (ensuredMovement != null && !IsBedroomGameplayPosePlausible(ensuredMovement.transform.position))
+                {
+                    StorySceneLocalPlayerSpawner.ApplySpawnPose(ensuredMovement, position, rotation);
+                }
+
+                RestoreGameplayRigState(ensuredMovement);
+            }
+
             // In WebGL/local-offline mode there may be no spawned Netcode player object.
             // Force a sane gameplay camera pose so players never start in a skybox-only view.
-            if (!StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(gameObject.scene, out _))
+            if (!StorySceneLocalPlayerSpawner.TryResolveSceneLocalPlayerMovement(gameObject.scene, out var resolvedMovement))
             {
                 if (TryComputeBedroomCameraPose(out var cameraPosition, out var cameraRotation))
                 {
                     ApplyFallbackCameraPose(cameraPosition, cameraRotation);
                 }
+            }
+            else
+            {
+                if (!IsBedroomGameplayPosePlausible(resolvedMovement.transform.position) &&
+                    TryComputeWakeUpPose(out var correctedPosition, out var correctedRotation))
+                {
+                    StorySceneLocalPlayerSpawner.ApplySpawnPose(resolvedMovement, correctedPosition, correctedRotation);
+                }
+
+                RestoreGameplayRigState(resolvedMovement);
             }
         }
 
@@ -718,19 +792,12 @@ namespace Blocks.Gameplay.Core.Story
             position = Vector3.zero;
             rotation = Quaternion.identity;
 
-            var bedObject = FindTransformByPath(bedObjectPath)?.gameObject ?? GameObject.Find(bedObjectPath) ?? GameObject.Find("Bed");
+            var bedTransform = FindTransformByPath(bedObjectPath) ?? GameObject.Find(bedObjectPath)?.transform ?? GameObject.Find("Bed")?.transform;
+            var bedObject = bedTransform != null ? bedTransform.gameObject : null;
             var wakeUpAnchor = FindTransformByPath(wakeUpAnchorPath);
             if (wakeUpAnchor != null)
             {
-                var anchorIsPlausible = true;
-                if (bedObject != null && TryGetObjectBounds(bedObject, out var bedAnchorBounds))
-                {
-                    // Some authored spawn pads are intentionally disabled, but others are far outside the playable room.
-                    // Validate distance so WebGL never boots into an empty-horizon camera.
-                    anchorIsPlausible = Vector3.Distance(wakeUpAnchor.position, bedAnchorBounds.center) <= 6.5f;
-                }
-
-                if (anchorIsPlausible)
+                if (IsWakeUpAnchorPlausible(wakeUpAnchor, bedTransform))
                 {
                     position = wakeUpAnchor.position;
                     rotation = wakeUpAnchor.rotation;
@@ -738,7 +805,7 @@ namespace Blocks.Gameplay.Core.Story
                 }
             }
 
-            if (bedObject == null || !TryGetObjectBounds(bedObject, out var bedBounds))
+            if (bedObject == null)
             {
                 var fallbackCamera = Camera.main;
                 if (fallbackCamera == null)
@@ -762,16 +829,19 @@ namespace Blocks.Gameplay.Core.Story
                 return true;
             }
 
-            var laptopObject = FindTransformByPath(laptopObjectPath)?.gameObject ?? GameObject.Find(laptopObjectPath) ?? GameObject.Find("MacBook");
-            Vector3 facingDirection;
-            if (laptopObject != null && TryGetObjectBounds(laptopObject, out var laptopBounds))
+            var laptopTransform = FindTransformByPath(laptopObjectPath) ?? GameObject.Find(laptopObjectPath)?.transform ?? GameObject.Find("MacBook")?.transform;
+            var hasBedReference = TryGetReferencePoint(bedTransform, out var bedReferencePoint);
+            var hasBedBounds = TryGetObjectBounds(bedObject, out var bedBounds);
+            if (!hasBedReference)
             {
-                facingDirection = laptopBounds.center - bedBounds.center;
+                bedReferencePoint = hasBedBounds ? bedBounds.center : bedTransform.position;
             }
-            else
-            {
-                facingDirection = Vector3.right;
-            }
+
+            TryGetReferencePoint(laptopTransform, out var laptopReferencePoint);
+
+            var facingDirection = laptopReferencePoint != Vector3.zero
+                ? laptopReferencePoint - bedReferencePoint
+                : Vector3.right;
 
             facingDirection = Vector3.ProjectOnPlane(facingDirection, Vector3.up);
             if (facingDirection.sqrMagnitude < 0.0001f)
@@ -781,12 +851,40 @@ namespace Blocks.Gameplay.Core.Story
 
             facingDirection.Normalize();
 
-            var horizontalExtent = Mathf.Clamp(Mathf.Max(bedBounds.extents.x, bedBounds.extents.z), 0.35f, 1.55f);
-            position = bedBounds.center + (facingDirection * (horizontalExtent + wakeUpSpawnClearance));
-            position.y = bedBounds.min.y + wakeUpVerticalOffset;
+            var horizontalExtent = hasBedBounds
+                ? Mathf.Clamp(Mathf.Max(bedBounds.extents.x, bedBounds.extents.z), 0.35f, 1.55f)
+                : 1.1f;
+            position = bedReferencePoint + (facingDirection * (horizontalExtent + wakeUpSpawnClearance));
+            position.y = hasBedBounds ? bedBounds.min.y + wakeUpVerticalOffset : bedReferencePoint.y + wakeUpVerticalOffset;
             // Face back toward the bed so the third-person camera opens into the room instead of clipping into furniture.
             rotation = Quaternion.LookRotation(-facingDirection, Vector3.up);
             return true;
+        }
+
+        private bool IsWakeUpAnchorPlausible(Transform wakeUpAnchor, Transform bedTransform)
+        {
+            if (wakeUpAnchor == null)
+            {
+                return false;
+            }
+
+            if (!TryGetReferencePoint(bedTransform, out var bedReferencePoint))
+            {
+                return true;
+            }
+
+            return Vector3.Distance(wakeUpAnchor.position, bedReferencePoint) <= maxWakeUpAnchorDistanceFromBedroomReference;
+        }
+
+        private bool IsBedroomGameplayPosePlausible(Vector3 playerPosition)
+        {
+            var bedTransform = FindTransformByPath(bedObjectPath) ?? GameObject.Find(bedObjectPath)?.transform ?? GameObject.Find("Bed")?.transform;
+            if (!TryGetReferencePoint(bedTransform, out var bedReferencePoint))
+            {
+                return true;
+            }
+
+            return Vector3.Distance(playerPosition, bedReferencePoint) <= maxAllowedSpawnDistanceFromBedroomReference;
         }
 
         private bool TryComputeBedroomCameraPose(out Vector3 position, out Quaternion rotation)
@@ -818,23 +916,27 @@ namespace Blocks.Gameplay.Core.Story
 
         private void ApplyFallbackCameraPose(Vector3 position, Quaternion rotation)
         {
-            Camera fallbackCamera = null;
-
-            if (Camera.main != null && Camera.main.gameObject.scene == gameObject.scene)
-            {
-                fallbackCamera = Camera.main;
-            }
-
+            var fallbackCamera = Camera.main;
             if (fallbackCamera == null)
             {
                 var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < cameras.Length; index++)
                 {
                     var candidate = cameras[index];
-                    if (candidate != null && candidate.gameObject.scene == gameObject.scene)
+                    if (candidate == null)
+                    {
+                        continue;
+                    }
+
+                    if (candidate.enabled && candidate.gameObject.activeInHierarchy)
                     {
                         fallbackCamera = candidate;
                         break;
+                    }
+
+                    if (fallbackCamera == null)
+                    {
+                        fallbackCamera = candidate;
                     }
                 }
             }
@@ -844,8 +946,37 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            fallbackCamera.enabled = true;
+            fallbackCamera.gameObject.SetActive(true);
             fallbackCamera.transform.SetPositionAndRotation(position, rotation);
             fallbackCamera.cullingMask = ~0;
+        }
+
+        private static void RestoreGameplayRigState(CoreMovement movement)
+        {
+            if (movement == null)
+            {
+                return;
+            }
+
+            var manager = movement.GetComponent<CorePlayerManager>() ??
+                          movement.GetComponentInParent<CorePlayerManager>();
+            if (manager == null)
+            {
+                return;
+            }
+
+            manager.SetMovementInputEnabled(true);
+            if (manager.CoreInput != null)
+            {
+                manager.CoreInput.enabled = true;
+            }
+
+            if (manager.CoreCamera != null)
+            {
+                manager.CoreCamera.enabled = true;
+                manager.CoreCamera.SetLookInputEnabled(true);
+            }
         }
 
         private static Transform FindTransformByPath(string hierarchyPath)
@@ -945,21 +1076,71 @@ namespace Blocks.Gameplay.Core.Story
                 return false;
             }
 
-            var collider = target.GetComponent<Collider>();
-            if (collider != null)
+            var foundBounds = false;
+            var colliders = target.GetComponentsInChildren<Collider>(true);
+            for (var index = 0; index < colliders.Length; index++)
             {
-                bounds = collider.bounds;
+                var collider = colliders[index];
+                if (collider == null)
+                {
+                    continue;
+                }
+
+                if (!foundBounds)
+                {
+                    bounds = collider.bounds;
+                    foundBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(collider.bounds);
+                }
+            }
+
+            if (foundBounds)
+            {
                 return true;
             }
 
-            var renderer = target.GetComponent<Renderer>();
-            if (renderer != null)
+            var renderers = target.GetComponentsInChildren<Renderer>(true);
+            for (var index = 0; index < renderers.Length; index++)
             {
-                bounds = renderer.bounds;
+                var renderer = renderers[index];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                if (!foundBounds)
+                {
+                    bounds = renderer.bounds;
+                    foundBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
+            }
+
+            return foundBounds;
+        }
+
+        private static bool TryGetReferencePoint(Transform target, out Vector3 point)
+        {
+            point = Vector3.zero;
+            if (target == null)
+            {
+                return false;
+            }
+
+            if (TryGetObjectBounds(target.gameObject, out var bounds))
+            {
+                point = bounds.center;
                 return true;
             }
 
-            return false;
+            point = target.position;
+            return true;
         }
 
         private static void DestroyRuntimeAsset(Object asset)

@@ -49,6 +49,11 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         public CoreCameraMode ActiveCameraMode { get; private set; }
 
+        /// <summary>
+        /// Gets whether look input is currently being processed.
+        /// </summary>
+        public bool IsLookInputEnabled => enableLookInput;
+
         // Internal state for look angles and sensitivity.
         private float m_CurrentVerticalLookAngle;
         private float m_CurrentHorizontalLookAngle;
@@ -60,6 +65,8 @@ namespace Blocks.Gameplay.Core
         private readonly List<CoreCameraMode> m_RegisteredCameraModes = new List<CoreCameraMode>();
         // Tracks which camera modes were instantiated by this controller and should be destroyed on despawn.
         private readonly HashSet<CoreCameraMode> m_InstantiatedCameraModes = new HashSet<CoreCameraMode>();
+        private bool m_RuntimeInitialized;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         #endregion
 
@@ -84,43 +91,25 @@ namespace Blocks.Gameplay.Core
             m_CurrentHorizontalLookAngle = transform.rotation.eulerAngles.y;
         }
 
+        private void Start()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
+        private void OnEnable()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-
-            // This component is only active for the local player who owns this object.
-            if (IsOwner)
-            {
-                SetupCinemachine();
-                SwitchCameraMode(initialModeName);
-                if (enableLookInput)
-                {
-                    onLookInput.RegisterListener(SetLookInput);
-                }
-            }
+            InitializeRuntimeCamera();
         }
 
         public override void OnNetworkDespawn()
         {
-            if (IsOwner)
-            {
-                // Only destroy camera modes that were instantiated by this controller.
-                // External/scene cameras are not destroyed.
-                foreach (var mode in m_InstantiatedCameraModes)
-                {
-                    if (mode != null)
-                    {
-                        Destroy(mode.gameObject);
-                    }
-                }
-                m_InstantiatedCameraModes.Clear();
-                m_RegisteredCameraModes.Clear();
-
-                if (enableLookInput)
-                {
-                    onLookInput.UnregisterListener(SetLookInput);
-                }
-            }
+            ShutdownRuntimeCamera();
             base.OnNetworkDespawn();
         }
 
@@ -128,7 +117,7 @@ namespace Blocks.Gameplay.Core
         {
             // We update the camera rotation in LateUpdate to ensure all character movement for the frame has been processed.
             // This prevents visual jitter.
-            if (lookTarget != null && IsOwner && enableLookInput)
+            if (lookTarget != null && HasLocalAuthority && enableLookInput)
             {
                 Quaternion horizontalRotation = Quaternion.Euler(0f, m_CurrentHorizontalLookAngle, 0f);
                 Quaternion verticalRotation = Quaternion.Euler(m_CurrentVerticalLookAngle, 0f, 0f);
@@ -146,7 +135,7 @@ namespace Blocks.Gameplay.Core
         /// <param name="lookInput">The 2D vector from the input device.</param>
         public void SetLookInput(Vector2 lookInput)
         {
-            if (!IsOwner || !enableLookInput) return;
+            if (!HasLocalAuthority || !enableLookInput) return;
 
             m_CurrentHorizontalLookAngle += lookInput.x * m_LookSensitivity;
 
@@ -161,6 +150,73 @@ namespace Blocks.Gameplay.Core
         public void SetLookSensitivity(float sensitivity)
         {
             m_LookSensitivity = sensitivity;
+        }
+
+        /// <summary>
+        /// Enables or disables look input processing without tearing down the camera rig.
+        /// </summary>
+        public void SetLookInputEnabled(bool isEnabled)
+        {
+            enableLookInput = isEnabled;
+        }
+
+        private void OnDisable()
+        {
+            if (!IsSpawned)
+            {
+                ShutdownRuntimeCamera();
+            }
+        }
+
+        private void TryInitializeOfflineRuntime()
+        {
+            if (!IsSpawned && OfflineLocalAuthority.IsActive(this))
+            {
+                InitializeRuntimeCamera();
+            }
+        }
+
+        private void InitializeRuntimeCamera()
+        {
+            if (m_RuntimeInitialized || !HasLocalAuthority)
+            {
+                return;
+            }
+
+            SetupCinemachine();
+            SwitchCameraMode(initialModeName);
+            if (enableLookInput && onLookInput != null)
+            {
+                onLookInput.RegisterListener(SetLookInput);
+            }
+
+            m_RuntimeInitialized = true;
+        }
+
+        private void ShutdownRuntimeCamera()
+        {
+            if (!m_RuntimeInitialized)
+            {
+                return;
+            }
+
+            foreach (var mode in m_InstantiatedCameraModes)
+            {
+                if (mode != null)
+                {
+                    Destroy(mode.gameObject);
+                }
+            }
+
+            m_InstantiatedCameraModes.Clear();
+            m_RegisteredCameraModes.Clear();
+
+            if (enableLookInput && onLookInput != null)
+            {
+                onLookInput.UnregisterListener(SetLookInput);
+            }
+
+            m_RuntimeInitialized = false;
         }
 
         /// <summary>

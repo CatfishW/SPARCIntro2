@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -65,6 +68,11 @@ namespace Blocks.Gameplay.Core.Story
 
         private void EnsureMeshColliders(Transform root)
         {
+            if (ShouldSkipRuntimeMeshColliders())
+            {
+                return;
+            }
+
             var meshFilters = root.GetComponentsInChildren<MeshFilter>(true);
             for (var index = 0; index < meshFilters.Length; index++)
             {
@@ -81,6 +89,11 @@ namespace Blocks.Gameplay.Core.Story
                 }
 
                 if (gameObject.GetComponent<Collider>() != null)
+                {
+                    continue;
+                }
+
+                if (!meshFilter.sharedMesh.isReadable)
                 {
                     continue;
                 }
@@ -144,6 +157,17 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return false;
+        }
+
+        private static bool ShouldSkipRuntimeMeshColliders()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return true;
+#elif UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return false;
+#endif
         }
 
         private void EnsureBoundaryBlockers(Transform classroomRoot, Bounds bounds)

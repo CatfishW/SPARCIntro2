@@ -31,6 +31,7 @@ namespace Blocks.Gameplay.Core
         public Animator BoundAnimator => Animator;
         public bool HasFootstepSoundDef => soundDefFootstep != null;
         public SoundDef FootstepSoundDef => soundDefFootstep;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         #endregion
 
@@ -63,7 +64,7 @@ namespace Blocks.Gameplay.Core
         {
             // We only want the owner to send animation state updates.
             // NetworkAnimator will handle propagating these changes to other clients.
-            if (!IsOwner || coreMovement == null) return;
+            if (!HasLocalAuthority || coreMovement == null) return;
 
             UpdateLocomotionParameters();
         }

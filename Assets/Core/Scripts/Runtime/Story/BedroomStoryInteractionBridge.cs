@@ -6,7 +6,11 @@ using ItemInteraction;
 using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Events;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -47,12 +51,23 @@ namespace Blocks.Gameplay.Core.Story
         [SerializeField] private bool doorReady;
         [SerializeField] private bool transitionCommitted;
         [SerializeField] private string currentSessionId = string.Empty;
+        [SerializeField, Min(0.1f)] private float webGlDoorReadyFallbackDelaySeconds = 1.1f;
+        [SerializeField, Min(0.1f)] private float webGlTransitionFallbackDelaySeconds = 0.9f;
 
         private CursorLockMode previousCursorLockState;
         private bool previousCursorVisible;
         private bool cachedCursorState;
         private bool lockedMovementForLaptop;
         private bool laptopSessionOpen;
+        private bool cachedCoreInputEnabled;
+        private bool cachedCoreCameraEnabled;
+        private bool cachedCoreCameraLookInputEnabled;
+        private bool cachedLaptopControlState;
+        private Coroutine gameplayCursorRecoveryRoutine;
+        private Coroutine gameplayStateRecoveryRoutine;
+        private Coroutine doorReadyFallbackRoutine;
+        private Coroutine transitionFallbackRoutine;
+        private bool pendingGameplayCursorLock;
 
         public string CurrentSessionId => currentSessionId;
 
@@ -79,6 +94,10 @@ namespace Blocks.Gameplay.Core.Story
             UnregisterSceneHooks();
             UnregisterStoryChannels();
             UnregisterGlobalDialogueRelay();
+            CancelGameplayCursorRecovery();
+            CancelGameplayStateRecovery();
+            CancelDoorReadyFallback();
+            CancelTransitionFallback();
             ReleaseLaptopControl();
         }
 
@@ -86,7 +105,9 @@ namespace Blocks.Gameplay.Core.Story
         {
             ResolveRuntimeSceneReferences();
             ApplyLaptopObjectiveVisuals();
+            ClearObsoleteLaptopFocus();
             TryRaisePendingLaptopSignal();
+            TryReacquireGameplayCursorLock();
         }
 
         public void Configure(
@@ -140,14 +161,17 @@ namespace Blocks.Gameplay.Core.Story
         public void MarkLaptopResolved()
         {
             laptopResolved = true;
+            ConfigureLaptopInteractable();
             ApplyLaptopObjectiveVisuals();
             UpdateObjectivePanel();
             TryRaisePendingLaptopSignal();
+            QueueDoorReadyFallback();
         }
 
         public void SetDoorReady(bool value)
         {
             doorReady = value;
+            ConfigureLaptopInteractable();
             ApplyDoorState();
             UpdateObjectivePanel();
         }
@@ -189,6 +213,8 @@ namespace Blocks.Gameplay.Core.Story
             doorReady = false;
             transitionCommitted = false;
             currentSessionId = string.Empty;
+            CancelDoorReadyFallback();
+            CancelTransitionFallback();
             sceneTransition?.ResetRequest();
             ApplyScenePresentation();
         }
@@ -333,6 +359,7 @@ namespace Blocks.Gameplay.Core.Story
 
             DisableDistractorInteractable("_Environment/Room/iMac", "iMac");
             DisableDistractorInteractable("_Environment/Room/Tablet", "Tablet");
+            DisableLegacyLaptopRelay();
         }
 
         private void ResolveRuntimeSceneReferences()
@@ -414,21 +441,28 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            var allowLaptopInteraction = !doorReady && !transitionCommitted;
             laptopInteractable.displayName = "Laptop";
             laptopInteractable.storyId = "room.laptop";
             laptopInteractable.lookDialogueSpeaker = DefaultInnerSpeaker;
             laptopInteractable.lookDialogueBody = string.Empty;
-            laptopInteractable.isInteractable = true;
+            laptopInteractable.isInteractable = allowLaptopInteraction;
 
             laptopInteractable.options.Clear();
             laptopInteractable.options.Add(new InteractionOption
             {
                 id = LaptopPromptOptionId,
-                label = LaptopPromptLabel,
+                label = laptopResolved ? "Review Reminder" : LaptopPromptLabel,
                 slot = InteractionOptionSlot.Top,
-                visible = true,
-                enabled = true
+                visible = allowLaptopInteraction,
+                enabled = allowLaptopInteraction
             });
+
+            if (!allowLaptopInteraction && interactionDirector != null && interactionDirector.CurrentFocus == laptopInteractable)
+            {
+                interactionDirector.ClearFocusImmediate();
+                interactionDirector.BlockPromptResume(0.55f);
+            }
         }
 
         private static void ConfigureLookDialogueInteractable(InteractableItem interactable, string displayName, string line)
@@ -636,7 +670,8 @@ namespace Blocks.Gameplay.Core.Story
         private void HandleLaptopOpened()
         {
             laptopSessionOpen = true;
-            CacheCursorState();
+            CancelGameplayCursorRecovery();
+            CancelGameplayStateRecovery();
 
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -648,8 +683,23 @@ namespace Blocks.Gameplay.Core.Story
 
             if (localPlayerManager != null && !lockedMovementForLaptop)
             {
+                cachedCoreInputEnabled = localPlayerManager.CoreInput != null && localPlayerManager.CoreInput.enabled;
+                cachedCoreCameraEnabled = localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.enabled;
+                cachedCoreCameraLookInputEnabled = localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.IsLookInputEnabled;
+                cachedLaptopControlState = true;
+
                 localPlayerManager.SetMovementInputEnabled(false);
                 lockedMovementForLaptop = true;
+
+                if (localPlayerManager.CoreInput != null)
+                {
+                    localPlayerManager.CoreInput.enabled = false;
+                }
+
+                if (localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.enabled)
+                {
+                    localPlayerManager.CoreCamera.SetLookInputEnabled(false);
+                }
             }
 
             ApplyLaptopObjectiveVisuals();
@@ -658,12 +708,15 @@ namespace Blocks.Gameplay.Core.Story
         private void HandleLaptopClosed()
         {
             ReleaseLaptopControl();
+            RestoreGameplayStateImmediate();
+            QueueGameplayStateRecovery();
             ApplyLaptopObjectiveVisuals();
         }
 
         private void ReleaseLaptopControl()
         {
             laptopSessionOpen = false;
+            var releasedLaptopGameplayLock = lockedMovementForLaptop || cachedLaptopControlState;
 
             if (interactionDirector != null)
             {
@@ -676,11 +729,62 @@ namespace Blocks.Gameplay.Core.Story
                 lockedMovementForLaptop = false;
             }
 
-            if (cachedCursorState)
+            if (localPlayerManager != null && cachedLaptopControlState)
+            {
+                if (localPlayerManager.CoreInput != null)
+                {
+                    localPlayerManager.CoreInput.enabled = cachedCoreInputEnabled;
+                }
+
+                if (localPlayerManager.CoreCamera != null)
+                {
+                    localPlayerManager.CoreCamera.enabled = cachedCoreCameraEnabled;
+                    if (cachedCoreCameraEnabled)
+                    {
+                        localPlayerManager.CoreCamera.SetLookInputEnabled(cachedCoreCameraLookInputEnabled);
+                    }
+                }
+
+                cachedLaptopControlState = false;
+            }
+
+            var shouldForceGameplayLock = ShouldForceGameplayCursorLock();
+            if (IsWebGlLikeRuntime())
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                pendingGameplayCursorLock = false;
+                cachedCursorState = false;
+            }
+            else if (shouldForceGameplayLock)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                pendingGameplayCursorLock = Cursor.lockState != CursorLockMode.Locked;
+
+                if (pendingGameplayCursorLock && ShouldDeferGameplayCursorLockToUserGesture())
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
+
+                cachedCursorState = false;
+            }
+            else if (cachedCursorState)
             {
                 Cursor.lockState = previousCursorLockState;
                 Cursor.visible = previousCursorVisible;
                 cachedCursorState = false;
+            }
+
+            if (shouldForceGameplayLock)
+            {
+                QueueGameplayCursorRecovery();
+            }
+
+            if (releasedLaptopGameplayLock)
+            {
+                QueueGameplayStateRecovery();
             }
         }
 
@@ -709,11 +813,19 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             ConfirmDoorInteraction();
+            QueueTransitionFallback();
         }
 
         private void HandleLaptopReminderViewed()
         {
             MarkLaptopResolved();
+            laptopWaitSignalNodeEntered = true;
+            nextLaptopSignalTime = 0f;
+            TryRaisePendingLaptopSignal();
+            ForceExitLaptopSession();
+            RestoreGameplayStateImmediate();
+            QueueGameplayStateRecovery();
+            QueueDoorReadyFallback();
         }
 
         private void HandleLaptopOptionTriggered(InteractionInvocation invocation)
@@ -733,6 +845,7 @@ namespace Blocks.Gameplay.Core.Story
                 laptopDesktopSystem = FindFirstObjectByType<LaptopDesktopSystem>(FindObjectsInactive.Include);
             }
 
+            CacheCursorState();
             laptopDesktopSystem?.Open();
         }
 
@@ -756,6 +869,8 @@ namespace Blocks.Gameplay.Core.Story
                 laptopSignalSent = false;
                 nextLaptopSignalTime = 0f;
                 laptopWaitSignalNodeEntered = false;
+                CancelDoorReadyFallback();
+                CancelTransitionFallback();
                 ApplyDoorState();
                 ApplyLaptopObjectiveVisuals();
                 UpdateObjectivePanel();
@@ -802,13 +917,26 @@ namespace Blocks.Gameplay.Core.Story
                 transitionCommitted = false;
             }
 
+            if (doorReady)
+            {
+                CancelDoorReadyFallback();
+            }
+
+            if (transitionCommitted)
+            {
+                CancelTransitionFallback();
+            }
+
             if (!laptopObjectiveActive)
             {
                 laptopWaitSignalNodeEntered = false;
                 nextLaptopSignalTime = 0f;
+                ForceExitLaptopSession();
+                RestoreGameplayStateImmediate();
             }
 
             ApplyDoorState();
+            ConfigureLaptopInteractable();
             ApplyLaptopObjectiveVisuals();
             UpdateObjectivePanel();
             TryRaisePendingLaptopSignal();
@@ -816,6 +944,370 @@ namespace Blocks.Gameplay.Core.Story
             if (string.Equals(payload.NextStateId, "TransitionCommitted", StringComparison.Ordinal))
             {
                 CommitTransition();
+            }
+        }
+
+        private void ForceExitLaptopSession()
+        {
+            if (laptopDesktopSystem != null && laptopDesktopSystem.IsOpen)
+            {
+                laptopDesktopSystem.Close();
+            }
+            else
+            {
+                ReleaseLaptopControl();
+            }
+
+            if (interactionDirector != null)
+            {
+                interactionDirector.SetInteractionsLocked(false);
+                interactionDirector.ClearFocusImmediate();
+                interactionDirector.BlockPromptResume(0.55f);
+            }
+
+            RestoreGameplayStateImmediate();
+        }
+
+        private void ClearObsoleteLaptopFocus()
+        {
+            if (interactionDirector == null || laptopInteractable == null)
+            {
+                return;
+            }
+
+            var allowLaptopInteraction = !laptopResolved && !doorReady && !transitionCommitted;
+            if (allowLaptopInteraction || interactionDirector.CurrentFocus != laptopInteractable)
+            {
+                return;
+            }
+
+            interactionDirector.ClearFocusImmediate();
+            interactionDirector.BlockPromptResume(0.7f);
+        }
+
+        private void QueueGameplayCursorRecovery()
+        {
+            CancelGameplayCursorRecovery();
+            if (!ShouldForceGameplayCursorLock())
+            {
+                return;
+            }
+
+            gameplayCursorRecoveryRoutine = StartCoroutine(RestoreGameplayCursorRoutine());
+        }
+
+        private void CancelGameplayCursorRecovery()
+        {
+            if (gameplayCursorRecoveryRoutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(gameplayCursorRecoveryRoutine);
+            gameplayCursorRecoveryRoutine = null;
+        }
+
+        private void QueueGameplayStateRecovery()
+        {
+            CancelGameplayStateRecovery();
+            gameplayStateRecoveryRoutine = StartCoroutine(RestoreGameplayStateRoutine());
+        }
+
+        private void CancelGameplayStateRecovery()
+        {
+            if (gameplayStateRecoveryRoutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(gameplayStateRecoveryRoutine);
+            gameplayStateRecoveryRoutine = null;
+        }
+
+        private System.Collections.IEnumerator RestoreGameplayCursorRoutine()
+        {
+            yield return null;
+            yield return new WaitForEndOfFrame();
+
+            if (laptopSessionOpen || ShouldDeferGameplayCursorLockToUserGesture())
+            {
+                gameplayCursorRecoveryRoutine = null;
+                yield break;
+            }
+
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            pendingGameplayCursorLock = Cursor.lockState != CursorLockMode.Locked;
+            gameplayCursorRecoveryRoutine = null;
+        }
+
+        private System.Collections.IEnumerator RestoreGameplayStateRoutine()
+        {
+            yield return null;
+            yield return new WaitForEndOfFrame();
+
+            if (laptopSessionOpen)
+            {
+                gameplayStateRecoveryRoutine = null;
+                yield break;
+            }
+
+            RestoreGameplayStateImmediate();
+            gameplayStateRecoveryRoutine = null;
+        }
+
+        private void RestoreGameplayStateImmediate()
+        {
+            ResolveRuntimeSceneReferences();
+            if (laptopSessionOpen)
+            {
+                return;
+            }
+
+            var restoredAnyPlayer = false;
+            var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            for (var index = 0; index < players.Length; index++)
+            {
+                var player = players[index];
+                if (player == null || !player.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                if (!ShouldRestorePlayerGameplayState(player, players.Length))
+                {
+                    continue;
+                }
+
+                RestorePlayerGameplayState(player);
+                restoredAnyPlayer = true;
+            }
+
+            if (!restoredAnyPlayer && localPlayerManager != null)
+            {
+                RestorePlayerGameplayState(localPlayerManager);
+            }
+
+            if (interactionDirector != null)
+            {
+                interactionDirector.SetInteractionsLocked(false);
+                interactionDirector.ClearFocusImmediate();
+                interactionDirector.BlockPromptResume(0.7f);
+            }
+
+            ConfigureLaptopInteractable();
+            ApplyLaptopObjectiveVisuals();
+        }
+
+        private bool ShouldRestorePlayerGameplayState(CorePlayerManager player, int totalPlayers)
+        {
+            if (player == null)
+            {
+                return false;
+            }
+
+            if (player == localPlayerManager)
+            {
+                return true;
+            }
+
+            if (player.IsOwner)
+            {
+                return true;
+            }
+
+            return totalPlayers <= 1;
+        }
+
+        private static void RestorePlayerGameplayState(CorePlayerManager player)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            player.SetMovementInputEnabled(true);
+
+            if (player.CoreInput != null)
+            {
+                player.CoreInput.enabled = true;
+            }
+
+            if (player.CoreCamera != null)
+            {
+                if (!player.CoreCamera.enabled)
+                {
+                    player.CoreCamera.enabled = true;
+                }
+
+                player.CoreCamera.SetLookInputEnabled(true);
+            }
+        }
+
+        private static bool ShouldForceGameplayCursorLock()
+        {
+            if (Application.isMobilePlatform || IsWebGlLikeRuntime())
+            {
+                return false;
+            }
+
+            return Mouse.current != null;
+        }
+
+        private static bool ShouldDeferGameplayCursorLockToUserGesture()
+        {
+            return IsWebGlLikeRuntime();
+        }
+
+        private void TryReacquireGameplayCursorLock()
+        {
+            if (!pendingGameplayCursorLock || laptopSessionOpen)
+            {
+                return;
+            }
+
+            if (IsWebGlLikeRuntime())
+            {
+                pendingGameplayCursorLock = false;
+                return;
+            }
+
+            if (Cursor.lockState == CursorLockMode.Locked && !Cursor.visible)
+            {
+                pendingGameplayCursorLock = false;
+                return;
+            }
+
+            if (!IsWebGlLikeRuntime() && !ShouldForceGameplayCursorLock())
+            {
+                return;
+            }
+
+            var mousePressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+            if (!mousePressed)
+            {
+                return;
+            }
+
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            pendingGameplayCursorLock = Cursor.lockState != CursorLockMode.Locked;
+        }
+
+        private void QueueDoorReadyFallback()
+        {
+            CancelDoorReadyFallback();
+            if (!IsWebGlLikeRuntime() || !laptopResolved || doorReady || transitionCommitted)
+            {
+                return;
+            }
+
+            doorReadyFallbackRoutine = StartCoroutine(DoorReadyFallbackRoutine());
+        }
+
+        private void CancelDoorReadyFallback()
+        {
+            if (doorReadyFallbackRoutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(doorReadyFallbackRoutine);
+            doorReadyFallbackRoutine = null;
+        }
+
+        private System.Collections.IEnumerator DoorReadyFallbackRoutine()
+        {
+            var remaining = Mathf.Max(0.1f, webGlDoorReadyFallbackDelaySeconds);
+            while (remaining > 0f)
+            {
+                if (!laptopResolved || doorReady || transitionCommitted)
+                {
+                    doorReadyFallbackRoutine = null;
+                    yield break;
+                }
+
+                remaining -= Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (!doorReady && laptopResolved && !transitionCommitted)
+            {
+                Debug.LogWarning("[BedroomStoryInteractionBridge] WebGL fallback unlocked the bedroom door because story progression did not advance after the laptop reminder.");
+                SetDoorReady(true);
+                interactionDirector?.ClearFocusImmediate();
+                interactionDirector?.BlockPromptResume(0.35f);
+            }
+
+            doorReadyFallbackRoutine = null;
+        }
+
+        private void QueueTransitionFallback()
+        {
+            CancelTransitionFallback();
+            if (!IsWebGlLikeRuntime() || !doorReady || transitionCommitted)
+            {
+                return;
+            }
+
+            transitionFallbackRoutine = StartCoroutine(TransitionFallbackRoutine());
+        }
+
+        private void CancelTransitionFallback()
+        {
+            if (transitionFallbackRoutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(transitionFallbackRoutine);
+            transitionFallbackRoutine = null;
+        }
+
+        private System.Collections.IEnumerator TransitionFallbackRoutine()
+        {
+            var remaining = Mathf.Max(0.1f, webGlTransitionFallbackDelaySeconds);
+            while (remaining > 0f)
+            {
+                if (!doorReady || transitionCommitted)
+                {
+                    transitionFallbackRoutine = null;
+                    yield break;
+                }
+
+                remaining -= Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (doorReady && !transitionCommitted)
+            {
+                Debug.LogWarning("[BedroomStoryInteractionBridge] WebGL fallback committed the bedroom transition because the door confirmation signal did not advance story state in time.");
+                CommitTransition();
+            }
+
+            transitionFallbackRoutine = null;
+        }
+
+        private static bool IsWebGlLikeRuntime()
+        {
+#if UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return Application.platform == RuntimePlatform.WebGLPlayer;
+#endif
+        }
+
+        private void DisableLegacyLaptopRelay()
+        {
+            if (laptopInteractable == null)
+            {
+                return;
+            }
+
+            var relay = laptopInteractable.GetComponent<LaptopDesktopOpenRelay>();
+            if (relay != null && relay.enabled)
+            {
+                relay.enabled = false;
             }
         }
 
@@ -840,11 +1332,6 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             if (!laptopObjectiveActive && !laptopWaitSignalNodeEntered)
-            {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(currentSessionId))
             {
                 return;
             }

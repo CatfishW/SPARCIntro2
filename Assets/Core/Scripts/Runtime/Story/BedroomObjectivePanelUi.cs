@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,6 +22,13 @@ namespace Blocks.Gameplay.Core.Story
         private Label detailLabel;
         private Label checkLabel;
         private bool built;
+        private Coroutine ensureUiRetryCoroutine;
+        private string cachedObjective = "Follow the objective.";
+        private string cachedDetail = string.Empty;
+        private int cachedCurrentStep = 1;
+        private int cachedTotalSteps = 1;
+        private bool cachedCompleted;
+        private bool objectiveVisibleRequested;
 
         private void Awake()
         {
@@ -30,44 +38,28 @@ namespace Blocks.Gameplay.Core.Story
 
         public void ShowObjective(string objective, string detail, int currentStep, int totalSteps, bool completed)
         {
+            cachedObjective = string.IsNullOrWhiteSpace(objective) ? "Follow the objective." : objective.Trim();
+            cachedDetail = string.IsNullOrWhiteSpace(detail) ? string.Empty : detail.Trim();
+            cachedCurrentStep = currentStep;
+            cachedTotalSteps = totalSteps;
+            cachedCompleted = completed;
+            objectiveVisibleRequested = true;
             EnsureUi();
-            if (!built || overlay == null)
-            {
-                return;
-            }
-
-            var safeTotal = Mathf.Max(1, totalSteps);
-            var safeCurrent = Mathf.Clamp(currentStep, 0, safeTotal);
-
-            titleLabel.text = "MISSION";
-            progressLabel.text = $"{safeCurrent}/{safeTotal}";
-            objectiveLabel.text = string.IsNullOrWhiteSpace(objective) ? "Follow the objective." : objective.Trim();
-            detailLabel.text = string.IsNullOrWhiteSpace(detail) ? string.Empty : detail.Trim();
-            checkLabel.style.color = completed ? new Color(0.08f, 0.12f, 0.12f, 1f) : new Color(0.08f, 0.12f, 0.12f, 0f);
-            card.style.backgroundColor = completed
-                ? new Color(0.77f, 0.93f, 0.78f, 0.96f)
-                : new Color(0.98f, 0.94f, 0.58f, 0.96f);
-
-            overlay.style.display = DisplayStyle.Flex;
-            overlay.style.opacity = 1f;
+            ApplyRequestedState();
         }
 
         public void Hide()
         {
+            objectiveVisibleRequested = false;
             EnsureUi();
-            if (!built || overlay == null)
-            {
-                return;
-            }
-
-            overlay.style.opacity = 0f;
-            overlay.style.display = DisplayStyle.None;
+            ApplyRequestedState();
         }
 
         private void EnsureUi()
         {
             if (built)
             {
+                ApplyRequestedState();
                 return;
             }
 
@@ -77,9 +69,22 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            if (!uiDocument.enabled)
+            {
+                uiDocument.enabled = true;
+            }
+
             var root = uiDocument.rootVisualElement;
             if (root == null)
             {
+                uiDocument.enabled = false;
+                uiDocument.enabled = true;
+                root = uiDocument.rootVisualElement;
+            }
+
+            if (root == null)
+            {
+                QueueEnsureUiRetry();
                 return;
             }
 
@@ -246,6 +251,62 @@ namespace Blocks.Gameplay.Core.Story
             card.Add(detailLabel);
 
             built = true;
+            ensureUiRetryCoroutine = null;
+            ApplyRequestedState();
+        }
+
+        private void ApplyRequestedState()
+        {
+            if (!built || overlay == null)
+            {
+                return;
+            }
+
+            if (!objectiveVisibleRequested)
+            {
+                overlay.style.opacity = 0f;
+                overlay.style.display = DisplayStyle.None;
+                return;
+            }
+
+            var safeTotal = Mathf.Max(1, cachedTotalSteps);
+            var safeCurrent = Mathf.Clamp(cachedCurrentStep, 0, safeTotal);
+
+            titleLabel.text = "MISSION";
+            progressLabel.text = $"{safeCurrent}/{safeTotal}";
+            objectiveLabel.text = cachedObjective;
+            detailLabel.text = cachedDetail;
+            checkLabel.style.color = cachedCompleted
+                ? new Color(0.08f, 0.12f, 0.12f, 1f)
+                : new Color(0.08f, 0.12f, 0.12f, 0f);
+            card.style.backgroundColor = cachedCompleted
+                ? new Color(0.77f, 0.93f, 0.78f, 0.96f)
+                : new Color(0.98f, 0.94f, 0.58f, 0.96f);
+
+            overlay.style.display = DisplayStyle.Flex;
+            overlay.style.opacity = 1f;
+        }
+
+        private void QueueEnsureUiRetry()
+        {
+            if (ensureUiRetryCoroutine != null || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            ensureUiRetryCoroutine = StartCoroutine(EnsureUiReadyRoutine());
+        }
+
+        private IEnumerator EnsureUiReadyRoutine()
+        {
+            const int maxRetryFrames = 30;
+            for (int frame = 0; frame < maxRetryFrames && !built; frame++)
+            {
+                yield return null;
+                EnsureUi();
+            }
+
+            ensureUiRetryCoroutine = null;
         }
 
         private UIDocument ResolveUiDocument()
@@ -266,6 +327,8 @@ namespace Blocks.Gameplay.Core.Story
             {
                 runtimeDocument = runtimeUiRoot.AddComponent<UIDocument>();
             }
+
+            runtimeDocument.enabled = true;
 
             EnsurePanelSettingsBound(runtimeDocument);
             runtimeDocument.sortingOrder = Mathf.Max(runtimeDocument.sortingOrder, 660);

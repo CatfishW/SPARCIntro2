@@ -1,3 +1,4 @@
+using Blocks.Gameplay.Core.Customization;
 using Blocks.Gameplay.Core.Story;
 using ItemInteraction;
 using Unity.Netcode;
@@ -191,14 +192,14 @@ namespace Blocks.Gameplay.Core
             m_NextResolveTime = Time.unscaledTime + 0.35f;
             var activeScene = SceneManager.GetActiveScene();
 
-            if (m_LocalInput == null || !m_LocalInput.IsSpawned || !m_LocalInput.IsOwner || !IsInScene(m_LocalInput.gameObject, activeScene))
+            if (m_LocalInput == null || !HasLocalRuntimeAuthority(m_LocalInput) || !IsInScene(m_LocalInput.gameObject, activeScene))
             {
                 m_LocalInput = null;
                 var inputs = FindObjectsByType<CoreInputHandler>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < inputs.Length; index++)
                 {
                     var input = inputs[index];
-                    if (input != null && input.IsSpawned && input.IsOwner && IsInScene(input.gameObject, activeScene))
+                    if (input != null && HasLocalRuntimeAuthority(input) && IsInScene(input.gameObject, activeScene))
                     {
                         m_LocalInput = input;
                         break;
@@ -206,14 +207,14 @@ namespace Blocks.Gameplay.Core
                 }
             }
 
-            if (m_LocalPlayer == null || !m_LocalPlayer.IsSpawned || !m_LocalPlayer.IsOwner || !IsInScene(m_LocalPlayer.gameObject, activeScene))
+            if (m_LocalPlayer == null || !HasLocalRuntimeAuthority(m_LocalPlayer) || !IsInScene(m_LocalPlayer.gameObject, activeScene))
             {
                 m_LocalPlayer = null;
                 var players = FindObjectsByType<CorePlayerManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 for (var index = 0; index < players.Length; index++)
                 {
                     var player = players[index];
-                    if (player != null && player.IsSpawned && player.IsOwner && IsInScene(player.gameObject, activeScene))
+                    if (player != null && HasLocalRuntimeAuthority(player) && IsInScene(player.gameObject, activeScene))
                     {
                         m_LocalPlayer = player;
                         break;
@@ -458,8 +459,7 @@ namespace Blocks.Gameplay.Core
                 return false;
             }
 
-            var shorterSide = Mathf.Min(Screen.width, Screen.height);
-            if (shorterSide > 0 && shorterSide <= 1024)
+            if (Input.touchCount > 0)
             {
                 return true;
             }
@@ -534,7 +534,7 @@ namespace Blocks.Gameplay.Core
 
         private void PumpTouchInputs()
         {
-            if (m_LocalInput == null || !m_LocalInput.IsOwner || !m_LocalInput.IsSpawned)
+            if (m_LocalInput == null || !HasLocalRuntimeAuthority(m_LocalInput))
             {
                 return;
             }
@@ -619,10 +619,20 @@ namespace Blocks.Gameplay.Core
                 m_LockedMovementBySettings = false;
                 m_LockedInteractionsBySettings = false;
 
-                if (!m_LastTouchVisibility)
+                if (CharacterCustomizationPanel.IsAnyOpen)
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
+                else if (!m_LastTouchVisibility && Application.platform != RuntimePlatform.WebGLPlayer)
                 {
                     Cursor.visible = false;
                     Cursor.lockState = CursorLockMode.Locked;
+                }
+                else
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
                 }
             }
 
@@ -852,6 +862,11 @@ namespace Blocks.Gameplay.Core
         private static bool IsInScene(GameObject target, Scene activeScene)
         {
             return target != null && activeScene.IsValid() && target.scene == activeScene;
+        }
+
+        private static bool HasLocalRuntimeAuthority(NetworkBehaviour behaviour)
+        {
+            return behaviour != null && (behaviour.IsOwner || OfflineLocalAuthority.IsActive(behaviour));
         }
 
         private static T FindSceneObject<T>(Scene activeScene, bool includeInactive) where T : Component

@@ -21,6 +21,7 @@ namespace Blocks.Gameplay.Core.Customization
         private bool m_Initialized;
         private bool m_PlayerSpawned;
         private bool m_StateSubscribed;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         public CharacterCustomizationCatalog ActiveCatalog => catalogOverride != null ? catalogOverride : CharacterCustomizationCatalogRegistry.GetActiveCatalog();
 
@@ -91,7 +92,7 @@ namespace Blocks.Gameplay.Core.Customization
                 return false;
             }
 
-            if (IsOwner)
+            if (HasLocalAuthority)
             {
                 ApplyPreset(presetId, true);
             }
@@ -135,7 +136,7 @@ namespace Blocks.Gameplay.Core.Customization
                 Initialize(m_PlayerManager);
             }
 
-            if (!m_PlayerSpawned && m_PlayerManager != null && m_PlayerManager.IsSpawned)
+            if (!m_PlayerSpawned && m_PlayerManager != null && (m_PlayerManager.IsSpawned || OfflineLocalAuthority.IsActive(m_PlayerManager)))
             {
                 OnPlayerSpawn();
             }
@@ -189,7 +190,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void HandleCharacterPresetChanged(string presetId)
         {
-            if (IsOwner)
+            if (HasLocalAuthority)
             {
                 CharacterCustomizationStorage.SaveSelectedPresetId(presetId);
             }

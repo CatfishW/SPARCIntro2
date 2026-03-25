@@ -31,6 +31,9 @@ namespace Blocks.Gameplay.Core
         [SerializeField] private GameEvent onMenuPressed;
 
         private GameplayInputSystem_Actions m_InputActions;
+        private bool m_RuntimeInputInitialized;
+
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         #endregion
 
@@ -41,22 +44,24 @@ namespace Blocks.Gameplay.Core
             m_InputActions = new GameplayInputSystem_Actions();
         }
 
+        private void Start()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
+        private void OnEnable()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
         public override void OnNetworkSpawn()
         {
-            if (IsOwner && m_InputActions != null)
-            {
-                RegisterInputActions();
-                m_InputActions.Player.Enable();
-            }
+            InitializeRuntimeInput();
         }
 
         public override void OnNetworkDespawn()
         {
-            if (IsOwner && m_InputActions != null)
-            {
-                m_InputActions.Player.Disable();
-                UnregisterInputActions();
-            }
+            ShutdownRuntimeInput();
         }
 
         public override void OnDestroy()
@@ -67,8 +72,7 @@ namespace Blocks.Gameplay.Core
                 return;
             }
 
-            m_InputActions.Player.Disable();
-            UnregisterInputActions();
+            ShutdownRuntimeInput();
             m_InputActions.Dispose();
             m_InputActions = null;
             base.OnDestroy();
@@ -137,7 +141,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectMoveInput(Vector2 input)
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -147,7 +151,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectLookInput(Vector2 input)
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -157,7 +161,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectJumpPressed()
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -167,7 +171,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectJumpReleased()
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -177,7 +181,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectSprintState(bool sprinting)
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -187,7 +191,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectPrimaryActionPressed()
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -197,7 +201,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectPrimaryActionReleased()
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -207,7 +211,7 @@ namespace Blocks.Gameplay.Core
 
         public void InjectMenuPressed()
         {
-            if (!IsOwner)
+            if (!HasLocalAuthority)
             {
                 return;
             }
@@ -216,5 +220,45 @@ namespace Blocks.Gameplay.Core
         }
 
         #endregion
+
+        private void OnDisable()
+        {
+            if (!IsSpawned)
+            {
+                ShutdownRuntimeInput();
+            }
+        }
+
+        private void TryInitializeOfflineRuntime()
+        {
+            if (!IsSpawned && OfflineLocalAuthority.IsActive(this))
+            {
+                InitializeRuntimeInput();
+            }
+        }
+
+        private void InitializeRuntimeInput()
+        {
+            if (m_RuntimeInputInitialized || !HasLocalAuthority || m_InputActions == null)
+            {
+                return;
+            }
+
+            RegisterInputActions();
+            m_InputActions.Player.Enable();
+            m_RuntimeInputInitialized = true;
+        }
+
+        private void ShutdownRuntimeInput()
+        {
+            if (!m_RuntimeInputInitialized || m_InputActions == null)
+            {
+                return;
+            }
+
+            m_InputActions.Player.Disable();
+            UnregisterInputActions();
+            m_RuntimeInputInitialized = false;
+        }
     }
 }

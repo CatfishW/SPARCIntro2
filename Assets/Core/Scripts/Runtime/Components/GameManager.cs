@@ -193,8 +193,11 @@ namespace Blocks.Gameplay.Core
 
             // Hide session UI and lock cursor for gameplay
             StartCoroutine(FadeOutAndDisable());
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
 
             // Generate and assign player name based on client ID
             string playerPrefix = "Player";
@@ -283,8 +286,11 @@ namespace Blocks.Gameplay.Core
 
             // Hide session UI and lock cursor for gameplay
             StartCoroutine(FadeOutAndDisable());
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
 
             // Set player name from session properties
             SetupLocalPlayerName(session);

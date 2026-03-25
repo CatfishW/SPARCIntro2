@@ -59,15 +59,23 @@ namespace Blocks.Gameplay.Core
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner);
 
+        private string m_OfflinePlayerName = "Player";
+        private PlayerLifeState m_OfflineLifeState = PlayerLifeState.InitialSpawn;
+        private string m_OfflineCharacterPresetId = string.Empty;
+        private bool m_OfflineInitialized;
+
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
+        private bool UseOfflineState => OfflineLocalAuthority.IsActive(this) && !IsSpawned;
+
         /// <summary>
         /// Gets the current player name string.
         /// </summary>
-        public string PlayerName => m_NetworkedPlayerName.Value.ToString();
+        public string PlayerName => UseOfflineState ? m_OfflinePlayerName : m_NetworkedPlayerName.Value.ToString();
 
         /// <summary>
         /// Gets the current Life State.
         /// </summary>
-        public PlayerLifeState LifeState => m_LifeState.Value;
+        public PlayerLifeState LifeState => UseOfflineState ? m_OfflineLifeState : m_LifeState.Value;
 
         /// <summary>
         /// Helper to check if the player is currently considered "Active" (Not eliminated).
@@ -77,7 +85,7 @@ namespace Blocks.Gameplay.Core
         /// <summary>
         /// Gets the replicated character preset identifier selected for this player.
         /// </summary>
-        public string CharacterPresetId => m_CharacterPresetId.Value.ToString();
+        public string CharacterPresetId => UseOfflineState ? m_OfflineCharacterPresetId : m_CharacterPresetId.Value.ToString();
 
         #endregion
 
@@ -105,6 +113,11 @@ namespace Blocks.Gameplay.Core
         private void Awake()
         {
             CharacterCustomizationBootstrap.EnsureAttached(gameObject);
+        }
+
+        private void Start()
+        {
+            TryInitializeOfflineState();
         }
 
         public override void OnNetworkSpawn()
@@ -151,7 +164,12 @@ namespace Blocks.Gameplay.Core
         {
             if (string.IsNullOrEmpty(newName)) return;
 
-            if (IsOwner)
+            if (UseOfflineState)
+            {
+                m_OfflinePlayerName = newName;
+                OnNameChanged?.Invoke(m_OfflinePlayerName);
+            }
+            else if (IsOwner)
             {
                 m_NetworkedPlayerName.Value = new FixedString64Bytes(newName);
             }
@@ -170,7 +188,13 @@ namespace Blocks.Gameplay.Core
         /// <param name="newState">The new state to transition to.</param>
         public void SetLifeState(PlayerLifeState newState)
         {
-            if (IsOwner)
+            if (UseOfflineState)
+            {
+                PlayerLifeState previousState = m_OfflineLifeState;
+                m_OfflineLifeState = newState;
+                HandleLifeStateChanged(previousState, newState);
+            }
+            else if (IsOwner)
             {
                 m_LifeState.Value = newState;
             }
@@ -191,7 +215,12 @@ namespace Blocks.Gameplay.Core
                 ? new FixedString64Bytes()
                 : new FixedString64Bytes(presetId);
 
-            if (IsOwner)
+            if (UseOfflineState)
+            {
+                m_OfflineCharacterPresetId = value.ToString();
+                OnCharacterPresetChanged?.Invoke(m_OfflineCharacterPresetId);
+            }
+            else if (IsOwner)
             {
                 m_CharacterPresetId.Value = value;
             }
@@ -260,6 +289,36 @@ namespace Blocks.Gameplay.Core
         private void HandleCharacterPresetChanged(FixedString64Bytes oldPresetId, FixedString64Bytes newPresetId)
         {
             OnCharacterPresetChanged?.Invoke(newPresetId.ToString());
+        }
+
+        private void OnDisable()
+        {
+            if (!IsSpawned)
+            {
+                m_OfflineInitialized = false;
+            }
+        }
+
+        private void TryInitializeOfflineState()
+        {
+            if (m_OfflineInitialized || !UseOfflineState)
+            {
+                return;
+            }
+
+            m_OfflineInitialized = true;
+
+            if (!string.IsNullOrWhiteSpace(m_OfflinePlayerName))
+            {
+                OnNameChanged?.Invoke(m_OfflinePlayerName);
+            }
+
+            OnLifeStateChanged?.Invoke(m_OfflineLifeState);
+
+            if (!string.IsNullOrWhiteSpace(m_OfflineCharacterPresetId))
+            {
+                OnCharacterPresetChanged?.Invoke(m_OfflineCharacterPresetId);
+            }
         }
 
         #endregion

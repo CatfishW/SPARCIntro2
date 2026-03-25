@@ -81,6 +81,8 @@ namespace Blocks.Gameplay.Core.Editor.Build
                 throw new InvalidOperationException($"WebGL build failed: {report.summary.result}");
             }
 
+            ApplyWebGlCacheBusting(outputPath);
+
             Debug.Log($"[Intro2WebGlBuilder] WebGL build succeeded: {outputPath}");
         }
 
@@ -141,10 +143,12 @@ namespace Blocks.Gameplay.Core.Editor.Build
             PlayerSettings.defaultWebScreenHeight = 1080;
             PlayerSettings.runInBackground = true;
             PlayerSettings.colorSpace = ColorSpace.Linear;
-            PlayerSettings.stripEngineCode = true;
+            // WebGL stability is more important than aggressive stripping for this build.
+            PlayerSettings.stripEngineCode = false;
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+            PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.WebGL, ManagedStrippingLevel.Low);
 
 #pragma warning disable CS0618
-            PlayerSettings.SetPropertyInt("webGLCompressionFormat", 1, BuildTargetGroup.WebGL); // Brotli
             PlayerSettings.SetPropertyInt("webGLExceptionSupport", 0, BuildTargetGroup.WebGL); // None
             PlayerSettings.SetPropertyInt("webGLShowDiagnostics", 0, BuildTargetGroup.WebGL);
             PlayerSettings.SetPropertyInt("webGLInitialMemorySize", 256, BuildTargetGroup.WebGL);
@@ -153,7 +157,7 @@ namespace Blocks.Gameplay.Core.Editor.Build
             PlayerSettings.SetPropertyInt("webGLMemoryLinearGrowthStep", 32, BuildTargetGroup.WebGL);
             PlayerSettings.SetPropertyInt("webGLMemoryGeometricGrowthCap", 128, BuildTargetGroup.WebGL);
             PlayerSettings.SetPropertyInt("webGLNameFilesAsHashes", 1, BuildTargetGroup.WebGL);
-            PlayerSettings.SetPropertyInt("webGLDataCaching", 1, BuildTargetGroup.WebGL);
+            PlayerSettings.SetPropertyInt("webGLDataCaching", 0, BuildTargetGroup.WebGL);
             PlayerSettings.SetPropertyInt("webGLDebugSymbols", 0, BuildTargetGroup.WebGL);
             PlayerSettings.SetPropertyInt("webGLThreadsSupport", 0, BuildTargetGroup.WebGL);
 #pragma warning restore CS0618
@@ -177,7 +181,14 @@ namespace Blocks.Gameplay.Core.Editor.Build
             }
 
             var pipelineChanged = false;
+            // Probe volumes rely on compute paths that are not available on WebGL and can also
+            // blow up Linux batch builds before the player is even produced.
+            pipelineChanged |= TrySetIntProperty(pipelineObject, "m_LightProbeSystem", 0);
+            pipelineChanged |= TrySetIntProperty(pipelineObject, "m_UseAdaptivePerformance", 0);
+            pipelineChanged |= TrySetIntProperty(pipelineObject, "m_GPUResidentDrawerEnableOcclusionCullingInCameras", 0);
             pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterWriteRenderingLayers", 0);
+            pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterHDROutput", 0);
+            pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterAlphaOutput", 0);
             pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterScreenSpaceIrradiance", 0);
             pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterNativeRenderPass", 0);
             pipelineChanged |= TrySetIntProperty(pipelineObject, "m_PrefilterSSAODepthNormals", 0);
@@ -329,6 +340,35 @@ namespace Blocks.Gameplay.Core.Editor.Build
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Intro2WebGlBuilder] Added WebGL fallback shaders to GraphicsSettings always-included list.");
+        }
+
+        private static void ApplyWebGlCacheBusting(string outputPath)
+        {
+            var indexPath = Path.Combine(outputPath, "index.html");
+            if (!File.Exists(indexPath))
+            {
+                Debug.LogWarning($"[Intro2WebGlBuilder] WebGL index file not found for cache-busting: {indexPath}");
+                return;
+            }
+
+            var version = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var html = File.ReadAllText(indexPath);
+            html = html.Replace("var loaderUrl = buildUrl + \"/Intro2.loader.js\";", $"var loaderUrl = buildUrl + \"/Intro2.loader.js?v={version}\";");
+            html = html.Replace("dataUrl: buildUrl + \"/Intro2.data\",", $"dataUrl: buildUrl + \"/Intro2.data?v={version}\",");
+            html = html.Replace("frameworkUrl: buildUrl + \"/Intro2.framework.js\",", $"frameworkUrl: buildUrl + \"/Intro2.framework.js?v={version}\",");
+            html = html.Replace("codeUrl: buildUrl + \"/Intro2.wasm\",", $"codeUrl: buildUrl + \"/Intro2.wasm?v={version}\",");
+
+            const string bannerLine = "showBanner: unityShowBanner,";
+            if (html.Contains(bannerLine) && !html.Contains("cacheControl: function(url)"))
+            {
+                html = html.Replace(
+                    bannerLine,
+                    "showBanner: unityShowBanner,\n      cacheControl: function(url) { return 'no-store'; },");
+            }
+
+            File.WriteAllText(indexPath, html);
+            File.WriteAllText(Path.Combine(outputPath, "build-version.txt"), version);
+            Debug.Log($"[Intro2WebGlBuilder] Applied WebGL cache-busting stamp {version}.");
         }
     }
 }

@@ -13,6 +13,7 @@ using ModularStoryFlow.Runtime.State;
 using ModularStoryFlow.Runtime.Variables;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -276,7 +277,14 @@ namespace Blocks.Gameplay.Core.Story
                 sceneTransition.Configure(targetScenePath, targetSceneName);
             }
 
-            timelineBridge?.Configure(runtimeConfig);
+            if (IsWebGlSafeMode())
+            {
+                DisableTimelineBridgeForWebGl(timelineBridge);
+            }
+            else
+            {
+                timelineBridge?.Configure(runtimeConfig);
+            }
 
             interactionBridge?.Configure(runtimeChannels, sceneTransition);
             interactionBridge?.SetSessionId(player != null ? player.SessionId : string.Empty);
@@ -803,6 +811,33 @@ namespace Blocks.Gameplay.Core.Story
             {
                 Destroy(asset);
             }
+        }
+
+        private static void DisableTimelineBridgeForWebGl(StoryTimelineDirectorBridge bridge)
+        {
+            if (bridge == null)
+            {
+                return;
+            }
+
+            var director = bridge.GetComponent<PlayableDirector>();
+            if (director != null)
+            {
+                director.enabled = false;
+            }
+
+            bridge.enabled = false;
+        }
+
+        private static bool IsWebGlSafeMode()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return true;
+#elif UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return false;
+#endif
         }
     }
 }

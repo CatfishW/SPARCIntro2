@@ -42,6 +42,7 @@ namespace ItemInteraction
 
         private static readonly string[] BusyOpenTypeNames =
         {
+            "Blocks.Gameplay.Core.Customization.CharacterCustomizationPanel",
             "Blocks.Gameplay.Core.Story.ClassroomNpcFreeChatUi",
             "Blocks.Gameplay.Core.Story.LabBodyInspectionUi",
             "Blocks.Gameplay.Core.Story.LabLightPuzzleUi",
@@ -67,6 +68,11 @@ namespace ItemInteraction
 
         public bool IsInspectionOpen => inspectionPresenter != null && inspectionPresenter.IsOpen;
         public InteractableItem CurrentFocus => currentFocus;
+
+        public void ClearFocusImmediate()
+        {
+            ClearFocus();
+        }
 
         public void SetInteractionsLocked(bool value)
         {

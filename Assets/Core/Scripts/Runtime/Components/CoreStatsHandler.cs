@@ -39,6 +39,8 @@ namespace Blocks.Gameplay.Core
 
         // Caches stat definitions by hash for fast lookup without config access
         private readonly Dictionary<int, StatDefinition> m_StatDefinitions = new Dictionary<int, StatDefinition>();
+        private bool m_RuntimeInitialized;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         #endregion
 
@@ -63,54 +65,25 @@ namespace Blocks.Gameplay.Core
             }
         }
 
+        private void Start()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
         public override void OnNetworkSpawn()
         {
-            if (IsOwner)
-            {
-                // The owner is responsible for initializing the stats for their character
-                // This ensures that stats are set only once and then synchronized to other clients
-                if (m_RuntimeStats.Count == 0)
-                {
-                    if (statsConfig.stats == null || statsConfig.stats.Count == 0)
-                    {
-                        Debug.LogWarning($"[CoreStatsHandler] No stats defined in StatsConfig on {gameObject.name}", this);
-                        return;
-                    }
-
-                    foreach (var def in statsConfig.stats)
-                    {
-                        m_RuntimeStats.Add(new RuntimeStat
-                        {
-                            StatHash = Animator.StringToHash(def.statName),
-                            CurrentValue = def.startingValue
-                        });
-                    }
-                }
-            }
-
-            // Subscribe to changes in the stat list to update UI and game logic
-            m_RuntimeStats.OnListChanged += OnStatsListChanged;
-
-            // Broadcast the initial state of all stats for late-joining clients or initialization
-            foreach (var stat in m_RuntimeStats)
-            {
-                BroadcastStatChange(stat);
-            }
-
-            // Set the initial alive state
-            UpdateAliveState();
+            InitializeRuntimeStats();
         }
 
         public override void OnNetworkDespawn()
         {
-            // Unsubscribe to prevent memory leaks
-            m_RuntimeStats.OnListChanged -= OnStatsListChanged;
+            ShutdownRuntimeStats();
         }
 
         private void Update()
         {
             // Regeneration logic is only handled by the owner
-            if (!IsOwner || !IsAlive) return;
+            if (!HasLocalAuthority || !IsAlive) return;
 
             HandleRegeneration();
         }
@@ -128,7 +101,7 @@ namespace Blocks.Gameplay.Core
         /// <param name="sourceType">What type of modification this is.</param>
         public void ModifyStat(int statHash, float amount, ulong sourcePlayerId = 0, ModificationSource sourceType = ModificationSource.Direct)
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
 
             int statIndex = FindStatIndex(statHash);
 
@@ -151,7 +124,7 @@ namespace Blocks.Gameplay.Core
         /// <returns>True if the stat had enough value to consume, false otherwise.</returns>
         public bool TryConsumeStat(int statHash, float amount, ulong sourcePlayerId = 0)
         {
-            if (!IsOwner) return false;
+            if (!HasLocalAuthority) return false;
 
             int statIndex = FindStatIndex(statHash);
 
@@ -388,5 +361,68 @@ namespace Blocks.Gameplay.Core
         }
 
         #endregion
+
+        private void OnDisable()
+        {
+            if (!IsSpawned)
+            {
+                ShutdownRuntimeStats();
+            }
+        }
+
+        private void TryInitializeOfflineRuntime()
+        {
+            if (!IsSpawned && OfflineLocalAuthority.IsActive(this))
+            {
+                InitializeRuntimeStats();
+            }
+        }
+
+        private void InitializeRuntimeStats()
+        {
+            if (m_RuntimeInitialized || m_RuntimeStats == null)
+            {
+                return;
+            }
+
+            if (HasLocalAuthority && m_RuntimeStats.Count == 0)
+            {
+                if (statsConfig.stats == null || statsConfig.stats.Count == 0)
+                {
+                    Debug.LogWarning($"[CoreStatsHandler] No stats defined in StatsConfig on {gameObject.name}", this);
+                    return;
+                }
+
+                foreach (var def in statsConfig.stats)
+                {
+                    m_RuntimeStats.Add(new RuntimeStat
+                    {
+                        StatHash = Animator.StringToHash(def.statName),
+                        CurrentValue = def.startingValue
+                    });
+                }
+            }
+
+            m_RuntimeStats.OnListChanged += OnStatsListChanged;
+
+            foreach (var stat in m_RuntimeStats)
+            {
+                BroadcastStatChange(stat);
+            }
+
+            UpdateAliveState();
+            m_RuntimeInitialized = true;
+        }
+
+        private void ShutdownRuntimeStats()
+        {
+            if (!m_RuntimeInitialized || m_RuntimeStats == null)
+            {
+                return;
+            }
+
+            m_RuntimeStats.OnListChanged -= OnStatsListChanged;
+            m_RuntimeInitialized = false;
+        }
     }
 }

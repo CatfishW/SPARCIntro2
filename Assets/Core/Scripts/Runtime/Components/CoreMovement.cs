@@ -204,6 +204,7 @@ namespace Blocks.Gameplay.Core
         private float m_TimeLastGrounded;
         private float m_TimeSinceLanded;
         private float m_InitialGravity;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         #endregion
 
@@ -245,7 +246,7 @@ namespace Blocks.Gameplay.Core
 
         private void Update()
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
 
             // Update landing timer when grounded
             if (IsGrounded)
@@ -278,7 +279,7 @@ namespace Blocks.Gameplay.Core
 
         private void LateUpdate()
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
 
             // Reset jump request at the end of the frame
             JumpRequested = false;
@@ -332,7 +333,7 @@ namespace Blocks.Gameplay.Core
         /// <param name="forceMode">The type of force. Only Impulse is currently supported for additive force.</param>
         public void ApplyExternalForce(Vector3 force, ForceMode forceMode)
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
 
             if (forceMode == ForceMode.Impulse)
             {
@@ -500,7 +501,7 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         public void SetDirectionMode(MovementDirectionMode mode)
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
             directionMode = mode;
         }
 

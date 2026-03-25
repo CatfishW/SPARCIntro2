@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.Customization
 {
@@ -94,6 +97,13 @@ namespace Blocks.Gameplay.Core.Customization
 
         private void OnValidate()
         {
+#if UNITY_EDITOR
+            if (BuildPipeline.isBuildingPlayer || EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                return;
+            }
+#endif
+
             if (!Application.isPlaying)
             {
                 InstallOption();
@@ -240,7 +250,7 @@ namespace Blocks.Gameplay.Core.Customization
             if (customizationPanel == null)
             {
                 customizationPanel = FindBestPanel(scene);
-                if (customizationPanel == null)
+                if (customizationPanel == null && IsSceneReadyForPanelMutation(scene))
                 {
                     customizationPanel = CreateRuntimePanel(scene);
                 }
@@ -249,7 +259,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private static bool IsUsablePanel(CharacterCustomizationPanel panel, Scene scene)
         {
-            if (panel == null || !scene.IsValid() || panel.gameObject.scene != scene)
+            if (panel == null || !scene.IsValid() || !scene.isLoaded || panel.gameObject.scene != scene)
             {
                 return false;
             }
@@ -270,7 +280,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private static CharacterCustomizationPanel FindBestPanel(Scene scene)
         {
-            if (!scene.IsValid())
+            if (!IsSceneReadyForPanelMutation(scene))
             {
                 return null;
             }
@@ -298,6 +308,11 @@ namespace Blocks.Gameplay.Core.Customization
 
         private CharacterCustomizationPanel CreateRuntimePanel(Scene scene)
         {
+            if (!IsSceneReadyForPanelMutation(scene))
+            {
+                return null;
+            }
+
             var panelObject = FindSceneObjectByName(scene, RuntimePanelObjectName);
             if (panelObject == null)
             {
@@ -360,6 +375,11 @@ namespace Blocks.Gameplay.Core.Customization
 
         private bool TryRecoverAndShowPanel(Scene scene)
         {
+            if (!IsSceneReadyForPanelMutation(scene))
+            {
+                return false;
+            }
+
             var scenePanel = FindBestPanel(scene);
             if (scenePanel != null)
             {
@@ -398,7 +418,7 @@ namespace Blocks.Gameplay.Core.Customization
         private static T FindSceneObject<T>(Scene scene, bool includeInactive)
             where T : Component
         {
-            if (!scene.IsValid())
+            if (!IsSceneReadyForPanelMutation(scene))
             {
                 return null;
             }
@@ -421,7 +441,7 @@ namespace Blocks.Gameplay.Core.Customization
 
         private static GameObject FindSceneObjectByName(Scene scene, string objectName)
         {
-            if (!scene.IsValid() || string.IsNullOrWhiteSpace(objectName))
+            if (!IsSceneReadyForPanelMutation(scene) || string.IsNullOrWhiteSpace(objectName))
             {
                 return null;
             }
@@ -452,6 +472,11 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             return null;
+        }
+
+        private static bool IsSceneReadyForPanelMutation(Scene scene)
+        {
+            return scene.IsValid() && scene.isLoaded;
         }
 
         private void NormalizeLookOptionSlot(InteractionOption primaryOption)

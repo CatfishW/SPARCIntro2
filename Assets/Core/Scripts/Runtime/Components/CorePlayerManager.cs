@@ -52,6 +52,8 @@ namespace Blocks.Gameplay.Core
         private PlayerLifeState m_LastLifeState = PlayerLifeState.InitialSpawn;
         private bool m_IsMovementInputEnabled = true;
         private System.Action<Vector2> m_OnMoveInputHandler;
+        private bool m_RuntimeInitialized;
+        private bool HasLocalAuthority => IsOwner || OfflineLocalAuthority.IsActive(this);
 
         /// <summary>
         /// Gets the Core Input Handler component.
@@ -100,63 +102,26 @@ namespace Blocks.Gameplay.Core
             InitializeAddons();
         }
 
+        private void Start()
+        {
+            TryInitializeOfflineRuntime();
+        }
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-
-            if (IsOwner)
-            {
-                RegisterEventListeners();
-            }
-            else
-            {
-                DisableOwnerOnlyComponents();
-            }
-
-            if (corePlayerState != null)
-            {
-                corePlayerState.OnNameChanged += HandlePlayerNameChanged;
-                corePlayerState.OnLifeStateChanged += HandleLifeStateChanged;
-
-                if (!string.IsNullOrEmpty(corePlayerState.PlayerName))
-                {
-                    HandlePlayerNameChanged(corePlayerState.PlayerName);
-                }
-
-                m_LastLifeState = corePlayerState.LifeState;
-                HandleLifeStateChanged(corePlayerState.LifeState);
-            }
-
-            foreach (var addon in m_Addons)
-            {
-                addon.OnPlayerSpawn();
-            }
+            InitializeRuntime();
         }
 
         public override void OnNetworkDespawn()
         {
-            if (corePlayerState != null)
-            {
-                corePlayerState.OnNameChanged -= HandlePlayerNameChanged;
-                corePlayerState.OnLifeStateChanged -= HandleLifeStateChanged;
-            }
-
-            if (IsOwner)
-            {
-                UnregisterEventListeners();
-            }
-
-            foreach (var addon in m_Addons)
-            {
-                addon.OnPlayerDespawn();
-            }
-
+            ShutdownRuntime();
             base.OnNetworkDespawn();
         }
 
         private void Update()
         {
-            if (!IsOwner) return;
+            if (!HasLocalAuthority) return;
 
             UpdateCameraTargetRotation();
             HandleSprintingStamina();
@@ -258,7 +223,7 @@ namespace Blocks.Gameplay.Core
 
         private void HandleStatDepleted(StatDepletedPayload payload)
         {
-            if (!IsOwner || payload.playerId != OwnerClientId || payload.statID != StatKeys.Health) return;
+            if (!HasLocalAuthority || payload.playerId != OwnerClientId || payload.statID != StatKeys.Health) return;
 
             // Fallback Pattern: If autoHandleLifecycle is true, this component immediately processes
             // elimination. Otherwise, it waits for the Game Manager to detect the event and change the state.
@@ -281,7 +246,7 @@ namespace Blocks.Gameplay.Core
             bool isEliminated = newState == PlayerLifeState.Eliminated;
             bool isActive = !isEliminated;
 
-            if (IsOwner)
+            if (HasLocalAuthority)
             {
                 if (coreInput != null) coreInput.enabled = isActive;
                 if (coreCamera != null) coreCamera.enabled = isActive;
@@ -428,6 +393,119 @@ namespace Blocks.Gameplay.Core
             }
         }
 
+        private void OnDisable()
+        {
+            if (!IsSpawned)
+            {
+                ShutdownRuntime();
+            }
+        }
+
+        private void TryInitializeOfflineRuntime()
+        {
+            if (!IsSpawned && OfflineLocalAuthority.IsActive(this))
+            {
+                InitializeRuntime();
+            }
+        }
+
+        private void InitializeRuntime()
+        {
+            if (m_RuntimeInitialized)
+            {
+                return;
+            }
+
+            if (HasLocalAuthority)
+            {
+                RegisterEventListeners();
+            }
+            else
+            {
+                DisableOwnerOnlyComponents();
+            }
+
+            if (corePlayerState != null)
+            {
+                corePlayerState.OnNameChanged += HandlePlayerNameChanged;
+                corePlayerState.OnLifeStateChanged += HandleLifeStateChanged;
+
+                if (!string.IsNullOrEmpty(corePlayerState.PlayerName))
+                {
+                    HandlePlayerNameChanged(corePlayerState.PlayerName);
+                }
+
+                m_LastLifeState = corePlayerState.LifeState;
+                HandleLifeStateChanged(corePlayerState.LifeState);
+            }
+            else
+            {
+                HandleLifeStateChanged(PlayerLifeState.InitialSpawn);
+            }
+
+            foreach (var addon in m_Addons)
+            {
+                addon.OnPlayerSpawn();
+            }
+
+            m_RuntimeInitialized = true;
+        }
+
+        private void ShutdownRuntime()
+        {
+            if (!m_RuntimeInitialized)
+            {
+                return;
+            }
+
+            if (corePlayerState != null)
+            {
+                corePlayerState.OnNameChanged -= HandlePlayerNameChanged;
+                corePlayerState.OnLifeStateChanged -= HandleLifeStateChanged;
+            }
+
+            if (HasLocalAuthority)
+            {
+                UnregisterEventListeners();
+            }
+
+            foreach (var addon in m_Addons)
+            {
+                addon.OnPlayerDespawn();
+            }
+
+            m_RuntimeInitialized = false;
+        }
+
         #endregion
+    }
+
+    [DisallowMultipleComponent]
+    public sealed class OfflineLocalPlayerMarker : MonoBehaviour
+    {
+    }
+
+    public static class OfflineLocalAuthority
+    {
+        public static bool IsActive(NetworkBehaviour behaviour)
+        {
+            if (behaviour == null || !Application.isPlaying)
+            {
+                return false;
+            }
+
+            if (behaviour.IsSpawned)
+            {
+                return false;
+            }
+
+            if (behaviour.GetComponentInParent<OfflineLocalPlayerMarker>() == null)
+            {
+                return false;
+            }
+
+            var networkManager = NetworkManager.Singleton;
+            return networkManager == null || !networkManager.IsListening;
+        }
     }
 }

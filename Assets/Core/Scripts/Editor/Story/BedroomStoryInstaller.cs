@@ -223,13 +223,17 @@ namespace Blocks.Gameplay.Core.Story.Editor
             ConfigureLookDialogueItem(bed, "Bed", "Tempting... but no.");
             ConfigureLookInspectDialogueItem(coffeeMaker, "Coffee Maker", "Cold coffee clings to the plate. I meant to clean it before class.");
             ConfigureLookInspectDialogueItem(oven, "Oven", "It should probably stay off unless I actually want to bake something.");
-            ConfigureWakeUpSpawnSetup(player.gameObject);
+            ConfigureWakeUpSpawnSetup(player.gameObject, config, graph, timelineBridge);
 
             EnsureCharacterCustomizationIntegration(player.gameObject, wardrobe);
             ConfigureWardrobeDecorations(wardrobe);
         }
 
-        private static void ConfigureWakeUpSpawnSetup(GameObject storyRoot)
+        private static void ConfigureWakeUpSpawnSetup(
+            GameObject storyRoot,
+            StoryFlowProjectConfig config,
+            ModularStoryFlow.Runtime.Graph.StoryGraphAsset graph,
+            StoryTimelineDirectorBridge timelineBridge)
         {
             var primarySpawnPad = GameObject.Find(PrimarySpawnPadPath)?.transform;
             var secondarySpawnPad = GameObject.Find(SecondarySpawnPadPath)?.transform;
@@ -267,7 +271,7 @@ namespace Blocks.Gameplay.Core.Story.Editor
             secondarySpawnPad.SetPositionAndRotation(wakeUpCenter - (sideDirection * WakeUpSpawnSpacing), wakeUpRotation);
 
             ConfigureGameManagerSpawns(primarySpawnPad, secondarySpawnPad);
-            ConfigureRuntimeWakeUpAnchor(storyRoot, PrimarySpawnPadPath);
+            ConfigureRuntimeWakeUpAnchor(storyRoot, config, graph, timelineBridge, PrimarySpawnPadPath);
             EditorUtility.SetDirty(primarySpawnPad);
             EditorUtility.SetDirty(secondarySpawnPad);
         }
@@ -289,7 +293,12 @@ namespace Blocks.Gameplay.Core.Story.Editor
             EditorUtility.SetDirty(gameManager);
         }
 
-        private static void ConfigureRuntimeWakeUpAnchor(GameObject storyRoot, string wakeUpAnchorPath)
+        private static void ConfigureRuntimeWakeUpAnchor(
+            GameObject storyRoot,
+            StoryFlowProjectConfig config,
+            ModularStoryFlow.Runtime.Graph.StoryGraphAsset graph,
+            StoryTimelineDirectorBridge timelineBridge,
+            string wakeUpAnchorPath)
         {
             if (storyRoot == null)
             {
@@ -298,6 +307,9 @@ namespace Blocks.Gameplay.Core.Story.Editor
 
             var bootstrap = storyRoot.GetComponent<BedroomStoryRuntimeBootstrap>() ?? storyRoot.AddComponent<BedroomStoryRuntimeBootstrap>();
             var serialized = new SerializedObject(bootstrap);
+            SetObjectReferenceIfPresent(serialized, "embeddedProjectConfig", config);
+            SetObjectReferenceIfPresent(serialized, "embeddedGraph", graph);
+            SetObjectReferenceIfPresent(serialized, "timelineBridge", timelineBridge);
             serialized.FindProperty("wakeUpAnchorPath").stringValue = wakeUpAnchorPath;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(bootstrap);

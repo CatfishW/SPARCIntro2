@@ -40,6 +40,7 @@ namespace Blocks.Gameplay.Core
         private IInteractable m_CurrentFocusedInteractable;
         private float m_CooldownTimer;
         private readonly Collider[] m_ProximityColliders = new Collider[20];
+        private bool HasLocalAuthority => m_PlayerManager != null && (m_PlayerManager.IsOwner || OfflineLocalAuthority.IsActive(m_PlayerManager));
 
         #endregion
 
@@ -58,7 +59,7 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         public void OnPlayerSpawn()
         {
-            if (m_PlayerManager.IsOwner)
+            if (HasLocalAuthority)
             {
                 m_MainCamera = Camera.main;
                 onInteractPressed.RegisterListener(TryInteract);
@@ -75,7 +76,7 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         public void OnPlayerDespawn()
         {
-            if (m_PlayerManager.IsOwner)
+            if (HasLocalAuthority)
             {
                 onInteractPressed.UnregisterListener(TryInteract);
                 ClearFocus();
@@ -108,7 +109,7 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         private void Update()
         {
-            if (!IsSpawned || !IsOwner || !IsEnabled) return;
+            if ((!IsSpawned && !HasLocalAuthority) || !HasLocalAuthority || !IsEnabled) return;
 
             if (m_CooldownTimer > 0)
             {
@@ -124,7 +125,7 @@ namespace Blocks.Gameplay.Core
         /// </summary>
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            if (!IsSpawned || !IsOwner || !IsEnabled || m_CooldownTimer > 0) return;
+            if ((!IsSpawned && !HasLocalAuthority) || !HasLocalAuthority || !IsEnabled || m_CooldownTimer > 0) return;
 
             if (hit.gameObject.TryGetComponent<IInteractable>(out var interactable))
             {

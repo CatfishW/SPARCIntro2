@@ -1,8 +1,11 @@
 using ModularStoryFlow.Runtime.Events;
 using ModularStoryFlow.Runtime.Integration;
 using ModularStoryFlow.Runtime.Player;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace ModularStoryFlow.Runtime.Bridges
 {
@@ -18,6 +21,16 @@ namespace ModularStoryFlow.Runtime.Bridges
         [SerializeField] private string sessionFilter = string.Empty;
 
         private StoryTimelineRequest activeRequest;
+        private readonly List<SuspendedDocumentState> suspendedDocuments = new List<SuspendedDocumentState>(8);
+        private readonly List<Canvas> suspendedCanvases = new List<Canvas>(16);
+        private bool uiSuspended;
+
+        private sealed class SuspendedDocumentState
+        {
+            public UIDocument Document;
+            public DisplayStyle PreviousDisplay;
+            public PickingMode PreviousPickingMode;
+        }
 
         private StoryTimelineCatalog ActiveCatalog => timelineCatalog != null ? timelineCatalog : projectConfig != null ? projectConfig.TimelineCatalog : null;
 
@@ -56,6 +69,7 @@ namespace ModularStoryFlow.Runtime.Bridges
 
             if (director != null)
             {
+                director.played += HandleDirectorPlayed;
                 director.stopped += HandleDirectorStopped;
             }
 
@@ -66,9 +80,11 @@ namespace ModularStoryFlow.Runtime.Bridges
         {
             if (director != null)
             {
+                director.played -= HandleDirectorPlayed;
                 director.stopped -= HandleDirectorStopped;
             }
 
+            RestoreSuspendedUi();
             projectConfig?.Channels?.TimelineRequests?.Unregister(HandleTimelineRequest);
         }
 
@@ -113,6 +129,7 @@ namespace ModularStoryFlow.Runtime.Bridges
 
         private void HandleDirectorStopped(PlayableDirector stoppedDirector)
         {
+            RestoreSuspendedUi();
             if (activeRequest == null)
             {
                 return;
@@ -127,6 +144,113 @@ namespace ModularStoryFlow.Runtime.Bridges
             });
 
             activeRequest = null;
+        }
+
+        private void HandleDirectorPlayed(PlayableDirector playedDirector)
+        {
+            SuspendCompetingUi();
+        }
+
+        private void SuspendCompetingUi()
+        {
+            if (uiSuspended)
+            {
+                return;
+            }
+
+            suspendedDocuments.Clear();
+            suspendedCanvases.Clear();
+
+            var timelineRoot = director != null ? director.transform : transform;
+
+            var documents = Object.FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < documents.Length; index++)
+            {
+                var document = documents[index];
+                if (document == null ||
+                    !document.enabled ||
+                    document == GetComponent<UIDocument>() ||
+                    IsOwnedByTimeline(document.transform, timelineRoot))
+                {
+                    continue;
+                }
+
+                var root = document.rootVisualElement;
+                if (root == null)
+                {
+                    continue;
+                }
+
+                suspendedDocuments.Add(new SuspendedDocumentState
+                {
+                    Document = document,
+                    PreviousDisplay = root.resolvedStyle.display,
+                    PreviousPickingMode = root.pickingMode
+                });
+
+                root.style.display = DisplayStyle.None;
+                root.pickingMode = PickingMode.Ignore;
+            }
+
+            var canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < canvases.Length; index++)
+            {
+                var canvas = canvases[index];
+                if (canvas == null ||
+                    !canvas.enabled ||
+                    IsOwnedByTimeline(canvas.transform, timelineRoot))
+                {
+                    continue;
+                }
+
+                suspendedCanvases.Add(canvas);
+                canvas.enabled = false;
+            }
+
+            uiSuspended = true;
+        }
+
+        private void RestoreSuspendedUi()
+        {
+            if (!uiSuspended)
+            {
+                return;
+            }
+
+            for (var index = 0; index < suspendedDocuments.Count; index++)
+            {
+                var state = suspendedDocuments[index];
+                var document = state != null ? state.Document : null;
+                if (document != null)
+                {
+                    var root = document.rootVisualElement;
+                    if (root != null)
+                    {
+                        root.style.display = state.PreviousDisplay;
+                        root.pickingMode = state.PreviousPickingMode;
+                    }
+                }
+            }
+
+            suspendedDocuments.Clear();
+
+            for (var index = 0; index < suspendedCanvases.Count; index++)
+            {
+                var canvas = suspendedCanvases[index];
+                if (canvas != null)
+                {
+                    canvas.enabled = true;
+                }
+            }
+
+            suspendedCanvases.Clear();
+            uiSuspended = false;
+        }
+
+        private static bool IsOwnedByTimeline(Transform candidate, Transform timelineRoot)
+        {
+            return candidate != null && timelineRoot != null &&
+                   (candidate == timelineRoot || candidate.IsChildOf(timelineRoot));
         }
     }
 

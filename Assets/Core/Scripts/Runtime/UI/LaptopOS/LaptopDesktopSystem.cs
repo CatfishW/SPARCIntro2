@@ -1,9 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ItemInteraction;
 using UnityEngine;
 using UnityEngine.UIElements;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.UI.LaptopOS
 {
@@ -82,22 +86,26 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
         private bool cachedCursorState;
         private CursorLockMode previousCursorLockState;
         private bool previousCursorVisible;
+        private bool pendingOpenRequest;
         private string activeAppId = DefaultDesktopLabel;
         private float clockAccumulator;
         private float dockBadgePulse;
         private SnakeGameController snakeGameController;
         private MemoryMatchGameController memoryMatchGameController;
         private readonly List<VisualElement> liveDynamicElements = new List<VisualElement>();
+        private Coroutine buildRetryCoroutine;
 
         private void Awake()
         {
             uiDocument = GetComponent<UIDocument>();
+            EnsureDocumentEnabled();
             EnsureBuilt();
             HideShellImmediate();
         }
 
         private void OnEnable()
         {
+            EnsureDocumentEnabled();
             EnsureBuilt();
 
             if (panelSettings != null)
@@ -146,7 +154,13 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
         public void Open()
         {
+            pendingOpenRequest = true;
+            EnsureDocumentEnabled();
             EnsureBuilt();
+            if (!built)
+            {
+                return;
+            }
 
             if (isOpen)
             {
@@ -164,6 +178,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 ShowNotification(reminderTitle, reminderBody, 4f);
             }
 
+            pendingOpenRequest = false;
             Opened?.Invoke();
         }
 
@@ -174,6 +189,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return;
             }
 
+            pendingOpenRequest = false;
             isOpen = false;
             launchpadVisible = false;
             SetDisplay(launchpadOverlay, DisplayStyle.None);
@@ -185,6 +201,10 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
         public void OpenApp(string appId)
         {
             EnsureBuilt();
+            if (!built)
+            {
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(appId))
             {
@@ -230,6 +250,10 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
         public void ToggleLaunchpad()
         {
             EnsureBuilt();
+            if (!built)
+            {
+                return;
+            }
 
             if (!isOpen)
             {
@@ -276,6 +300,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
         {
             if (built)
             {
+                EnsureDocumentEnabled();
                 return;
             }
 
@@ -289,6 +314,8 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return;
             }
 
+            EnsureDocumentEnabled();
+
             if (panelSettings != null)
             {
                 uiDocument.panelSettings = panelSettings;
@@ -299,6 +326,14 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             root = uiDocument.rootVisualElement;
             if (root == null)
             {
+                uiDocument.enabled = false;
+                uiDocument.enabled = true;
+                root = uiDocument.rootVisualElement;
+            }
+
+            if (root == null)
+            {
+                QueueBuildRetry();
                 return;
             }
 
@@ -329,6 +364,34 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             ApplyResponsiveLayout();
 
             built = true;
+        }
+
+        private void QueueBuildRetry()
+        {
+            if (buildRetryCoroutine != null || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            buildRetryCoroutine = StartCoroutine(EnsureBuiltReadyRoutine());
+        }
+
+        private IEnumerator EnsureBuiltReadyRoutine()
+        {
+            const int maxRetryFrames = 30;
+
+            for (int frame = 0; frame < maxRetryFrames && !built; frame++)
+            {
+                yield return null;
+                EnsureBuilt();
+            }
+
+            buildRetryCoroutine = null;
+
+            if (built && pendingOpenRequest && !isOpen)
+            {
+                Open();
+            }
         }
 
         private void BuildManifests()
@@ -1962,6 +2025,7 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
         private void ShowShellImmediate()
         {
+            EnsureDocumentEnabled();
             if (root != null)
             {
                 root.style.display = DisplayStyle.Flex;
@@ -1975,6 +2039,19 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
             UpdateMenuTitle();
             UpdateReminderCard();
             RefreshDockBadges();
+        }
+
+        private void EnsureDocumentEnabled()
+        {
+            if (uiDocument == null)
+            {
+                uiDocument = GetComponent<UIDocument>();
+            }
+
+            if (uiDocument != null && !uiDocument.enabled)
+            {
+                uiDocument.enabled = true;
+            }
         }
 
         private void HideShellImmediate()
@@ -2330,6 +2407,12 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
 
         private void OnDisable()
         {
+            if (buildRetryCoroutine != null)
+            {
+                StopCoroutine(buildRetryCoroutine);
+                buildRetryCoroutine = null;
+            }
+
             RestoreCursorState();
             HideShellImmediate();
         }
@@ -2356,9 +2439,26 @@ namespace Blocks.Gameplay.Core.UI.LaptopOS
                 return;
             }
 
-            UnityEngine.Cursor.lockState = previousCursorLockState;
-            UnityEngine.Cursor.visible = previousCursorVisible;
+            if (IsWebGlLikeRuntime())
+            {
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+                UnityEngine.Cursor.visible = true;
+            }
+            else
+            {
+                UnityEngine.Cursor.lockState = previousCursorLockState;
+                UnityEngine.Cursor.visible = previousCursorVisible;
+            }
             cachedCursorState = false;
+        }
+
+        private static bool IsWebGlLikeRuntime()
+        {
+#if UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return Application.platform == RuntimePlatform.WebGLPlayer;
+#endif
         }
 
         private static VisualElement CreateOrb(string name, string className)

@@ -2,7 +2,12 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+#if !UNITY_WEBGL || UNITY_EDITOR
 using UnityEngine.Video;
+#endif
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -24,9 +29,11 @@ namespace Blocks.Gameplay.Core.Story
         private RawImage videoImage;
         private Image blackImage;
         private CanvasGroup blackGroup;
+#if !UNITY_WEBGL || UNITY_EDITOR
         private AudioSource videoAudioSource;
         private VideoPlayer videoPlayer;
         private RenderTexture targetTexture;
+#endif
         private ClassroomPlayerControlLock controlLock;
 
         private bool hasPlayed;
@@ -49,10 +56,12 @@ namespace Blocks.Gameplay.Core.Story
 
         private void OnDisable()
         {
+#if !UNITY_WEBGL || UNITY_EDITOR
             if (videoPlayer != null)
             {
                 videoPlayer.Stop();
             }
+#endif
 
             if (overlayCanvas != null)
             {
@@ -70,12 +79,14 @@ namespace Blocks.Gameplay.Core.Story
 
         private void OnDestroy()
         {
+#if !UNITY_WEBGL || UNITY_EDITOR
             if (targetTexture != null)
             {
                 targetTexture.Release();
                 Destroy(targetTexture);
                 targetTexture = null;
             }
+#endif
         }
 
         public IEnumerator PlayIntroSequenceRoutine()
@@ -91,6 +102,18 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             ResolveReferences();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("[ClassroomSceneIntroCutscene] WebGL build uses a no-video intro path. Skipping intro cutscene.", this);
+            hasPlayed = true;
+            yield break;
+#else
+            if (!SupportsRuntimeVideoPlayback())
+            {
+                Debug.Log("[ClassroomSceneIntroCutscene] Runtime video playback disabled for current platform. Skipping intro video.", this);
+                hasPlayed = true;
+                yield break;
+            }
+
             var resolvedPath = ResolveCutscenePath(cutscenePath);
             if (string.IsNullOrWhiteSpace(resolvedPath) || !File.Exists(resolvedPath))
             {
@@ -202,6 +225,7 @@ namespace Blocks.Gameplay.Core.Story
 
                 isPlaying = false;
             }
+#endif
         }
 
         private IEnumerator FadeBlackRoutine(float targetAlpha, float durationSeconds)
@@ -239,7 +263,9 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             EnsureUi();
+#if !UNITY_WEBGL || UNITY_EDITOR
             EnsureVideoPlayer();
+#endif
         }
 
         private void EnsureUi()
@@ -298,8 +324,24 @@ namespace Blocks.Gameplay.Core.Story
             overlayCanvas.enabled = false;
         }
 
+#if !UNITY_WEBGL || UNITY_EDITOR
         private void EnsureVideoPlayer()
         {
+            if (!SupportsRuntimeVideoPlayback())
+            {
+                if (videoPlayer != null)
+                {
+                    videoPlayer.enabled = false;
+                }
+
+                if (videoAudioSource != null)
+                {
+                    videoAudioSource.enabled = false;
+                }
+
+                return;
+            }
+
             if (videoPlayer == null)
             {
                 videoPlayer = gameObject.GetComponent<VideoPlayer>();
@@ -368,6 +410,20 @@ namespace Blocks.Gameplay.Core.Story
             }
 
             return (int)value;
+        }
+#endif
+
+        private static bool SupportsRuntimeVideoPlayback()
+        {
+#if !UNITY_WEBGL || UNITY_EDITOR
+#if UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget != BuildTarget.WebGL;
+#else
+            return true;
+#endif
+#else
+            return false;
+#endif
         }
 
         private void SetBlackAlpha(float alpha)

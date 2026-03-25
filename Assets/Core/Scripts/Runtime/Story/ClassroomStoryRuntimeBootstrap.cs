@@ -2,6 +2,7 @@ using System.Collections;
 using System.Reflection;
 using Blocks.Gameplay.Core;
 using ModularStoryFlow.Runtime.Actions;
+using ModularStoryFlow.Runtime.Bridges;
 using ModularStoryFlow.Runtime.Channels;
 using ModularStoryFlow.Runtime.Graph;
 using ModularStoryFlow.Runtime.Integration;
@@ -11,7 +12,11 @@ using ModularStoryFlow.Runtime.Variables;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Blocks.Gameplay.Core.Story
 {
@@ -62,6 +67,8 @@ namespace Blocks.Gameplay.Core.Story
 
         private void Awake()
         {
+            ApplyWebGlSafeMode();
+
             player = player != null ? player : GetComponent<StoryFlowPlayer>();
             if (player == null)
             {
@@ -226,7 +233,7 @@ namespace Blocks.Gameplay.Core.Story
             collisionBootstrapper = collisionBootstrapper != null
                 ? collisionBootstrapper
                 : FindFirstObjectByType<ClassroomCollisionBootstrapper>(FindObjectsInactive.Include);
-            if (collisionBootstrapper == null)
+            if (collisionBootstrapper == null && !IsWebGlSafeMode())
             {
                 collisionBootstrapper = gameObject.AddComponent<ClassroomCollisionBootstrapper>();
             }
@@ -270,7 +277,14 @@ namespace Blocks.Gameplay.Core.Story
             introCutscene = introCutscene != null
                 ? introCutscene
                 : FindFirstObjectByType<ClassroomSceneIntroCutscene>(FindObjectsInactive.Include);
-            if (introCutscene == null)
+            if (IsWebGlSafeMode())
+            {
+                if (introCutscene != null)
+                {
+                    introCutscene.enabled = false;
+                }
+            }
+            else if (introCutscene == null)
             {
                 introCutscene = gameObject.GetComponent<ClassroomSceneIntroCutscene>();
                 if (introCutscene == null)
@@ -368,7 +382,7 @@ namespace Blocks.Gameplay.Core.Story
             var spawnRoutine = StartCoroutine(PositionPlayerAtSpawnRoutine());
             StartCoroutine(ConfigureImmersiveAudioRoutine());
 
-            if (introCutscene != null)
+            if (!IsWebGlSafeMode() && introCutscene != null)
             {
                 yield return introCutscene.PlayIntroSequenceRoutine();
             }
@@ -376,6 +390,11 @@ namespace Blocks.Gameplay.Core.Story
             if (spawnRoutine != null)
             {
                 yield return spawnRoutine;
+            }
+
+            if (IsWebGlSafeMode())
+            {
+                yield return new WaitForSeconds(0.15f);
             }
 
             var graphToStart = runtimeGraph != null ? runtimeGraph : player != null ? player.InitialGraph : null;
@@ -446,12 +465,15 @@ namespace Blocks.Gameplay.Core.Story
             StoryBooleanVariableDefinition labClearanceEarned,
             StoryStateMachineDefinition progression)
         {
+            var webGlSafeMode = IsWebGlSafeMode();
             var graph = ScriptableObject.CreateInstance<StoryGraphAsset>();
             graph.name = "ClassroomIntroStoryRuntime";
 
             var start = CreateNode<StartNodeAsset>();
             var settleDelay = CreateDelayNode(0.4f);
-            var introDialogue = CreateDialogueNode(string.Empty, "Classroom briefing starts now. Talk to Dr. Mira, check the room evidence, and earn lab clearance.", true, 3.5f);
+            var introDialogue = webGlSafeMode
+                ? null
+                : CreateDialogueNode(string.Empty, "Classroom briefing starts now. Talk to Dr. Mira, check the room evidence, and earn lab clearance.", true, 3.5f);
             var objectiveAction = CreateActionNode(CreateSetStateAction(progression, "BriefingActive"));
             var waitTeacherTalk = CreateWaitSignalNode(CreateSignal(ClassroomStorySignals.TeacherTalked));
             var explorationAction = CreateActionNode(CreateSetStateAction(progression, "ExplorationActive"));
@@ -467,7 +489,10 @@ namespace Blocks.Gameplay.Core.Story
 
             AddNode(graph, start, true);
             AddNode(graph, settleDelay);
-            AddNode(graph, introDialogue);
+            if (introDialogue != null)
+            {
+                AddNode(graph, introDialogue);
+            }
             AddNode(graph, objectiveAction);
             AddNode(graph, waitTeacherTalk);
             AddNode(graph, explorationAction);
@@ -480,8 +505,15 @@ namespace Blocks.Gameplay.Core.Story
             AddNode(graph, end);
 
             AddConnection(graph, start.NodeId, StoryNodeAsset.DefaultOutputPortId, settleDelay.NodeId);
-            AddConnection(graph, settleDelay.NodeId, StoryNodeAsset.DefaultOutputPortId, introDialogue.NodeId);
-            AddConnection(graph, introDialogue.NodeId, StoryNodeAsset.DefaultOutputPortId, objectiveAction.NodeId);
+            if (introDialogue != null)
+            {
+                AddConnection(graph, settleDelay.NodeId, StoryNodeAsset.DefaultOutputPortId, introDialogue.NodeId);
+                AddConnection(graph, introDialogue.NodeId, StoryNodeAsset.DefaultOutputPortId, objectiveAction.NodeId);
+            }
+            else
+            {
+                AddConnection(graph, settleDelay.NodeId, StoryNodeAsset.DefaultOutputPortId, objectiveAction.NodeId);
+            }
             AddConnection(graph, objectiveAction.NodeId, StoryNodeAsset.DefaultOutputPortId, waitTeacherTalk.NodeId);
             AddConnection(graph, waitTeacherTalk.NodeId, StoryNodeAsset.DefaultOutputPortId, explorationAction.NodeId);
             AddConnection(graph, explorationAction.NodeId, StoryNodeAsset.DefaultOutputPortId, readyDialogue.NodeId);
@@ -494,6 +526,43 @@ namespace Blocks.Gameplay.Core.Story
 
             graph.EnsureStableIds();
             return graph;
+        }
+
+        private void ApplyWebGlSafeMode()
+        {
+            if (!IsWebGlSafeMode())
+            {
+                return;
+            }
+
+            var timelineBridges = FindObjectsByType<StoryTimelineDirectorBridge>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < timelineBridges.Length; index++)
+            {
+                var bridge = timelineBridges[index];
+                if (bridge == null)
+                {
+                    continue;
+                }
+
+                var director = bridge.GetComponent<PlayableDirector>();
+                if (director != null)
+                {
+                    director.enabled = false;
+                }
+
+                bridge.enabled = false;
+            }
+        }
+
+        private static bool IsWebGlSafeMode()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return true;
+#elif UNITY_EDITOR
+            return EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+#else
+            return false;
+#endif
         }
 
         private IEnumerator PositionPlayerAtSpawnRoutine()

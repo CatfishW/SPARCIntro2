@@ -22,6 +22,7 @@ namespace Blocks.Gameplay.Core.Customization
     {
         private static readonly FieldInfo ParentUiField = typeof(UIDocument).GetField("m_ParentUI", BindingFlags.Instance | BindingFlags.NonPublic);
         private static Font s_RuntimeUiFont;
+        private static int s_OpenPanelCount;
 
         [Header("Catalog")]
         [SerializeField] private CharacterCustomizationCatalog catalogOverride;
@@ -45,19 +46,27 @@ namespace Blocks.Gameplay.Core.Customization
         private VisualElement m_Overlay;
         private VisualElement m_Window;
         private VisualElement m_Header;
+        private VisualElement m_HeaderTitleGroup;
+        private VisualElement m_HeaderActions;
         private VisualElement m_Content;
         private VisualElement m_LeftPane;
         private VisualElement m_RightPane;
         private VisualElement m_PreviewFrame;
         private VisualElement m_PreviewHud;
+        private VisualElement m_SelectionCard;
+        private VisualElement m_ActionsRow;
         private ListView m_ListView;
         private TextField m_SearchField;
         private Label m_TitleLabel;
         private Label m_StatusLabel;
+        private Label m_PreviewBadgeLabel;
+        private Label m_SidebarTitleLabel;
+        private Label m_SidebarSubtitleLabel;
         private Label m_SelectionLabel;
         private Label m_DetailLabel;
         private Label m_AnimationStatusLabel;
         private Label m_PresetCountLabel;
+        private Label m_HelperLabel;
         private Image m_PreviewImage;
         private Button m_ApplyButton;
         private Button m_RandomizeButton;
@@ -66,6 +75,9 @@ namespace Blocks.Gameplay.Core.Customization
         private readonly List<CharacterCustomizationPreset> m_AllPresets = new List<CharacterCustomizationPreset>();
         private readonly List<CharacterCustomizationPreset> m_FilteredPresets = new List<CharacterCustomizationPreset>();
         private readonly List<int> m_ListSelectionBuffer = new List<int>(1);
+        private readonly List<SuspendedDocumentState> m_SuspendedDocuments = new List<SuspendedDocumentState>(8);
+        private readonly List<Canvas> m_SuspendedCanvases = new List<Canvas>(8);
+        private readonly List<MonoBehaviour> m_SuspendedInteractionBehaviours = new List<MonoBehaviour>(8);
 
         private CharacterCustomizationCatalog m_ActiveCatalog;
         private CharacterCustomizationPreset m_SelectedPreset;
@@ -91,6 +103,15 @@ namespace Blocks.Gameplay.Core.Customization
         private float m_NextPreviewClipSwitchAt;
         private float m_PreviewBlendStartedAt;
         private bool m_PreviewBlendActive;
+        private Vector3 m_PreviewLookLocalPoint = new Vector3(0f, 1.18f, 0f);
+        private float m_PreviewCameraVerticalOffset = -0.12f;
+        private float m_PreviewCameraDistance = 2.36f;
+        private float m_PreviewZoomMultiplier = 1f;
+        private float m_PreviewPitchDegrees;
+        private int m_PreviewPointerId = -1;
+        private bool m_IsPreviewDragging;
+        private Vector2 m_LastPreviewPointerPosition;
+        private float m_PreviewManualControlUntilUnscaledTime;
 
         private CorePlayerManager m_LocalPlayerManager;
         private CorePlayerState m_LocalPlayerState;
@@ -105,18 +126,73 @@ namespace Blocks.Gameplay.Core.Customization
         private bool m_LockedMovement;
         private bool m_LockedInteractions;
         private bool m_PreviewDirty = true;
+        private float m_UiScale = 1f;
+        private float m_FontScale = 1f;
         private string m_SearchText = string.Empty;
         private int m_LastUiPointerHandledFrame = -1;
         private EventSystem m_EventSystem;
         private InputSystemUIInputModule m_InputModule;
         private StandaloneInputModule m_StandaloneInputModule;
         private PanelSettings m_RuntimePanelSettings;
+        private Coroutine m_CursorGuardRoutine;
+        private float m_CurrentListItemHeight = -1f;
+        private bool m_IsCompactLayout;
+        private bool m_IsPortraitLayout;
+        private bool m_IsDenseListLayout;
+        private bool m_UseStackedLayout;
+        private bool m_IsRegisteredAsOpenPanel;
 
         private const float PreviewAnimationBlendDurationSeconds = 0.3f;
         private const float PreviewAnimationMinimumShowcaseSeconds = 2.4f;
         private const float PreviewAnimationMaximumShowcaseSeconds = 4.1f;
+        private const float UiReferenceHeight = 1080f;
+        private const float UiMinScale = 1f;
+        private const float UiMaxScale = 1.14f;
+        private const float UiFontReferenceHeight = 980f;
+        private const float UiFontMinScale = 1f;
+        private const float UiFontMaxScale = 1.44f;
+        private const float PreviewPitchMinDegrees = -22f;
+        private const float PreviewPitchMaxDegrees = 28f;
+        private const float PreviewZoomMin = 0.82f;
+        private const float PreviewZoomMax = 1.38f;
+        private const float PreviewRotateDragSpeed = 0.35f;
+        private const float PreviewPitchDragSpeed = 0.16f;
+        private const float PreviewZoomWheelSpeed = 0.04f;
+        private const float PreviewManualControlHoldSeconds = 8f;
 
         public bool IsOpen => m_IsOpen;
+        public static bool IsAnyOpen => s_OpenPanelCount > 0;
+
+        private sealed class SuspendedDocumentState
+        {
+            public UIDocument Document;
+            public DisplayStyle PreviousDisplay;
+            public PickingMode PreviousPickingMode;
+        }
+
+        private float U(float value)
+        {
+            return Mathf.Round(value * m_UiScale * 10f) / 10f;
+        }
+
+        private float T(float value)
+        {
+            return Mathf.Round(value * m_FontScale * 10f) / 10f;
+        }
+
+        private void RefreshUiScale()
+        {
+            var height = Mathf.Max(720f, Screen.height);
+            var width = Mathf.Max(480f, Screen.width);
+            m_UiScale = Mathf.Clamp(height / UiReferenceHeight, UiMinScale, UiMaxScale);
+            var fontDriver = Mathf.Lerp(Mathf.Min(width, height), height, 0.18f);
+            if (height > width * 1.12f)
+            {
+                fontDriver *= 0.77f;
+            }
+
+            m_FontScale = Mathf.Clamp(fontDriver / UiFontReferenceHeight, UiFontMinScale, UiFontMaxScale);
+        }
 
         private Scene GetContextScene()
         {
@@ -247,10 +323,10 @@ namespace Blocks.Gameplay.Core.Customization
 
             HandleManualPointerFallback();
 
-            if (m_PreviewSpinRoot != null)
+            if (m_PreviewSpinRoot != null && !m_IsPreviewDragging && Time.unscaledTime >= m_PreviewManualControlUntilUnscaledTime)
             {
                 m_PreviewSpinAngle = Mathf.Repeat(m_PreviewSpinAngle + (previewSpinSpeed * Time.deltaTime), 360f);
-                m_PreviewSpinRoot.localRotation = Quaternion.Euler(0f, m_PreviewSpinAngle, 0f);
+                ApplyPreviewSpinRotation();
                 if (Mathf.Abs(previewSpinSpeed) > 0.01f)
                 {
                     m_PreviewDirty = true;
@@ -265,6 +341,11 @@ namespace Blocks.Gameplay.Core.Customization
             }
         }
 
+        private void LateUpdate()
+        {
+            EnsureCursorVisibleWhileOpen();
+        }
+
         public void Show()
         {
             bool wasOpen = m_IsOpen;
@@ -275,12 +356,22 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
+            if (!wasOpen)
+            {
+                AcquireInteractionLock();
+            }
+
             RefreshCatalog();
             RefreshLocalPlayerReferences();
             RefreshSelectionFromPlayer();
             RefreshFilteredList();
             EnsureUiInputBridge();
             SetVisible(true);
+            if (!wasOpen)
+            {
+                SuspendCompetingUi();
+            }
+            ApplyResponsiveLayout();
             SetPreviewCameraActive(true);
             FocusInitialElement();
             m_PreviewDirty = true;
@@ -293,11 +384,13 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
-            AcquireInteractionLock();
             m_PreviousCursorLockState = UnityEngine.Cursor.lockState;
             m_CursorWasVisible = UnityEngine.Cursor.visible;
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
+            RegisterOpenPanel();
+            StartCursorGuard();
+            EnsureCursorVisibleWhileOpen();
 
             m_LockedMovement = false;
             if (lockPlayerMovementWhileOpen && m_LocalPlayerManager != null)
@@ -346,10 +439,23 @@ namespace Blocks.Gameplay.Core.Customization
                 m_LockedMovement = false;
             }
 
-            UnityEngine.Cursor.lockState = m_PreviousCursorLockState;
-            UnityEngine.Cursor.visible = m_CursorWasVisible;
+            ReleasePreviewPointerCapture();
+            StopCursorGuard();
+            UnregisterOpenPanel();
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+                UnityEngine.Cursor.visible = true;
+            }
+            else
+            {
+                UnityEngine.Cursor.lockState = m_PreviousCursorLockState;
+                UnityEngine.Cursor.visible = m_CursorWasVisible;
+            }
             SetPreviewCameraActive(false);
             SetVisible(false);
+            RestoreSuspendedUi();
             ReleaseInteractionLock();
             m_IsOpen = false;
         }
@@ -357,6 +463,79 @@ namespace Blocks.Gameplay.Core.Customization
         public void Close()
         {
             Hide();
+        }
+
+        private void EnsureCursorVisibleWhileOpen()
+        {
+            if (!m_IsOpen)
+            {
+                return;
+            }
+
+            if (UnityEngine.Cursor.lockState != CursorLockMode.None)
+            {
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+            }
+
+            if (!UnityEngine.Cursor.visible)
+            {
+                UnityEngine.Cursor.visible = true;
+            }
+        }
+
+        private void RegisterOpenPanel()
+        {
+            if (m_IsRegisteredAsOpenPanel)
+            {
+                return;
+            }
+
+            s_OpenPanelCount++;
+            m_IsRegisteredAsOpenPanel = true;
+        }
+
+        private void UnregisterOpenPanel()
+        {
+            if (!m_IsRegisteredAsOpenPanel)
+            {
+                return;
+            }
+
+            s_OpenPanelCount = Mathf.Max(0, s_OpenPanelCount - 1);
+            m_IsRegisteredAsOpenPanel = false;
+        }
+
+        private void StartCursorGuard()
+        {
+            StopCursorGuard();
+            if (!isActiveAndEnabled)
+            {
+                return;
+            }
+
+            m_CursorGuardRoutine = StartCoroutine(CursorGuardRoutine());
+        }
+
+        private void StopCursorGuard()
+        {
+            if (m_CursorGuardRoutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(m_CursorGuardRoutine);
+            m_CursorGuardRoutine = null;
+        }
+
+        private System.Collections.IEnumerator CursorGuardRoutine()
+        {
+            while (m_IsOpen)
+            {
+                yield return new WaitForEndOfFrame();
+                EnsureCursorVisibleWhileOpen();
+            }
+
+            m_CursorGuardRoutine = null;
         }
 
         public void ApplySelection()
@@ -463,6 +642,8 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
+            RefreshUiScale();
+
             m_Root.Clear();
             m_Root.style.flexGrow = 1f;
             m_Root.style.display = DisplayStyle.None;
@@ -484,39 +665,39 @@ namespace Blocks.Gameplay.Core.Customization
             m_Overlay.style.justifyContent = Justify.Center;
             m_Overlay.style.alignItems = Align.Center;
             m_Overlay.style.backgroundColor = new Color(0.03f, 0.02f, 0.015f, 0.8f);
-            m_Overlay.style.paddingLeft = 26f;
-            m_Overlay.style.paddingRight = 26f;
-            m_Overlay.style.paddingTop = 26f;
-            m_Overlay.style.paddingBottom = 26f;
+            m_Overlay.style.paddingLeft = U(28f);
+            m_Overlay.style.paddingRight = U(28f);
+            m_Overlay.style.paddingTop = U(28f);
+            m_Overlay.style.paddingBottom = U(28f);
             m_Overlay.pickingMode = PickingMode.Position;
             m_Overlay.focusable = true;
             m_Root.Add(m_Overlay);
 
             m_Window = new VisualElement();
-            m_Window.style.width = new Length(97f, LengthUnit.Percent);
-            m_Window.style.height = new Length(95f, LengthUnit.Percent);
-            m_Window.style.minWidth = 1380f;
-            m_Window.style.minHeight = 860f;
-            m_Window.style.maxWidth = 3360f;
-            m_Window.style.maxHeight = 1920f;
+            m_Window.style.width = new Length(94f, LengthUnit.Percent);
+            m_Window.style.height = new Length(92f, LengthUnit.Percent);
+            m_Window.style.minWidth = 1280f;
+            m_Window.style.minHeight = 820f;
+            m_Window.style.maxWidth = 3120f;
+            m_Window.style.maxHeight = 1820f;
             m_Window.style.flexDirection = FlexDirection.Column;
             m_Window.style.backgroundColor = new Color(0.965f, 0.928f, 0.855f, 0.985f);
-            m_Window.style.borderTopLeftRadius = 22f;
-            m_Window.style.borderTopRightRadius = 22f;
-            m_Window.style.borderBottomLeftRadius = 22f;
-            m_Window.style.borderBottomRightRadius = 22f;
-            m_Window.style.borderLeftWidth = 5f;
-            m_Window.style.borderRightWidth = 5f;
-            m_Window.style.borderTopWidth = 5f;
-            m_Window.style.borderBottomWidth = 9f;
+            m_Window.style.borderTopLeftRadius = U(22f);
+            m_Window.style.borderTopRightRadius = U(22f);
+            m_Window.style.borderBottomLeftRadius = U(22f);
+            m_Window.style.borderBottomRightRadius = U(22f);
+            m_Window.style.borderLeftWidth = U(5f);
+            m_Window.style.borderRightWidth = U(5f);
+            m_Window.style.borderTopWidth = U(5f);
+            m_Window.style.borderBottomWidth = U(9f);
             m_Window.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_Window.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_Window.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_Window.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            m_Window.style.paddingLeft = 28f;
-            m_Window.style.paddingRight = 28f;
-            m_Window.style.paddingTop = 24f;
-            m_Window.style.paddingBottom = 24f;
+            m_Window.style.paddingLeft = U(30f);
+            m_Window.style.paddingRight = U(30f);
+            m_Window.style.paddingTop = U(26f);
+            m_Window.style.paddingBottom = U(26f);
             m_Window.style.overflow = Overflow.Hidden;
             m_Window.pickingMode = PickingMode.Position;
             m_Window.focusable = true;
@@ -530,6 +711,9 @@ namespace Blocks.Gameplay.Core.Customization
             BuildHeader();
             BuildContent();
             ApplyRuntimeFontTree(m_Window);
+            m_Overlay.RegisterCallback<GeometryChangedEvent>(_ => ApplyResponsiveLayout());
+            m_Window.RegisterCallback<GeometryChangedEvent>(_ => ApplyResponsiveLayout());
+            ApplyResponsiveLayout();
 
             try
             {
@@ -560,8 +744,10 @@ namespace Blocks.Gameplay.Core.Customization
                 return;
             }
 
-            if (!forceRecreateRuntimeSettings && m_UIDocument.panelSettings != null && m_UIDocument.panelSettings == m_RuntimePanelSettings)
+            var referencePanelSettings = FindReferencePanelSettings(contextScene);
+            if (referencePanelSettings != null)
             {
+                m_UIDocument.panelSettings = referencePanelSettings;
                 return;
             }
 
@@ -578,7 +764,113 @@ namespace Blocks.Gameplay.Core.Customization
                 m_RuntimePanelSettings.hideFlags = HideFlags.DontSave;
             }
 
+            ConfigureFallbackPanelSettings(m_RuntimePanelSettings);
             m_UIDocument.panelSettings = m_RuntimePanelSettings;
+        }
+
+        private PanelSettings FindReferencePanelSettings(Scene contextScene)
+        {
+            if (m_UIDocument != null &&
+                m_UIDocument.panelSettings != null &&
+                m_UIDocument.panelSettings != m_RuntimePanelSettings &&
+                m_UIDocument.panelSettings.themeStyleSheet != null)
+            {
+                return m_UIDocument.panelSettings;
+            }
+
+            PanelSettings fallback = null;
+            var documents = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < documents.Length; index++)
+            {
+                var candidate = documents[index];
+                if (candidate == null || candidate == m_UIDocument || candidate.panelSettings == null)
+                {
+                    continue;
+                }
+
+                var settings = candidate.panelSettings;
+                if (settings == m_RuntimePanelSettings)
+                {
+                    continue;
+                }
+
+                if (settings.themeStyleSheet == null)
+                {
+                    fallback ??= settings;
+                    continue;
+                }
+
+                if (contextScene.IsValid() && candidate.gameObject != null && candidate.gameObject.scene == contextScene)
+                {
+                    return settings;
+                }
+
+                fallback ??= settings;
+            }
+
+            if (fallback != null && fallback.themeStyleSheet != null)
+            {
+                return fallback;
+            }
+
+            var loadedSettings = Resources.FindObjectsOfTypeAll<PanelSettings>();
+            for (var index = 0; index < loadedSettings.Length; index++)
+            {
+                var candidate = loadedSettings[index];
+                if (candidate != null && candidate != m_RuntimePanelSettings && candidate.themeStyleSheet != null)
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        private void ConfigureFallbackPanelSettings(PanelSettings settings)
+        {
+            if (settings == null)
+            {
+                return;
+            }
+
+            settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+            settings.referenceResolution = new Vector2Int(1200, 800);
+            settings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
+            settings.match = 0f;
+            settings.scale = 1f;
+            settings.referenceSpritePixelsPerUnit = 100f;
+            settings.referenceDpi = 96f;
+            settings.fallbackDpi = 96f;
+            settings.clearColor = false;
+            settings.colorClearValue = Color.clear;
+            settings.clearDepthStencil = true;
+            settings.targetTexture = null;
+            settings.targetDisplay = 0;
+            settings.sortingOrder = documentSortingOrder;
+
+            var reference = FindReferencePanelSettings(GetContextScene());
+            if (reference == null)
+            {
+                return;
+            }
+
+            settings.themeStyleSheet = reference.themeStyleSheet;
+            settings.textSettings = reference.textSettings;
+            settings.scaleMode = reference.scaleMode;
+            settings.referenceResolution = reference.referenceResolution;
+            settings.screenMatchMode = reference.screenMatchMode;
+            settings.match = reference.match;
+            settings.scale = reference.scale;
+            settings.referenceSpritePixelsPerUnit = reference.referenceSpritePixelsPerUnit;
+            settings.referenceDpi = reference.referenceDpi;
+            settings.fallbackDpi = reference.fallbackDpi;
+            settings.clearColor = reference.clearColor;
+            settings.colorClearValue = reference.colorClearValue;
+            settings.clearDepthStencil = reference.clearDepthStencil;
+            settings.targetDisplay = reference.targetDisplay;
+            settings.bindingLogLevel = reference.bindingLogLevel;
+            settings.textureSlotCount = reference.textureSlotCount;
+            settings.forceGammaRendering = reference.forceGammaRendering;
         }
 
         private void EnsureStandaloneDocumentHost()
@@ -631,94 +923,94 @@ namespace Blocks.Gameplay.Core.Customization
             m_Header.style.flexDirection = FlexDirection.Row;
             m_Header.style.alignItems = Align.FlexStart;
             m_Header.style.justifyContent = Justify.SpaceBetween;
-            m_Header.style.paddingBottom = 18f;
-            m_Header.style.borderBottomWidth = 4f;
+            m_Header.style.paddingBottom = U(22f);
+            m_Header.style.borderBottomWidth = U(4f);
             m_Header.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_Window.Add(m_Header);
 
-            var titleGroup = new VisualElement();
-            titleGroup.style.flexDirection = FlexDirection.Column;
-            titleGroup.style.flexGrow = 1f;
-            titleGroup.style.marginRight = 18f;
-            m_Header.Add(titleGroup);
+            m_HeaderTitleGroup = new VisualElement();
+            m_HeaderTitleGroup.style.flexDirection = FlexDirection.Column;
+            m_HeaderTitleGroup.style.flexGrow = 1f;
+            m_HeaderTitleGroup.style.marginRight = U(24f);
+            m_Header.Add(m_HeaderTitleGroup);
 
             var badgeRow = new VisualElement();
             badgeRow.style.flexDirection = FlexDirection.Row;
             badgeRow.style.alignItems = Align.Center;
-            badgeRow.style.marginBottom = 12f;
-            titleGroup.Add(badgeRow);
+            badgeRow.style.marginBottom = U(14f);
+            m_HeaderTitleGroup.Add(badgeRow);
 
             var wardrobeChip = new Label("WARDROBE");
             ApplyRuntimeFont(wardrobeChip);
-            wardrobeChip.style.paddingLeft = 18f;
-            wardrobeChip.style.paddingRight = 18f;
-            wardrobeChip.style.paddingTop = 10f;
-            wardrobeChip.style.paddingBottom = 10f;
-            wardrobeChip.style.marginRight = 12f;
+            wardrobeChip.style.paddingLeft = U(18f);
+            wardrobeChip.style.paddingRight = U(18f);
+            wardrobeChip.style.paddingTop = U(10f);
+            wardrobeChip.style.paddingBottom = U(10f);
+            wardrobeChip.style.marginRight = U(14f);
             wardrobeChip.style.backgroundColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             wardrobeChip.style.color = new Color(0.98f, 0.95f, 0.88f, 1f);
             wardrobeChip.style.unityFontStyleAndWeight = FontStyle.Bold;
-            wardrobeChip.style.fontSize = 15f;
+            wardrobeChip.style.fontSize = T(19f);
             wardrobeChip.style.letterSpacing = 1.8f;
-            wardrobeChip.style.borderTopLeftRadius = 14f;
-            wardrobeChip.style.borderTopRightRadius = 14f;
-            wardrobeChip.style.borderBottomLeftRadius = 14f;
-            wardrobeChip.style.borderBottomRightRadius = 14f;
+            wardrobeChip.style.borderTopLeftRadius = U(14f);
+            wardrobeChip.style.borderTopRightRadius = U(14f);
+            wardrobeChip.style.borderBottomLeftRadius = U(14f);
+            wardrobeChip.style.borderBottomRightRadius = U(14f);
             badgeRow.Add(wardrobeChip);
 
             m_PresetCountLabel = new Label("00 LOOKS");
             ApplyRuntimeFont(m_PresetCountLabel);
-            m_PresetCountLabel.style.paddingLeft = 14f;
-            m_PresetCountLabel.style.paddingRight = 14f;
-            m_PresetCountLabel.style.paddingTop = 9f;
-            m_PresetCountLabel.style.paddingBottom = 9f;
+            m_PresetCountLabel.style.paddingLeft = U(14f);
+            m_PresetCountLabel.style.paddingRight = U(14f);
+            m_PresetCountLabel.style.paddingTop = U(9f);
+            m_PresetCountLabel.style.paddingBottom = U(9f);
             m_PresetCountLabel.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PresetCountLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_PresetCountLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            m_PresetCountLabel.style.fontSize = 13f;
+            m_PresetCountLabel.style.fontSize = T(17f);
             m_PresetCountLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
-            m_PresetCountLabel.style.borderTopLeftRadius = 12f;
-            m_PresetCountLabel.style.borderTopRightRadius = 12f;
-            m_PresetCountLabel.style.borderBottomLeftRadius = 12f;
-            m_PresetCountLabel.style.borderBottomRightRadius = 12f;
+            m_PresetCountLabel.style.borderTopLeftRadius = U(12f);
+            m_PresetCountLabel.style.borderTopRightRadius = U(12f);
+            m_PresetCountLabel.style.borderBottomLeftRadius = U(12f);
+            m_PresetCountLabel.style.borderBottomRightRadius = U(12f);
             badgeRow.Add(m_PresetCountLabel);
 
             m_TitleLabel = new Label("Change Character");
             ApplyRuntimeFont(m_TitleLabel);
-            m_TitleLabel.style.fontSize = 58f;
+            m_TitleLabel.style.fontSize = T(48f);
             m_TitleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
             m_TitleLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_TitleLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-            m_TitleLabel.style.minHeight = 68f;
-            m_TitleLabel.style.marginBottom = 6f;
-            titleGroup.Add(m_TitleLabel);
+            m_TitleLabel.style.minHeight = U(60f);
+            m_TitleLabel.style.marginBottom = U(6f);
+            m_HeaderTitleGroup.Add(m_TitleLabel);
 
-            m_StatusLabel = new Label("Preview a look, then apply it once. Your choice persists across the connected story scenes.");
+            m_StatusLabel = new Label("Preview a look, then apply it.");
             ApplyRuntimeFont(m_StatusLabel);
-            m_StatusLabel.style.fontSize = 18f;
+            m_StatusLabel.style.fontSize = T(22f);
             m_StatusLabel.style.color = new Color(0.16f, 0.14f, 0.1f, 0.92f);
             m_StatusLabel.style.whiteSpace = WhiteSpace.Normal;
             m_StatusLabel.style.unityTextAlign = TextAnchor.UpperLeft;
-            m_StatusLabel.style.minHeight = 50f;
-            titleGroup.Add(m_StatusLabel);
+            m_StatusLabel.style.minHeight = U(42f);
+            m_HeaderTitleGroup.Add(m_StatusLabel);
 
-            var rightControls = new VisualElement();
-            rightControls.style.flexDirection = FlexDirection.Column;
-            rightControls.style.alignItems = Align.FlexEnd;
-            rightControls.style.minWidth = 220f;
-            m_Header.Add(rightControls);
+            m_HeaderActions = new VisualElement();
+            m_HeaderActions.style.flexDirection = FlexDirection.Column;
+            m_HeaderActions.style.alignItems = Align.FlexEnd;
+            m_HeaderActions.style.minWidth = U(220f);
+            m_Header.Add(m_HeaderActions);
 
-            var helperLabel = new Label("Preview cycles through motion");
-            ApplyRuntimeFont(helperLabel);
-            helperLabel.style.fontSize = 14f;
-            helperLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            helperLabel.style.color = new Color(0.24f, 0.22f, 0.17f, 0.9f);
-            helperLabel.style.marginBottom = 10f;
-            rightControls.Add(helperLabel);
+            m_HelperLabel = new Label("Drag to orbit");
+            ApplyRuntimeFont(m_HelperLabel);
+            m_HelperLabel.style.fontSize = T(19f);
+            m_HelperLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            m_HelperLabel.style.color = new Color(0.24f, 0.22f, 0.17f, 0.9f);
+            m_HelperLabel.style.marginBottom = U(12f);
+            m_HeaderActions.Add(m_HelperLabel);
 
             m_CloseButton = CreateActionButton("Close", Hide, new Color(0.95f, 0.72f, 0.62f, 1f));
-            m_CloseButton.style.minWidth = 144f;
-            rightControls.Add(m_CloseButton);
+            m_CloseButton.style.minWidth = U(168f);
+            m_HeaderActions.Add(m_CloseButton);
         }
 
         private void BuildContent()
@@ -726,7 +1018,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_Content = new VisualElement();
             m_Content.style.flexGrow = 1f;
             m_Content.style.flexDirection = FlexDirection.Row;
-            m_Content.style.marginTop = 18f;
+            m_Content.style.marginTop = U(20f);
             m_Window.Add(m_Content);
 
             BuildDetailsPane();
@@ -736,74 +1028,74 @@ namespace Blocks.Gameplay.Core.Customization
         private void BuildSidebar()
         {
             m_LeftPane = new VisualElement();
-            m_LeftPane.style.width = 580f;
+            m_LeftPane.style.width = U(420f);
             m_LeftPane.style.flexShrink = 0f;
             m_LeftPane.style.flexDirection = FlexDirection.Column;
-            m_LeftPane.style.marginLeft = 24f;
-            m_LeftPane.style.paddingLeft = 22f;
-            m_LeftPane.style.paddingRight = 22f;
-            m_LeftPane.style.paddingTop = 22f;
-            m_LeftPane.style.paddingBottom = 22f;
+            m_LeftPane.style.marginLeft = U(18f);
+            m_LeftPane.style.paddingLeft = U(24f);
+            m_LeftPane.style.paddingRight = U(24f);
+            m_LeftPane.style.paddingTop = U(24f);
+            m_LeftPane.style.paddingBottom = U(24f);
             m_LeftPane.style.backgroundColor = new Color(0.94f, 0.88f, 0.73f, 1f);
-            m_LeftPane.style.borderLeftWidth = 4f;
-            m_LeftPane.style.borderRightWidth = 4f;
-            m_LeftPane.style.borderTopWidth = 4f;
-            m_LeftPane.style.borderBottomWidth = 8f;
+            m_LeftPane.style.borderLeftWidth = U(4f);
+            m_LeftPane.style.borderRightWidth = U(4f);
+            m_LeftPane.style.borderTopWidth = U(4f);
+            m_LeftPane.style.borderBottomWidth = U(8f);
             m_LeftPane.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_LeftPane.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_LeftPane.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_LeftPane.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            m_LeftPane.style.borderTopLeftRadius = 18f;
-            m_LeftPane.style.borderTopRightRadius = 18f;
-            m_LeftPane.style.borderBottomLeftRadius = 18f;
-            m_LeftPane.style.borderBottomRightRadius = 18f;
+            m_LeftPane.style.borderTopLeftRadius = U(18f);
+            m_LeftPane.style.borderTopRightRadius = U(18f);
+            m_LeftPane.style.borderBottomLeftRadius = U(18f);
+            m_LeftPane.style.borderBottomRightRadius = U(18f);
             m_Content.Add(m_LeftPane);
 
-            var sidebarTitle = new Label("Preset Library");
-            ApplyRuntimeFont(sidebarTitle);
-            sidebarTitle.style.fontSize = 28f;
-            sidebarTitle.style.unityFontStyleAndWeight = FontStyle.Bold;
-            sidebarTitle.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
-            sidebarTitle.style.unityTextAlign = TextAnchor.MiddleLeft;
-            sidebarTitle.style.marginBottom = 4f;
-            m_LeftPane.Add(sidebarTitle);
+            m_SidebarTitleLabel = new Label("Preset Library");
+            ApplyRuntimeFont(m_SidebarTitleLabel);
+            m_SidebarTitleLabel.style.fontSize = T(34f);
+            m_SidebarTitleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            m_SidebarTitleLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SidebarTitleLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+            m_SidebarTitleLabel.style.marginBottom = U(6f);
+            m_LeftPane.Add(m_SidebarTitleLabel);
 
-            var sidebarSubtitle = new Label("Search, preview, then lock the look you want to carry into later scenes.");
-            ApplyRuntimeFont(sidebarSubtitle);
-            sidebarSubtitle.style.fontSize = 16f;
-            sidebarSubtitle.style.color = new Color(0.2f, 0.17f, 0.12f, 0.92f);
-            sidebarSubtitle.style.whiteSpace = WhiteSpace.Normal;
-            sidebarSubtitle.style.unityTextAlign = TextAnchor.UpperLeft;
-            sidebarSubtitle.style.marginBottom = 14f;
-            m_LeftPane.Add(sidebarSubtitle);
+            m_SidebarSubtitleLabel = new Label("Search and pick a look.");
+            ApplyRuntimeFont(m_SidebarSubtitleLabel);
+            m_SidebarSubtitleLabel.style.fontSize = T(19f);
+            m_SidebarSubtitleLabel.style.color = new Color(0.2f, 0.17f, 0.12f, 0.92f);
+            m_SidebarSubtitleLabel.style.whiteSpace = WhiteSpace.Normal;
+            m_SidebarSubtitleLabel.style.unityTextAlign = TextAnchor.UpperLeft;
+            m_SidebarSubtitleLabel.style.marginBottom = U(16f);
+            m_LeftPane.Add(m_SidebarSubtitleLabel);
 
             m_SearchField = new TextField();
             ApplyRuntimeFont(m_SearchField);
             m_SearchField.label = string.Empty;
             m_SearchField.value = string.Empty;
             m_SearchField.isDelayed = true;
-            m_SearchField.style.height = 56f;
-            m_SearchField.style.marginBottom = 16f;
-            m_SearchField.style.borderTopLeftRadius = 12f;
-            m_SearchField.style.borderTopRightRadius = 12f;
-            m_SearchField.style.borderBottomLeftRadius = 12f;
-            m_SearchField.style.borderBottomRightRadius = 12f;
+            m_SearchField.style.height = U(64f);
+            m_SearchField.style.marginBottom = U(18f);
+            m_SearchField.style.borderTopLeftRadius = U(12f);
+            m_SearchField.style.borderTopRightRadius = U(12f);
+            m_SearchField.style.borderBottomLeftRadius = U(12f);
+            m_SearchField.style.borderBottomRightRadius = U(12f);
             m_SearchField.style.backgroundColor = new Color(1f, 0.98f, 0.93f, 1f);
             m_SearchField.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
-            m_SearchField.style.borderLeftWidth = 3f;
-            m_SearchField.style.borderRightWidth = 3f;
-            m_SearchField.style.borderTopWidth = 3f;
-            m_SearchField.style.borderBottomWidth = 5f;
+            m_SearchField.style.borderLeftWidth = U(3f);
+            m_SearchField.style.borderRightWidth = U(3f);
+            m_SearchField.style.borderTopWidth = U(3f);
+            m_SearchField.style.borderBottomWidth = U(5f);
             m_SearchField.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_SearchField.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_SearchField.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_SearchField.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            m_SearchField.style.paddingLeft = 10f;
-            m_SearchField.style.paddingRight = 10f;
+            m_SearchField.style.paddingLeft = U(12f);
+            m_SearchField.style.paddingRight = U(12f);
             m_SearchField.tooltip = "Search presets by name or id";
             m_SearchField.style.unityFontStyleAndWeight = FontStyle.Bold;
             m_SearchField.style.unityTextAlign = TextAnchor.MiddleLeft;
-            m_SearchField.style.fontSize = 18f;
+            m_SearchField.style.fontSize = T(24f);
             m_SearchField.focusable = true;
             m_SearchField.RegisterValueChangedCallback(OnSearchChanged);
             m_LeftPane.Add(m_SearchField);
@@ -815,27 +1107,31 @@ namespace Blocks.Gameplay.Core.Customization
                 searchInput.style.backgroundColor = Color.clear;
                 searchInput.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
                 searchInput.style.unityFontStyleAndWeight = FontStyle.Bold;
-                searchInput.style.fontSize = 18f;
+                searchInput.style.fontSize = T(24f);
             }
 
             m_ListView = new ListView
             {
                 selectionType = SelectionType.Single,
                 virtualizationMethod = CollectionVirtualizationMethod.FixedHeight,
-                fixedItemHeight = 116f,
+                fixedItemHeight = U(126f),
                 showBoundCollectionSize = false,
                 showFoldoutHeader = false,
                 reorderable = false,
                 makeItem = CreatePresetRow,
                 bindItem = BindPresetRow
             };
+            m_CurrentListItemHeight = m_ListView.fixedItemHeight;
             m_ListView.style.flexGrow = 1f;
+            m_ListView.style.flexBasis = 0f;
+            m_ListView.style.minHeight = 0f;
             m_ListView.style.backgroundColor = Color.clear;
             m_ListView.style.borderLeftWidth = 0f;
             m_ListView.style.borderRightWidth = 0f;
             m_ListView.style.borderTopWidth = 0f;
             m_ListView.style.borderBottomWidth = 0f;
             m_ListView.selectionChanged += OnSelectionChanged;
+            ConfigureListViewScrollArea();
             m_LeftPane.Add(m_ListView);
         }
 
@@ -847,26 +1143,28 @@ namespace Blocks.Gameplay.Core.Customization
             m_RightPane.style.justifyContent = Justify.FlexStart;
             m_RightPane.style.minWidth = 0f;
             m_RightPane.style.minHeight = 0f;
-            m_RightPane.style.marginRight = 6f;
+            m_RightPane.style.marginRight = U(8f);
             m_Content.Add(m_RightPane);
 
             m_PreviewFrame = new VisualElement();
-            m_PreviewFrame.style.flexGrow = 1f;
-            m_PreviewFrame.style.minHeight = 720f;
+            m_PreviewFrame.style.flexGrow = 0f;
+            m_PreviewFrame.style.flexBasis = StyleKeyword.Auto;
+            m_PreviewFrame.style.height = U(460f);
+            m_PreviewFrame.style.minHeight = U(360f);
             m_PreviewFrame.style.flexShrink = 1f;
             m_PreviewFrame.style.backgroundColor = new Color(0.08f, 0.09f, 0.12f, 1f);
-            m_PreviewFrame.style.borderTopLeftRadius = 18f;
-            m_PreviewFrame.style.borderTopRightRadius = 18f;
-            m_PreviewFrame.style.borderBottomLeftRadius = 18f;
-            m_PreviewFrame.style.borderBottomRightRadius = 18f;
-            m_PreviewFrame.style.paddingLeft = 18f;
-            m_PreviewFrame.style.paddingRight = 18f;
-            m_PreviewFrame.style.paddingTop = 18f;
-            m_PreviewFrame.style.paddingBottom = 18f;
-            m_PreviewFrame.style.borderLeftWidth = 4f;
-            m_PreviewFrame.style.borderRightWidth = 4f;
-            m_PreviewFrame.style.borderTopWidth = 4f;
-            m_PreviewFrame.style.borderBottomWidth = 8f;
+            m_PreviewFrame.style.borderTopLeftRadius = U(18f);
+            m_PreviewFrame.style.borderTopRightRadius = U(18f);
+            m_PreviewFrame.style.borderBottomLeftRadius = U(18f);
+            m_PreviewFrame.style.borderBottomRightRadius = U(18f);
+            m_PreviewFrame.style.paddingLeft = U(20f);
+            m_PreviewFrame.style.paddingRight = U(20f);
+            m_PreviewFrame.style.paddingTop = U(20f);
+            m_PreviewFrame.style.paddingBottom = U(20f);
+            m_PreviewFrame.style.borderLeftWidth = U(4f);
+            m_PreviewFrame.style.borderRightWidth = U(4f);
+            m_PreviewFrame.style.borderTopWidth = U(4f);
+            m_PreviewFrame.style.borderBottomWidth = U(8f);
             m_PreviewFrame.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_PreviewFrame.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_PreviewFrame.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
@@ -877,116 +1175,156 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewHud.style.flexDirection = FlexDirection.Row;
             m_PreviewHud.style.justifyContent = Justify.SpaceBetween;
             m_PreviewHud.style.alignItems = Align.Center;
-            m_PreviewHud.style.marginBottom = 12f;
+            m_PreviewHud.style.marginBottom = U(14f);
             m_PreviewFrame.Add(m_PreviewHud);
 
-            var previewChip = new Label("LIVE PREVIEW");
-            ApplyRuntimeFont(previewChip);
-            previewChip.style.paddingLeft = 16f;
-            previewChip.style.paddingRight = 16f;
-            previewChip.style.paddingTop = 9f;
-            previewChip.style.paddingBottom = 9f;
-            previewChip.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
-            previewChip.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
-            previewChip.style.unityFontStyleAndWeight = FontStyle.Bold;
-            previewChip.style.fontSize = 14f;
-            previewChip.style.borderTopLeftRadius = 12f;
-            previewChip.style.borderTopRightRadius = 12f;
-            previewChip.style.borderBottomLeftRadius = 12f;
-            previewChip.style.borderBottomRightRadius = 12f;
-            m_PreviewHud.Add(previewChip);
+            m_PreviewBadgeLabel = new Label("PREVIEW");
+            ApplyRuntimeFont(m_PreviewBadgeLabel);
+            m_PreviewBadgeLabel.style.paddingLeft = U(14f);
+            m_PreviewBadgeLabel.style.paddingRight = U(14f);
+            m_PreviewBadgeLabel.style.height = U(34f);
+            m_PreviewBadgeLabel.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
+            m_PreviewBadgeLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_PreviewBadgeLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            m_PreviewBadgeLabel.style.fontSize = T(15f);
+            m_PreviewBadgeLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            m_PreviewBadgeLabel.style.borderTopLeftRadius = U(12f);
+            m_PreviewBadgeLabel.style.borderTopRightRadius = U(12f);
+            m_PreviewBadgeLabel.style.borderBottomLeftRadius = U(12f);
+            m_PreviewBadgeLabel.style.borderBottomRightRadius = U(12f);
+            m_PreviewHud.Add(m_PreviewBadgeLabel);
 
-            m_AnimationStatusLabel = new Label("ANIMATION • STANDBY");
+            m_AnimationStatusLabel = new Label("STANDBY");
             ApplyRuntimeFont(m_AnimationStatusLabel);
-            m_AnimationStatusLabel.style.paddingLeft = 14f;
-            m_AnimationStatusLabel.style.paddingRight = 14f;
-            m_AnimationStatusLabel.style.paddingTop = 8f;
-            m_AnimationStatusLabel.style.paddingBottom = 8f;
+            m_AnimationStatusLabel.style.paddingLeft = U(14f);
+            m_AnimationStatusLabel.style.paddingRight = U(14f);
+            m_AnimationStatusLabel.style.height = U(34f);
             m_AnimationStatusLabel.style.backgroundColor = new Color(0.15f, 0.56f, 0.9f, 1f);
             m_AnimationStatusLabel.style.color = new Color(1f, 0.99f, 0.95f, 1f);
             m_AnimationStatusLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            m_AnimationStatusLabel.style.fontSize = 13f;
+            m_AnimationStatusLabel.style.fontSize = T(15f);
             m_AnimationStatusLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
-            m_AnimationStatusLabel.style.borderTopLeftRadius = 12f;
-            m_AnimationStatusLabel.style.borderTopRightRadius = 12f;
-            m_AnimationStatusLabel.style.borderBottomLeftRadius = 12f;
-            m_AnimationStatusLabel.style.borderBottomRightRadius = 12f;
+            m_AnimationStatusLabel.style.borderTopLeftRadius = U(12f);
+            m_AnimationStatusLabel.style.borderTopRightRadius = U(12f);
+            m_AnimationStatusLabel.style.borderBottomLeftRadius = U(12f);
+            m_AnimationStatusLabel.style.borderBottomRightRadius = U(12f);
             m_PreviewHud.Add(m_AnimationStatusLabel);
 
             m_PreviewImage = new Image();
             m_PreviewImage.scaleMode = ScaleMode.ScaleToFit;
             m_PreviewImage.style.flexGrow = 1f;
-            m_PreviewImage.style.minHeight = 640f;
+            m_PreviewImage.style.minHeight = U(300f);
             m_PreviewImage.style.backgroundColor = new Color(0.04f, 0.05f, 0.08f, 1f);
-            m_PreviewImage.style.borderTopLeftRadius = 16f;
-            m_PreviewImage.style.borderTopRightRadius = 16f;
-            m_PreviewImage.style.borderBottomLeftRadius = 16f;
-            m_PreviewImage.style.borderBottomRightRadius = 16f;
-            m_PreviewImage.style.borderLeftWidth = 3f;
-            m_PreviewImage.style.borderRightWidth = 3f;
-            m_PreviewImage.style.borderTopWidth = 3f;
-            m_PreviewImage.style.borderBottomWidth = 6f;
+            m_PreviewImage.style.borderTopLeftRadius = U(16f);
+            m_PreviewImage.style.borderTopRightRadius = U(16f);
+            m_PreviewImage.style.borderBottomLeftRadius = U(16f);
+            m_PreviewImage.style.borderBottomRightRadius = U(16f);
+            m_PreviewImage.style.borderLeftWidth = U(3f);
+            m_PreviewImage.style.borderRightWidth = U(3f);
+            m_PreviewImage.style.borderTopWidth = U(3f);
+            m_PreviewImage.style.borderBottomWidth = U(6f);
             m_PreviewImage.style.borderLeftColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PreviewImage.style.borderRightColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PreviewImage.style.borderTopColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PreviewImage.style.borderBottomColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             m_PreviewImage.style.unityBackgroundImageTintColor = Color.white;
-            m_PreviewImage.pickingMode = PickingMode.Ignore;
+            m_PreviewImage.pickingMode = PickingMode.Position;
+            m_PreviewImage.RegisterCallback<PointerDownEvent>(HandlePreviewPointerDown);
+            m_PreviewImage.RegisterCallback<PointerMoveEvent>(HandlePreviewPointerMove);
+            m_PreviewImage.RegisterCallback<PointerUpEvent>(HandlePreviewPointerUp);
+            m_PreviewImage.RegisterCallback<PointerCaptureOutEvent>(HandlePreviewPointerCaptureOut);
+            m_PreviewImage.RegisterCallback<WheelEvent>(HandlePreviewWheel);
             m_PreviewFrame.Add(m_PreviewImage);
 
-            var selectionCard = new VisualElement();
-            selectionCard.style.marginTop = 18f;
-            selectionCard.style.paddingLeft = 18f;
-            selectionCard.style.paddingRight = 18f;
-            selectionCard.style.paddingTop = 16f;
-            selectionCard.style.paddingBottom = 16f;
-            selectionCard.style.backgroundColor = new Color(1f, 0.98f, 0.93f, 1f);
-            selectionCard.style.borderLeftWidth = 4f;
-            selectionCard.style.borderRightWidth = 4f;
-            selectionCard.style.borderTopWidth = 4f;
-            selectionCard.style.borderBottomWidth = 8f;
-            selectionCard.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            selectionCard.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            selectionCard.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            selectionCard.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
-            selectionCard.style.borderTopLeftRadius = 18f;
-            selectionCard.style.borderTopRightRadius = 18f;
-            selectionCard.style.borderBottomLeftRadius = 18f;
-            selectionCard.style.borderBottomRightRadius = 18f;
-            m_RightPane.Add(selectionCard);
+            m_SelectionCard = new VisualElement();
+            m_SelectionCard.style.marginTop = U(20f);
+            m_SelectionCard.style.flexShrink = 0f;
+            m_SelectionCard.style.minHeight = U(156f);
+            m_SelectionCard.style.paddingLeft = U(22f);
+            m_SelectionCard.style.paddingRight = U(22f);
+            m_SelectionCard.style.paddingTop = U(18f);
+            m_SelectionCard.style.paddingBottom = U(18f);
+            m_SelectionCard.style.backgroundColor = new Color(1f, 0.98f, 0.93f, 1f);
+            m_SelectionCard.style.borderLeftWidth = U(4f);
+            m_SelectionCard.style.borderRightWidth = U(4f);
+            m_SelectionCard.style.borderTopWidth = U(4f);
+            m_SelectionCard.style.borderBottomWidth = U(8f);
+            m_SelectionCard.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SelectionCard.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SelectionCard.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SelectionCard.style.borderBottomColor = new Color(0.08f, 0.07f, 0.05f, 1f);
+            m_SelectionCard.style.borderTopLeftRadius = U(18f);
+            m_SelectionCard.style.borderTopRightRadius = U(18f);
+            m_SelectionCard.style.borderBottomLeftRadius = U(18f);
+            m_SelectionCard.style.borderBottomRightRadius = U(18f);
+            m_RightPane.Add(m_SelectionCard);
 
-            m_SelectionLabel = new Label("Select a character.");
+            m_SelectionLabel = new Label("Pick a look");
             ApplyRuntimeFont(m_SelectionLabel);
-            m_SelectionLabel.style.fontSize = 42f;
+            m_SelectionLabel.style.fontSize = T(34f);
             m_SelectionLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
             m_SelectionLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             m_SelectionLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-            m_SelectionLabel.style.marginBottom = 6f;
-            selectionCard.Add(m_SelectionLabel);
+            m_SelectionLabel.style.whiteSpace = WhiteSpace.NoWrap;
+            m_SelectionLabel.style.overflow = Overflow.Hidden;
+            m_SelectionLabel.style.marginBottom = U(8f);
+            m_SelectionCard.Add(m_SelectionLabel);
 
-            m_DetailLabel = new Label("Browse the available character models and apply the one you want.");
+            m_DetailLabel = new Label("Preview the selected look here.");
             ApplyRuntimeFont(m_DetailLabel);
-            m_DetailLabel.style.whiteSpace = WhiteSpace.Normal;
-            m_DetailLabel.style.fontSize = 19f;
+            m_DetailLabel.style.whiteSpace = WhiteSpace.NoWrap;
+            m_DetailLabel.style.fontSize = T(18f);
             m_DetailLabel.style.color = new Color(0.2f, 0.17f, 0.12f, 0.95f);
-            m_DetailLabel.style.unityTextAlign = TextAnchor.UpperLeft;
-            m_DetailLabel.style.minHeight = 96f;
-            m_DetailLabel.style.marginBottom = 16f;
-            selectionCard.Add(m_DetailLabel);
+            m_DetailLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+            m_DetailLabel.style.minHeight = 0f;
+            m_DetailLabel.style.flexGrow = 0f;
+            m_DetailLabel.style.flexShrink = 1f;
+            m_DetailLabel.style.overflow = Overflow.Hidden;
+            m_DetailLabel.style.marginBottom = U(12f);
+            m_SelectionCard.Add(m_DetailLabel);
 
-            var actionsRow = new VisualElement();
-            actionsRow.style.flexDirection = FlexDirection.Row;
-            actionsRow.style.flexShrink = 0f;
-            selectionCard.Add(actionsRow);
+            m_ActionsRow = new VisualElement();
+            m_ActionsRow.style.flexDirection = FlexDirection.Row;
+            m_ActionsRow.style.flexShrink = 0f;
+            m_ActionsRow.style.marginTop = U(4f);
+            m_SelectionCard.Add(m_ActionsRow);
 
-            m_RandomizeButton = CreateActionButton("Randomize", RandomizeSelection, new Color(0.35f, 0.58f, 0.95f, 1f));
+            m_RandomizeButton = CreateActionButton("Shuffle", RandomizeSelection, new Color(0.35f, 0.58f, 0.95f, 1f));
             m_RandomizeButton.style.flexGrow = 1f;
-            m_RandomizeButton.style.marginRight = 12f;
-            actionsRow.Add(m_RandomizeButton);
+            m_RandomizeButton.style.marginRight = U(14f);
+            m_ActionsRow.Add(m_RandomizeButton);
 
             m_ApplyButton = CreateActionButton("Apply", ApplySelection, new Color(0.9f, 0.68f, 0.26f, 1f));
             m_ApplyButton.style.flexGrow = 1f;
-            actionsRow.Add(m_ApplyButton);
+            m_ActionsRow.Add(m_ApplyButton);
+        }
+
+        private void ConfigureListViewScrollArea()
+        {
+            if (m_ListView == null)
+            {
+                return;
+            }
+
+            m_ListView.style.paddingBottom = U(6f);
+            m_ListView.style.marginBottom = U(2f);
+
+            var scrollView = m_ListView.Q<ScrollView>();
+            if (scrollView == null)
+            {
+                return;
+            }
+
+            scrollView.mode = ScrollViewMode.Vertical;
+            scrollView.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            scrollView.verticalScrollerVisibility = ScrollerVisibility.Auto;
+            scrollView.style.flexGrow = 1f;
+            scrollView.style.paddingBottom = U(8f);
+
+            if (scrollView.contentContainer != null)
+            {
+                scrollView.contentContainer.style.paddingBottom = U(8f);
+            }
         }
 
         private void BuildPreviewRig()
@@ -1041,6 +1379,8 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewAnimator.enabled = true;
             m_PreviewAnimator.applyRootMotion = false;
             m_PreviewAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            m_PreviewAnimator.fireEvents = false;
+            m_PreviewAnimator.logWarnings = false;
 
             EnsurePreviewTexture();
         }
@@ -1391,7 +1731,10 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             m_ListView.itemsSource = m_FilteredPresets;
-            m_ListView.Rebuild();
+            if (m_ListView.panel != null)
+            {
+                m_ListView.Rebuild();
+            }
             UpdatePresetCountLabel();
 
             if (m_SelectedPreset != null)
@@ -1466,10 +1809,11 @@ namespace Blocks.Gameplay.Core.Customization
         {
             if (m_SelectedPreset == null || m_SelectedPreset.characterPrefab == null || m_PreviewAnimator == null)
             {
-                m_DetailLabel.text = "Select a character preset to preview it here.";
+                ResetPreviewViewControls();
+                m_DetailLabel.text = "Pick a look to preview.";
                 if (m_AnimationStatusLabel != null)
                 {
-                    m_AnimationStatusLabel.text = "ANIMATION • STANDBY";
+                    m_AnimationStatusLabel.text = "STANDBY";
                 }
                 StopPreviewAnimationPlayback();
                 if (m_PreviewImage != null)
@@ -1488,6 +1832,12 @@ namespace Blocks.Gameplay.Core.Customization
                     : m_PreviewAnimator.runtimeAnimatorController;
             }
 
+            if (m_PreviewSpinRoot != null)
+            {
+                ResetPreviewViewControls();
+                ApplyPreviewSpinRotation();
+            }
+
             var effectivePreviewLayer = GetEffectivePreviewLayer();
             if (!CharacterRigUtility.TryApplyPreset(
                     m_PreviewModelRoot,
@@ -1497,7 +1847,7 @@ namespace Blocks.Gameplay.Core.Customization
                     effectivePreviewLayer,
                     true))
             {
-                m_DetailLabel.text = "Unable to build preview for this preset.";
+                m_DetailLabel.text = "Preview unavailable.";
                 return;
             }
 
@@ -1506,19 +1856,28 @@ namespace Blocks.Gameplay.Core.Customization
                 var localCenter = m_PreviewSpinRoot != null
                     ? m_PreviewSpinRoot.InverseTransformPoint(bounds.center)
                     : bounds.center;
-                m_PreviewModelRoot.localPosition = -localCenter + new Vector3(0f, -0.04f, 0f);
+                var localMin = m_PreviewSpinRoot != null
+                    ? m_PreviewSpinRoot.InverseTransformPoint(bounds.min)
+                    : bounds.min;
+                var localMax = m_PreviewSpinRoot != null
+                    ? m_PreviewSpinRoot.InverseTransformPoint(bounds.max)
+                    : bounds.max;
+                var modelHeight = Mathf.Max(localMax.y - localMin.y, 0.9f);
 
-                var radius = Mathf.Max(Mathf.Max(bounds.extents.x, bounds.extents.y), 0.45f);
+                m_PreviewModelRoot.localPosition = new Vector3(
+                    -localCenter.x,
+                    -localMin.y + 0.02f,
+                    -localCenter.z);
+
+                var radius = Mathf.Max(bounds.extents.x * 1.04f, modelHeight * 0.44f, 0.4f);
                 var fieldOfViewRadians = previewFieldOfView * Mathf.Deg2Rad * 0.5f;
                 var distance = radius / Mathf.Tan(fieldOfViewRadians);
                 m_PreviewCamera.fieldOfView = previewFieldOfView;
-                m_PreviewCamera.transform.localPosition = new Vector3(0f, Mathf.Clamp(bounds.extents.y * 0.12f, 0.82f, 1.02f), -distance * 0.88f);
-                m_PreviewCamera.transform.localRotation = Quaternion.identity;
-                if (m_PreviewRigRoot != null)
-                {
-                    var lookTargetWorld = m_PreviewRigRoot.transform.TransformPoint(new Vector3(0f, Mathf.Clamp(bounds.extents.y * 0.6f, 0.92f, 1.35f), 0f));
-                    m_PreviewCamera.transform.LookAt(lookTargetWorld, Vector3.up);
-                }
+                var cameraY = Mathf.Clamp(modelHeight * 0.55f, 0.9f, 1.34f);
+                m_PreviewLookLocalPoint = new Vector3(0f, Mathf.Clamp(modelHeight * 0.58f, 0.94f, 1.42f), 0f);
+                m_PreviewCameraVerticalOffset = cameraY - m_PreviewLookLocalPoint.y;
+                m_PreviewCameraDistance = distance * 0.96f;
+                ApplyPreviewCameraView();
             }
 
             RebuildPreviewAnimationPlaylist();
@@ -1527,7 +1886,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewImage.image = m_PreviewTexture;
             SetPreviewCameraActive(m_IsOpen);
 
-            m_DetailLabel.text = $"Preset ID: {m_SelectedPreset.id}\nSource: {GetCompactSourceLabel(m_SelectedPreset)}\nApplies to your local player and carries forward when later scenes spawn your rig.";
+            m_DetailLabel.text = BuildSelectionDetailText();
             if (m_IsOpen)
             {
                 RequestPreviewRender();
@@ -1542,7 +1901,7 @@ namespace Blocks.Gameplay.Core.Customization
         {
             if (m_SelectedPreset == null)
             {
-                m_SelectionLabel.text = "Select a character.";
+                m_SelectionLabel.text = "Pick a look";
                 return;
             }
 
@@ -1559,7 +1918,7 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_SelectedPreset == null)
             {
-                m_StatusLabel.text = "No preset selected.";
+                m_StatusLabel.text = "No look selected.";
                 return;
             }
 
@@ -1569,7 +1928,7 @@ namespace Blocks.Gameplay.Core.Customization
             }
             else
             {
-                m_StatusLabel.text = $"Previewing: {m_SelectedPreset.DisplayName}";
+                m_StatusLabel.text = $"Preview: {m_SelectedPreset.DisplayName}";
             }
         }
 
@@ -1587,6 +1946,7 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             UpdateStatus();
+            m_ListView?.RefreshItems();
         }
 
         private void UpdatePresetCountLabel()
@@ -1624,7 +1984,7 @@ namespace Blocks.Gameplay.Core.Customization
             {
                 if (m_AnimationStatusLabel != null)
                 {
-                    m_AnimationStatusLabel.text = "ANIMATION • STATIC";
+                    m_AnimationStatusLabel.text = "STATIC";
                 }
 
                 return;
@@ -1877,12 +2237,27 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (clip == null)
             {
-                m_AnimationStatusLabel.text = "ANIMATION • STATIC";
+                m_AnimationStatusLabel.text = "STATIC";
                 return;
             }
 
             var cleanName = clip.name.Replace("Anim@", string.Empty).Replace('_', ' ').Trim();
-            m_AnimationStatusLabel.text = $"ANIMATION • {cleanName.ToUpperInvariant()}";
+            if (cleanName.Length > 16)
+            {
+                cleanName = cleanName.Substring(0, 16).TrimEnd();
+            }
+
+            m_AnimationStatusLabel.text = cleanName.ToUpperInvariant();
+        }
+
+        private string BuildSelectionDetailText()
+        {
+            if (m_SelectedPreset == null)
+            {
+                return "Pick a look to preview.";
+            }
+
+            return $"ID {m_SelectedPreset.id}";
         }
 
         private static string GetCompactSourceLabel(CharacterCustomizationPreset preset)
@@ -1915,6 +2290,115 @@ namespace Blocks.Gameplay.Core.Customization
                 m_UIDocument.sortingOrder = documentSortingOrder;
             }
             m_IsOpen = visible;
+        }
+
+        private void SuspendCompetingUi()
+        {
+            RestoreSuspendedUi();
+
+            var documents = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int index = 0; index < documents.Length; index++)
+            {
+                var document = documents[index];
+                if (document == null || document == m_UIDocument || !document.enabled || !document.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                var root = document.rootVisualElement;
+                if (root == null)
+                {
+                    continue;
+                }
+
+                m_SuspendedDocuments.Add(new SuspendedDocumentState
+                {
+                    Document = document,
+                    PreviousDisplay = root.resolvedStyle.display,
+                    PreviousPickingMode = root.pickingMode
+                });
+
+                root.style.display = DisplayStyle.None;
+                root.pickingMode = PickingMode.Ignore;
+            }
+
+            var canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int index = 0; index < canvases.Length; index++)
+            {
+                var canvas = canvases[index];
+                if (canvas == null ||
+                    !canvas.enabled ||
+                    !canvas.gameObject.activeInHierarchy ||
+                    (canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.renderMode != RenderMode.ScreenSpaceCamera))
+                {
+                    continue;
+                }
+
+                m_SuspendedCanvases.Add(canvas);
+                canvas.enabled = false;
+            }
+
+            var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int index = 0; index < behaviours.Length; index++)
+            {
+                var behaviour = behaviours[index];
+                if (behaviour == null || !behaviour.enabled || behaviour == this)
+                {
+                    continue;
+                }
+
+                var typeName = behaviour.GetType().Name;
+                if (!(behaviour is InteractionDirector) &&
+                    !typeName.EndsWith("InteractionBridge", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                m_SuspendedInteractionBehaviours.Add(behaviour);
+                behaviour.enabled = false;
+            }
+        }
+
+        private void RestoreSuspendedUi()
+        {
+            for (int index = 0; index < m_SuspendedDocuments.Count; index++)
+            {
+                var state = m_SuspendedDocuments[index];
+                var document = state != null ? state.Document : null;
+                if (document != null)
+                {
+                    var root = document.rootVisualElement;
+                    if (root != null)
+                    {
+                        root.style.display = state.PreviousDisplay;
+                        root.pickingMode = state.PreviousPickingMode;
+                    }
+                }
+            }
+
+            m_SuspendedDocuments.Clear();
+
+            for (int index = 0; index < m_SuspendedCanvases.Count; index++)
+            {
+                var canvas = m_SuspendedCanvases[index];
+                if (canvas != null)
+                {
+                    canvas.enabled = true;
+                }
+            }
+
+            m_SuspendedCanvases.Clear();
+
+            for (int index = 0; index < m_SuspendedInteractionBehaviours.Count; index++)
+            {
+                var behaviour = m_SuspendedInteractionBehaviours[index];
+                if (behaviour != null)
+                {
+                    behaviour.enabled = true;
+                }
+            }
+
+            m_SuspendedInteractionBehaviours.Clear();
         }
 
         private void EnsureUiInputBridge()
@@ -2001,7 +2485,244 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             m_InteractionDirector.SetInteractionsLocked(true);
+            m_InteractionDirector.ClearFocusImmediate();
             m_LockedInteractions = true;
+        }
+
+        private void ApplyResponsiveLayout()
+        {
+            if (m_Window == null || m_Content == null || m_LeftPane == null || m_RightPane == null)
+            {
+                return;
+            }
+
+            RefreshUiScale();
+
+            var viewportWidth = m_Overlay != null ? m_Overlay.resolvedStyle.width : 0f;
+            var viewportHeight = m_Overlay != null ? m_Overlay.resolvedStyle.height : 0f;
+            if (viewportWidth < 1f || viewportHeight < 1f)
+            {
+                return;
+            }
+
+            var viewportAspect = viewportWidth / Mathf.Max(1f, viewportHeight);
+            var portraitScreen = Screen.height > Screen.width * 1.03f;
+            m_IsPortraitLayout = portraitScreen || viewportAspect < 0.96f || viewportWidth < 980f;
+            m_UseStackedLayout = m_IsPortraitLayout || viewportWidth < 1120f || viewportAspect < 1.14f;
+            m_IsCompactLayout = m_IsPortraitLayout || viewportWidth < 1500f || viewportAspect < 1.52f;
+            m_IsDenseListLayout = m_UseStackedLayout || viewportWidth < 1640f || viewportAspect < 1.68f;
+
+            m_Overlay.style.justifyContent = m_IsCompactLayout ? Justify.FlexStart : Justify.Center;
+            m_Overlay.style.alignItems = Align.Center;
+            m_Overlay.style.backgroundColor = m_IsPortraitLayout
+                ? new Color(0.02f, 0.015f, 0.01f, 0.94f)
+                : new Color(0.03f, 0.02f, 0.015f, 0.84f);
+            m_Overlay.style.paddingTop = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(18f) : U(28f);
+            m_Overlay.style.paddingBottom = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(18f) : U(28f);
+            m_Overlay.style.paddingLeft = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(16f) : U(28f);
+            m_Overlay.style.paddingRight = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(16f) : U(28f);
+
+            m_Window.style.width = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 96f : 86f, LengthUnit.Percent);
+            m_Window.style.height = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 96f : 88f, LengthUnit.Percent);
+            m_Window.style.minWidth = m_IsCompactLayout ? 0f : 1180f;
+            m_Window.style.minHeight = m_IsCompactLayout ? 0f : 760f;
+            m_Window.style.maxWidth = m_IsPortraitLayout
+                ? viewportWidth
+                : Mathf.Min(viewportWidth - U(20f), 1760f);
+            m_Window.style.maxHeight = m_IsPortraitLayout
+                ? viewportHeight
+                : Mathf.Min(viewportHeight - U(20f), 1180f);
+            m_Window.style.paddingLeft = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(16f) : U(28f);
+            m_Window.style.paddingRight = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(16f) : U(28f);
+            m_Window.style.paddingTop = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(14f) : U(24f);
+            m_Window.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(14f) : U(24f);
+            m_Window.style.borderTopLeftRadius = m_IsPortraitLayout ? U(14f) : U(22f);
+            m_Window.style.borderTopRightRadius = m_IsPortraitLayout ? U(14f) : U(22f);
+            m_Window.style.borderBottomLeftRadius = m_IsPortraitLayout ? U(14f) : U(22f);
+            m_Window.style.borderBottomRightRadius = m_IsPortraitLayout ? U(14f) : U(22f);
+
+            m_Header.style.flexDirection = m_UseStackedLayout ? FlexDirection.Column : FlexDirection.Row;
+            m_Header.style.alignItems = m_UseStackedLayout ? Align.Stretch : Align.FlexStart;
+            m_Header.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(22f);
+
+            m_TitleLabel.style.fontSize = m_IsPortraitLayout ? T(22f) : m_IsCompactLayout ? T(26f) : T(44f);
+            m_TitleLabel.style.minHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(42f) : U(68f);
+            m_StatusLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(15f) : T(19f);
+            m_StatusLabel.style.minHeight = m_IsPortraitLayout ? U(22f) : m_IsCompactLayout ? U(22f) : U(42f);
+            m_SelectionLabel.style.fontSize = m_IsPortraitLayout ? T(20f) : m_IsCompactLayout ? T(24f) : T(30f);
+            m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(14f) : T(16f);
+            m_DetailLabel.style.minHeight = m_IsPortraitLayout ? StyleKeyword.Auto : m_IsCompactLayout ? U(36f) : U(48f);
+            m_CloseButton.style.minWidth = m_IsPortraitLayout ? U(90f) : m_IsCompactLayout ? U(114f) : U(156f);
+            m_CloseButton.style.height = m_IsPortraitLayout ? U(40f) : m_IsCompactLayout ? U(48f) : U(64f);
+            m_CloseButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(18f) : T(22f);
+
+            if (m_HeaderTitleGroup != null)
+            {
+                m_HeaderTitleGroup.style.marginRight = m_UseStackedLayout ? 0f : U(24f);
+            }
+
+            if (m_HeaderActions != null)
+            {
+                m_HeaderActions.style.flexDirection = m_UseStackedLayout ? FlexDirection.Row : FlexDirection.Column;
+                m_HeaderActions.style.alignItems = m_UseStackedLayout ? Align.FlexEnd : Align.FlexEnd;
+                m_HeaderActions.style.justifyContent = m_UseStackedLayout ? Justify.FlexEnd : Justify.FlexStart;
+                m_HeaderActions.style.minWidth = StyleKeyword.Auto;
+                m_HeaderActions.style.marginTop = m_UseStackedLayout ? U(10f) : 0f;
+            }
+
+            if (m_HelperLabel != null)
+            {
+                m_HelperLabel.style.display = m_IsCompactLayout ? DisplayStyle.None : DisplayStyle.Flex;
+                m_HelperLabel.style.marginBottom = m_IsCompactLayout ? 0f : U(12f);
+                m_HelperLabel.style.marginRight = 0f;
+                m_HelperLabel.style.flexGrow = 0f;
+                m_HelperLabel.style.fontSize = m_IsCompactLayout ? T(14f) : T(16f);
+            }
+
+            m_Content.style.flexDirection = m_UseStackedLayout ? FlexDirection.Column : FlexDirection.Row;
+            m_Content.style.marginTop = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(10f) : U(18f);
+
+            m_RightPane.style.marginRight = m_UseStackedLayout ? 0f : U(8f);
+            m_RightPane.style.minHeight = 0f;
+            m_RightPane.style.flexGrow = m_IsPortraitLayout ? 0f : 1f;
+            m_RightPane.style.flexBasis = 0f;
+
+            m_LeftPane.style.width = m_UseStackedLayout
+                ? new Length(100f, LengthUnit.Percent)
+                : Mathf.Clamp(viewportWidth * 0.29f, U(340f), U(468f));
+            m_LeftPane.style.marginLeft = m_UseStackedLayout ? 0f : U(18f);
+            m_LeftPane.style.marginTop = m_UseStackedLayout ? U(14f) : 0f;
+            m_LeftPane.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
+            m_LeftPane.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
+            m_LeftPane.style.paddingTop = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
+            m_LeftPane.style.paddingBottom = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
+            m_LeftPane.style.flexGrow = m_UseStackedLayout ? 1f : 0f;
+            m_LeftPane.style.minHeight = m_UseStackedLayout
+                ? Mathf.Clamp(viewportHeight * 0.36f, U(220f), U(420f))
+                : 0f;
+            m_LeftPane.style.height = StyleKeyword.Auto;
+
+            var previewFrameHeight = m_IsPortraitLayout
+                ? Mathf.Clamp(viewportHeight * 0.28f, U(200f), U(330f))
+                : m_IsCompactLayout
+                    ? Mathf.Clamp(viewportHeight * 0.24f, U(184f), U(248f))
+                    : Mathf.Clamp(viewportHeight * 0.36f, U(300f), U(460f));
+            m_PreviewFrame.style.height = previewFrameHeight;
+            m_PreviewFrame.style.minHeight = previewFrameHeight;
+            m_PreviewFrame.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
+            m_PreviewFrame.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
+            m_PreviewFrame.style.paddingTop = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+            m_PreviewFrame.style.paddingBottom = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+
+            if (m_PreviewHud != null)
+            {
+                m_PreviewHud.style.minHeight = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(34f) : U(38f);
+                m_PreviewHud.style.marginBottom = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(10f) : U(14f);
+            }
+
+            if (m_PreviewBadgeLabel != null)
+            {
+                m_PreviewBadgeLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(30f) : U(34f);
+                m_PreviewBadgeLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(13f) : T(15f);
+            }
+
+            if (m_AnimationStatusLabel != null)
+            {
+                m_AnimationStatusLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(30f) : U(34f);
+                m_AnimationStatusLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(13f) : T(15f);
+            }
+
+            if (m_PreviewImage != null)
+            {
+                m_PreviewImage.style.minHeight = m_IsPortraitLayout
+                    ? Mathf.Clamp(viewportHeight * 0.2f, U(150f), U(250f))
+                    : m_IsCompactLayout
+                        ? Mathf.Clamp(viewportHeight * 0.16f, U(138f), U(210f))
+                        : Mathf.Clamp(viewportHeight * 0.24f, U(230f), U(360f));
+            }
+
+            if (m_SelectionCard != null)
+            {
+                m_SelectionCard.style.marginTop = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(8f) : U(16f);
+                m_SelectionCard.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+                m_SelectionCard.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+                m_SelectionCard.style.paddingTop = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
+                m_SelectionCard.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
+                m_SelectionCard.style.minHeight = m_IsPortraitLayout ? U(104f) : m_IsCompactLayout ? U(96f) : U(118f);
+            }
+
+            if (m_ActionsRow != null)
+            {
+                m_ActionsRow.style.flexDirection = m_IsPortraitLayout ? FlexDirection.Column : FlexDirection.Row;
+                m_ActionsRow.style.marginTop = m_IsPortraitLayout ? U(8f) : U(6f);
+            }
+
+            if (m_DetailLabel != null)
+            {
+                m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(11f) : m_IsCompactLayout ? T(13f) : T(15f);
+                m_DetailLabel.style.marginBottom = m_IsPortraitLayout ? U(6f) : U(8f);
+            }
+
+            if (m_RandomizeButton != null)
+            {
+                m_RandomizeButton.style.marginRight = m_IsPortraitLayout ? 0f : U(12f);
+                m_RandomizeButton.style.marginBottom = m_IsPortraitLayout ? U(10f) : 0f;
+                m_RandomizeButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(48f) : U(54f);
+                m_RandomizeButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+            }
+
+            if (m_ApplyButton != null)
+            {
+                m_ApplyButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(48f) : U(54f);
+                m_ApplyButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+            }
+
+            if (m_SidebarTitleLabel != null)
+            {
+                m_SidebarTitleLabel.style.fontSize = m_IsPortraitLayout ? T(20f) : m_IsCompactLayout ? T(24f) : T(28f);
+            }
+
+            if (m_SidebarSubtitleLabel != null)
+            {
+                m_SidebarSubtitleLabel.style.display = m_UseStackedLayout ? DisplayStyle.None : DisplayStyle.Flex;
+                m_SidebarSubtitleLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(14f) : T(15f);
+                m_SidebarSubtitleLabel.style.marginBottom = m_UseStackedLayout ? U(8f) : U(14f);
+            }
+
+            if (m_SearchField != null)
+            {
+                m_SearchField.style.height = m_IsPortraitLayout ? U(42f) : m_IsCompactLayout ? U(46f) : U(52f);
+                m_SearchField.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+                m_SearchField.style.marginBottom = m_IsPortraitLayout ? U(12f) : U(10f);
+                var searchInput = m_SearchField.Q(TextField.textInputUssName);
+                if (searchInput != null)
+                {
+                    searchInput.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+                }
+            }
+
+            ConfigureListViewScrollArea();
+            SetListItemHeight(m_IsPortraitLayout ? U(72f) : m_IsCompactLayout ? U(72f) : U(92f));
+        }
+
+        private void SetListItemHeight(float height)
+        {
+            if (m_ListView == null || height <= 0f)
+            {
+                return;
+            }
+
+            if (Mathf.Abs(m_CurrentListItemHeight - height) < 0.5f)
+            {
+                return;
+            }
+
+            m_CurrentListItemHeight = height;
+            m_ListView.fixedItemHeight = height;
+            if (m_ListView.panel != null)
+            {
+                m_ListView.Rebuild();
+            }
         }
 
         private void ReleaseInteractionLock()
@@ -2090,6 +2811,140 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewDirty = false;
         }
 
+        private void ResetPreviewViewControls()
+        {
+            m_PreviewSpinAngle = 0f;
+            m_PreviewPitchDegrees = 0f;
+            m_PreviewZoomMultiplier = 1f;
+            m_PreviewPointerId = -1;
+            m_IsPreviewDragging = false;
+            m_PreviewManualControlUntilUnscaledTime = 0f;
+        }
+
+        private void MarkPreviewManualControlActive()
+        {
+            m_PreviewManualControlUntilUnscaledTime = Time.unscaledTime + PreviewManualControlHoldSeconds;
+            m_PreviewDirty = true;
+        }
+
+        private void ApplyPreviewSpinRotation()
+        {
+            if (m_PreviewSpinRoot == null)
+            {
+                return;
+            }
+
+            m_PreviewSpinRoot.localRotation = Quaternion.Euler(0f, m_PreviewSpinAngle, 0f);
+        }
+
+        private void ApplyPreviewCameraView()
+        {
+            if (m_PreviewCamera == null || m_PreviewRigRoot == null)
+            {
+                return;
+            }
+
+            var focusLocalPoint = m_PreviewLookLocalPoint;
+            var orbitOffset = Quaternion.Euler(m_PreviewPitchDegrees, 0f, 0f) *
+                              new Vector3(0f, m_PreviewCameraVerticalOffset, -m_PreviewCameraDistance * m_PreviewZoomMultiplier);
+
+            m_PreviewCamera.transform.localPosition = focusLocalPoint + orbitOffset;
+            m_PreviewCamera.transform.localRotation = Quaternion.identity;
+            m_PreviewCamera.transform.LookAt(m_PreviewRigRoot.transform.TransformPoint(focusLocalPoint), Vector3.up);
+        }
+
+        private void HandlePreviewPointerDown(PointerDownEvent evt)
+        {
+            if (!m_IsOpen || evt == null || evt.button != 0 || m_PreviewImage == null)
+            {
+                return;
+            }
+
+            MarkUiPointerHandledThisFrame();
+            m_IsPreviewDragging = true;
+            m_PreviewPointerId = evt.pointerId;
+            m_LastPreviewPointerPosition = new Vector2(evt.position.x, evt.position.y);
+            m_PreviewImage.CapturePointer(evt.pointerId);
+            MarkPreviewManualControlActive();
+            evt.StopPropagation();
+        }
+
+        private void HandlePreviewPointerMove(PointerMoveEvent evt)
+        {
+            if (!m_IsOpen || evt == null || !m_IsPreviewDragging || evt.pointerId != m_PreviewPointerId)
+            {
+                return;
+            }
+
+            var pointerPosition = new Vector2(evt.position.x, evt.position.y);
+            var delta = pointerPosition - m_LastPreviewPointerPosition;
+            m_LastPreviewPointerPosition = pointerPosition;
+            if (delta.sqrMagnitude <= 0f)
+            {
+                return;
+            }
+
+            MarkUiPointerHandledThisFrame();
+            m_PreviewSpinAngle = Mathf.Repeat(m_PreviewSpinAngle + (delta.x * PreviewRotateDragSpeed), 360f);
+            m_PreviewPitchDegrees = Mathf.Clamp(
+                m_PreviewPitchDegrees - (delta.y * PreviewPitchDragSpeed),
+                PreviewPitchMinDegrees,
+                PreviewPitchMaxDegrees);
+            ApplyPreviewSpinRotation();
+            ApplyPreviewCameraView();
+            MarkPreviewManualControlActive();
+            evt.StopPropagation();
+        }
+
+        private void HandlePreviewPointerUp(PointerUpEvent evt)
+        {
+            if (evt == null || evt.pointerId != m_PreviewPointerId)
+            {
+                return;
+            }
+
+            ReleasePreviewPointerCapture();
+            evt.StopPropagation();
+        }
+
+        private void HandlePreviewPointerCaptureOut(PointerCaptureOutEvent evt)
+        {
+            if (evt != null && evt.pointerId != m_PreviewPointerId)
+            {
+                return;
+            }
+
+            ReleasePreviewPointerCapture();
+        }
+
+        private void HandlePreviewWheel(WheelEvent evt)
+        {
+            if (!m_IsOpen || evt == null)
+            {
+                return;
+            }
+
+            MarkUiPointerHandledThisFrame();
+            m_PreviewZoomMultiplier = Mathf.Clamp(
+                m_PreviewZoomMultiplier + (evt.delta.y * PreviewZoomWheelSpeed * 0.01f),
+                PreviewZoomMin,
+                PreviewZoomMax);
+            ApplyPreviewCameraView();
+            MarkPreviewManualControlActive();
+            evt.StopPropagation();
+        }
+
+        private void ReleasePreviewPointerCapture()
+        {
+            if (m_PreviewImage != null && m_PreviewPointerId >= 0 && m_PreviewImage.HasPointerCapture(m_PreviewPointerId))
+            {
+                m_PreviewImage.ReleasePointer(m_PreviewPointerId);
+            }
+
+            m_IsPreviewDragging = false;
+            m_PreviewPointerId = -1;
+        }
+
         private VisualElement CreatePresetRow()
         {
             var row = new VisualElement();
@@ -2097,21 +2952,22 @@ namespace Blocks.Gameplay.Core.Customization
             row.style.flexDirection = FlexDirection.Row;
             row.style.alignItems = Align.Center;
             row.style.justifyContent = Justify.SpaceBetween;
-            row.style.height = 108f;
-            row.style.paddingLeft = 14f;
-            row.style.paddingRight = 14f;
-            row.style.paddingTop = 10f;
-            row.style.paddingBottom = 10f;
-            row.style.marginBottom = 10f;
-            row.style.borderTopLeftRadius = 14f;
-            row.style.borderTopRightRadius = 14f;
-            row.style.borderBottomLeftRadius = 14f;
-            row.style.borderBottomRightRadius = 14f;
+            row.style.height = new Length(100f, LengthUnit.Percent);
+            row.style.flexGrow = 1f;
+            row.style.paddingLeft = U(14f);
+            row.style.paddingRight = U(14f);
+            row.style.paddingTop = U(10f);
+            row.style.paddingBottom = U(10f);
+            row.style.marginBottom = 0f;
+            row.style.borderTopLeftRadius = U(14f);
+            row.style.borderTopRightRadius = U(14f);
+            row.style.borderBottomLeftRadius = U(14f);
+            row.style.borderBottomRightRadius = U(14f);
             row.style.backgroundColor = new Color(1f, 0.98f, 0.94f, 1f);
-            row.style.borderLeftWidth = 3f;
-            row.style.borderRightWidth = 3f;
-            row.style.borderTopWidth = 3f;
-            row.style.borderBottomWidth = 6f;
+            row.style.borderLeftWidth = U(3f);
+            row.style.borderRightWidth = U(3f);
+            row.style.borderTopWidth = U(3f);
+            row.style.borderBottomWidth = U(6f);
             row.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             row.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             row.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
@@ -2129,61 +2985,70 @@ namespace Blocks.Gameplay.Core.Customization
 
             var indexBadge = new Label("01") { name = "preset-index" };
             ApplyRuntimeFont(indexBadge);
-            indexBadge.style.minWidth = 50f;
-            indexBadge.style.height = 50f;
-            indexBadge.style.marginRight = 12f;
+            indexBadge.style.minWidth = U(44f);
+            indexBadge.style.height = U(40f);
+            indexBadge.style.marginRight = U(12f);
             indexBadge.style.backgroundColor = new Color(0.99f, 0.83f, 0.26f, 1f);
             indexBadge.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             indexBadge.style.unityFontStyleAndWeight = FontStyle.Bold;
-            indexBadge.style.fontSize = 16f;
+            indexBadge.style.fontSize = T(15f);
             indexBadge.style.unityTextAlign = TextAnchor.MiddleCenter;
             indexBadge.style.flexShrink = 0f;
-            indexBadge.style.borderTopLeftRadius = 10f;
-            indexBadge.style.borderTopRightRadius = 10f;
-            indexBadge.style.borderBottomLeftRadius = 10f;
-            indexBadge.style.borderBottomRightRadius = 10f;
+            indexBadge.style.borderTopLeftRadius = U(10f);
+            indexBadge.style.borderTopRightRadius = U(10f);
+            indexBadge.style.borderBottomLeftRadius = U(10f);
+            indexBadge.style.borderBottomRightRadius = U(10f);
             row.Add(indexBadge);
 
             var nameColumn = new VisualElement();
             nameColumn.style.flexGrow = 1f;
             nameColumn.style.flexDirection = FlexDirection.Column;
+            nameColumn.style.justifyContent = Justify.Center;
+            nameColumn.style.minWidth = 0f;
+            nameColumn.style.marginRight = U(12f);
             row.Add(nameColumn);
 
             var nameLabel = new Label { name = "preset-name" };
             ApplyRuntimeFont(nameLabel);
-            nameLabel.style.fontSize = 22f;
+            nameLabel.style.fontSize = T(18f);
             nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
             nameLabel.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             nameLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-            nameLabel.style.whiteSpace = WhiteSpace.Normal;
-            nameLabel.style.marginBottom = 2f;
+            nameLabel.style.whiteSpace = WhiteSpace.NoWrap;
+            nameLabel.style.overflow = Overflow.Hidden;
+            nameLabel.style.marginBottom = U(3f);
             nameColumn.Add(nameLabel);
 
             var idLabel = new Label { name = "preset-id" };
             ApplyRuntimeFont(idLabel);
-            idLabel.style.fontSize = 14f;
+            idLabel.style.fontSize = T(12f);
             idLabel.style.color = new Color(0.28f, 0.24f, 0.17f, 0.88f);
             idLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-            idLabel.style.whiteSpace = WhiteSpace.Normal;
+            idLabel.style.whiteSpace = WhiteSpace.NoWrap;
+            idLabel.style.overflow = Overflow.Hidden;
             nameColumn.Add(idLabel);
 
-            var badge = new Label("PREVIEW");
+            var badge = new Label("VIEW");
             ApplyRuntimeFont(badge);
             badge.name = "preset-badge";
-            badge.style.fontSize = 13f;
+            badge.style.fontSize = T(13f);
             badge.style.unityFontStyleAndWeight = FontStyle.Bold;
             badge.style.letterSpacing = 1.4f;
-            badge.style.paddingLeft = 10f;
-            badge.style.paddingRight = 10f;
-            badge.style.paddingTop = 5f;
-            badge.style.paddingBottom = 5f;
-            badge.style.borderTopLeftRadius = 10f;
-            badge.style.borderTopRightRadius = 10f;
-            badge.style.borderBottomLeftRadius = 10f;
-            badge.style.borderBottomRightRadius = 10f;
+            badge.style.paddingLeft = U(10f);
+            badge.style.paddingRight = U(10f);
+            badge.style.paddingTop = U(6f);
+            badge.style.paddingBottom = U(6f);
+            badge.style.borderTopLeftRadius = U(10f);
+            badge.style.borderTopRightRadius = U(10f);
+            badge.style.borderBottomLeftRadius = U(10f);
+            badge.style.borderBottomRightRadius = U(10f);
             badge.style.backgroundColor = new Color(0.2f, 0.17f, 0.12f, 1f);
             badge.style.color = new Color(1f, 0.98f, 0.92f, 1f);
             badge.style.unityTextAlign = TextAnchor.MiddleCenter;
+            badge.style.whiteSpace = WhiteSpace.NoWrap;
+            badge.style.minWidth = U(68f);
+            badge.style.flexShrink = 0f;
+            badge.style.overflow = Overflow.Hidden;
             row.Add(badge);
 
             return row;
@@ -2203,6 +3068,12 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             element.userData = preset;
+            element.style.height = Mathf.Max(U(m_IsDenseListLayout ? 58f : 70f), m_CurrentListItemHeight);
+            element.style.paddingLeft = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(12f) : U(14f);
+            element.style.paddingRight = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(12f) : U(14f);
+            element.style.paddingTop = m_IsDenseListLayout ? U(6f) : U(8f);
+            element.style.paddingBottom = m_IsDenseListLayout ? U(6f) : U(8f);
+            element.style.marginBottom = 0f;
 
             var selected = m_SelectedPreset != null && string.Equals(m_SelectedPreset.id, preset.id, StringComparison.OrdinalIgnoreCase);
             element.style.backgroundColor = selected
@@ -2213,18 +3084,26 @@ namespace Blocks.Gameplay.Core.Customization
             if (nameLabel != null)
             {
                 nameLabel.text = preset.DisplayName;
+                nameLabel.style.fontSize = m_IsPortraitLayout ? T(14f) : m_IsDenseListLayout ? T(15f) : T(17f);
+                nameLabel.style.marginBottom = m_IsDenseListLayout ? 0f : U(3f);
             }
 
             var idLabel = element.Q<Label>("preset-id");
             if (idLabel != null)
             {
                 idLabel.text = $"ID {preset.id}";
+                idLabel.style.display = m_IsDenseListLayout ? DisplayStyle.None : DisplayStyle.Flex;
+                idLabel.style.fontSize = m_IsCompactLayout ? T(11f) : T(12f);
             }
 
             var indexBadge = element.Q<Label>("preset-index");
             if (indexBadge != null)
             {
                 indexBadge.text = (index + 1).ToString("00");
+                indexBadge.style.minWidth = m_IsPortraitLayout ? U(34f) : m_IsCompactLayout ? U(38f) : U(44f);
+                indexBadge.style.height = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(34f) : U(40f);
+                indexBadge.style.marginRight = m_IsPortraitLayout ? U(10f) : U(12f);
+                indexBadge.style.fontSize = m_IsPortraitLayout ? T(11f) : m_IsCompactLayout ? T(12f) : T(14f);
                 indexBadge.style.backgroundColor = selected
                     ? new Color(0.15f, 0.56f, 0.9f, 1f)
                     : new Color(0.99f, 0.83f, 0.26f, 1f);
@@ -2236,7 +3115,16 @@ namespace Blocks.Gameplay.Core.Customization
             var badge = element.Q<Label>("preset-badge");
             if (badge != null)
             {
-                badge.text = selected ? "SELECTED" : "PREVIEW";
+                var applied = m_AppliedPreset != null && string.Equals(m_AppliedPreset.id, preset.id, StringComparison.OrdinalIgnoreCase);
+                badge.text = applied
+                    ? (m_IsDenseListLayout ? "ON" : "ACTIVE")
+                    : selected
+                        ? "LIVE"
+                        : "VIEW";
+                badge.style.fontSize = m_IsPortraitLayout ? T(10f) : m_IsCompactLayout ? T(11f) : T(13f);
+                badge.style.minWidth = m_IsDenseListLayout ? U(44f) : m_IsCompactLayout ? U(54f) : U(64f);
+                badge.style.paddingLeft = m_IsCompactLayout ? U(8f) : U(10f);
+                badge.style.paddingRight = m_IsCompactLayout ? U(8f) : U(10f);
                 badge.style.backgroundColor = selected
                     ? new Color(0.08f, 0.07f, 0.05f, 1f)
                     : new Color(1f, 0.98f, 0.92f, 1f);
@@ -2254,16 +3142,16 @@ namespace Blocks.Gameplay.Core.Customization
             };
             ApplyRuntimeFont(button);
 
-            button.style.height = 60f;
-            button.style.minWidth = 120f;
-            button.style.borderTopLeftRadius = 12f;
-            button.style.borderTopRightRadius = 12f;
-            button.style.borderBottomLeftRadius = 12f;
-            button.style.borderBottomRightRadius = 12f;
-            button.style.borderLeftWidth = 3f;
-            button.style.borderRightWidth = 3f;
-            button.style.borderTopWidth = 3f;
-            button.style.borderBottomWidth = 6f;
+            button.style.height = U(70f);
+            button.style.minWidth = U(140f);
+            button.style.borderTopLeftRadius = U(12f);
+            button.style.borderTopRightRadius = U(12f);
+            button.style.borderBottomLeftRadius = U(12f);
+            button.style.borderBottomRightRadius = U(12f);
+            button.style.borderLeftWidth = U(3f);
+            button.style.borderRightWidth = U(3f);
+            button.style.borderTopWidth = U(3f);
+            button.style.borderBottomWidth = U(6f);
             button.style.borderLeftColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             button.style.borderRightColor = new Color(0.08f, 0.07f, 0.05f, 1f);
             button.style.borderTopColor = new Color(0.08f, 0.07f, 0.05f, 1f);
@@ -2271,7 +3159,7 @@ namespace Blocks.Gameplay.Core.Customization
             button.style.backgroundColor = accentColor;
             button.style.color = new Color(0.08f, 0.07f, 0.05f, 1f);
             button.style.unityFontStyleAndWeight = FontStyle.Bold;
-            button.style.fontSize = 18f;
+            button.style.fontSize = T(24f);
             button.pickingMode = PickingMode.Position;
             button.focusable = true;
             button.tabIndex = 0;

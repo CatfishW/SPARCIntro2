@@ -19,6 +19,7 @@ namespace Blocks.Gameplay.Core.Story
         private bool previousCursorVisible;
         private bool cachedCoreInputEnabled;
         private bool cachedCoreCameraEnabled;
+        private bool cachedCoreCameraLookInputEnabled;
         private bool cachedHudEnabled;
         private bool cachedHudDocumentEnabled;
         private UIDocument hudDocument;
@@ -69,6 +70,7 @@ namespace Blocks.Gameplay.Core.Story
 
             cachedCoreInputEnabled = localPlayerManager != null && localPlayerManager.CoreInput != null && localPlayerManager.CoreInput.enabled;
             cachedCoreCameraEnabled = localPlayerManager != null && localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.enabled;
+            cachedCoreCameraLookInputEnabled = localPlayerManager != null && localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.IsLookInputEnabled;
             cachedHudEnabled = localHud != null && localHud.enabled;
 
             if (localHud != null)
@@ -95,9 +97,9 @@ namespace Blocks.Gameplay.Core.Story
                     localPlayerManager.CoreInput.enabled = false;
                 }
 
-                if (localPlayerManager.CoreCamera != null)
+                if (localPlayerManager.CoreCamera != null && localPlayerManager.CoreCamera.enabled)
                 {
-                    localPlayerManager.CoreCamera.enabled = false;
+                    localPlayerManager.CoreCamera.SetLookInputEnabled(false);
                 }
             }
 
@@ -132,6 +134,10 @@ namespace Blocks.Gameplay.Core.Story
                 if (localPlayerManager.CoreCamera != null)
                 {
                     localPlayerManager.CoreCamera.enabled = cachedCoreCameraEnabled;
+                    if (cachedCoreCameraEnabled)
+                    {
+                        localPlayerManager.CoreCamera.SetLookInputEnabled(cachedCoreCameraLookInputEnabled);
+                    }
                 }
 
                 localPlayerManager.SetMovementInputEnabled(true);
@@ -149,8 +155,16 @@ namespace Blocks.Gameplay.Core.Story
 
             if (cachedCursorState)
             {
-                UnityEngine.Cursor.lockState = previousCursorLockMode;
-                UnityEngine.Cursor.visible = previousCursorVisible;
+                if (Application.platform == RuntimePlatform.WebGLPlayer)
+                {
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
+                    UnityEngine.Cursor.visible = true;
+                }
+                else
+                {
+                    UnityEngine.Cursor.lockState = previousCursorLockMode;
+                    UnityEngine.Cursor.visible = previousCursorVisible;
+                }
                 cachedCursorState = false;
             }
         }

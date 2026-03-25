@@ -111,8 +111,16 @@ namespace ItemInteraction
 
             if (unlockCursorDuringInspection)
             {
-                Cursor.lockState = previousCursorLockMode;
-                Cursor.visible = previousCursorVisible;
+                if (Application.platform == RuntimePlatform.WebGLPlayer)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+                else
+                {
+                    Cursor.lockState = previousCursorLockMode;
+                    Cursor.visible = previousCursorVisible;
+                }
             }
 
             if (overlayRoot != null)
