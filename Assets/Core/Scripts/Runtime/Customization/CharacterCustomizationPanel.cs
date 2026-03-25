@@ -1943,15 +1943,15 @@ namespace Blocks.Gameplay.Core.Customization
                     -localMin.y + 0.02f,
                     -localCenter.z);
 
-                var framingRadius = Mathf.Max(bounds.extents.x * 1.18f, modelHeight * 0.5f, 0.46f);
+                var framingRadius = Mathf.Max(bounds.extents.x * 1.1f, modelHeight * 0.47f, 0.42f);
                 var fieldOfViewRadians = previewFieldOfView * Mathf.Deg2Rad * 0.5f;
                 var distance = framingRadius / Mathf.Tan(fieldOfViewRadians);
                 m_PreviewCamera.fieldOfView = previewFieldOfView;
-                var lookY = Mathf.Clamp(modelHeight * 0.5f, 0.8f, 1.2f);
-                var cameraY = Mathf.Clamp(modelHeight * 0.56f, 0.88f, 1.34f);
+                var lookY = Mathf.Clamp(modelHeight * 0.52f, 0.82f, 1.24f);
+                var cameraY = Mathf.Clamp(modelHeight * 0.58f, 0.9f, 1.36f);
                 m_PreviewLookLocalPoint = new Vector3(0f, lookY, 0f);
                 m_PreviewCameraVerticalOffset = cameraY - m_PreviewLookLocalPoint.y;
-                m_PreviewCameraDistance = distance * 1.02f;
+                m_PreviewCameraDistance = distance * 0.94f;
                 ApplyPreviewCameraView();
             }
 
@@ -2666,13 +2666,13 @@ namespace Blocks.Gameplay.Core.Customization
             m_Overlay.style.paddingLeft = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(16f) : U(28f);
             m_Overlay.style.paddingRight = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(16f) : U(28f);
 
-            m_Window.style.width = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 94f : 86f, LengthUnit.Percent);
+            m_Window.style.width = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 95f : 88f, LengthUnit.Percent);
             m_Window.style.height = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 94f : 88f, LengthUnit.Percent);
             m_Window.style.minWidth = m_IsCompactLayout ? 0f : 1180f;
             m_Window.style.minHeight = m_IsCompactLayout ? 0f : 760f;
             m_Window.style.maxWidth = m_IsPortraitLayout
                 ? viewportWidth
-                : Mathf.Min(viewportWidth - U(20f), 1760f);
+                : Mathf.Min(viewportWidth - U(20f), 1920f);
             m_Window.style.maxHeight = m_IsPortraitLayout
                 ? viewportHeight
                 : Mathf.Min(viewportHeight - U(20f), 1180f);
@@ -2729,16 +2729,21 @@ namespace Blocks.Gameplay.Core.Customization
             m_Content.style.minHeight = 0f;
             m_Content.style.marginTop = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(8f) : U(18f);
 
-            m_RightPane.style.marginRight = m_UseStackedLayout ? 0f : U(8f);
+            m_RightPane.style.marginRight = 0f;
             m_RightPane.style.minHeight = 0f;
             m_RightPane.style.flexShrink = 1f;
             m_RightPane.style.flexGrow = m_IsPortraitLayout ? 0f : 1f;
             m_RightPane.style.flexBasis = 0f;
 
+            float sidebarWidth = m_UseStackedLayout
+                ? 0f
+                : m_IsCompactLayout
+                    ? Mathf.Clamp(viewportWidth * 0.24f, U(292f), U(380f))
+                    : Mathf.Clamp(viewportWidth * 0.26f, U(320f), U(420f));
             m_LeftPane.style.width = m_UseStackedLayout
                 ? new Length(100f, LengthUnit.Percent)
-                : Mathf.Clamp(viewportWidth * 0.31f, U(356f), U(500f));
-            m_LeftPane.style.marginLeft = m_UseStackedLayout ? 0f : U(18f);
+                : sidebarWidth;
+            m_LeftPane.style.marginLeft = m_UseStackedLayout ? 0f : m_IsCompactLayout ? U(12f) : U(14f);
             m_LeftPane.style.marginTop = m_UseStackedLayout ? U(14f) : 0f;
             m_LeftPane.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
             m_LeftPane.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(18f) : U(22f);
@@ -2762,9 +2767,10 @@ namespace Blocks.Gameplay.Core.Customization
             float previewFrameHeight = m_IsPortraitLayout
                 ? Mathf.Clamp(viewportHeight * 0.28f, U(200f), U(330f))
                 : m_IsCompactLayout
-                    ? Mathf.Clamp(viewportHeight * 0.34f, U(290f), U(360f))
-                    : Mathf.Clamp(viewportHeight * 0.36f, U(300f), U(460f));
+                    ? Mathf.Clamp(viewportHeight * 0.38f, U(330f), U(460f))
+                    : Mathf.Clamp(viewportHeight * 0.42f, U(420f), U(620f));
             previewFrameHeight = Mathf.Max(previewFrameHeight, previewFramePaddingY * 2f + previewHudHeight + previewHudMarginBottom + previewImageMinHeight);
+            m_PreviewFrame.style.flexGrow = m_UseStackedLayout ? 0f : 1f;
             m_PreviewFrame.style.height = previewFrameHeight;
             m_PreviewFrame.style.minHeight = previewFrameHeight;
             m_PreviewFrame.style.paddingLeft = previewFramePaddingX;
