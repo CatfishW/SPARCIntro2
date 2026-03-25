@@ -993,6 +993,12 @@ namespace Blocks.Gameplay.Core.Story
                 return;
             }
 
+            if (!CanRunDeferredRecovery())
+            {
+                CompleteGameplayCursorRecoveryImmediate();
+                return;
+            }
+
             gameplayCursorRecoveryRoutine = StartCoroutine(RestoreGameplayCursorRoutine());
         }
 
@@ -1010,6 +1016,12 @@ namespace Blocks.Gameplay.Core.Story
         private void QueueGameplayStateRecovery()
         {
             CancelGameplayStateRecovery();
+            if (!CanRunDeferredRecovery())
+            {
+                CompleteGameplayStateRecoveryImmediate();
+                return;
+            }
+
             gameplayStateRecoveryRoutine = StartCoroutine(RestoreGameplayStateRoutine());
         }
 
@@ -1029,10 +1041,28 @@ namespace Blocks.Gameplay.Core.Story
             yield return null;
             yield return new WaitForEndOfFrame();
 
+            CompleteGameplayCursorRecoveryImmediate();
+        }
+
+        private System.Collections.IEnumerator RestoreGameplayStateRoutine()
+        {
+            yield return null;
+            yield return new WaitForEndOfFrame();
+
+            CompleteGameplayStateRecoveryImmediate();
+        }
+
+        private bool CanRunDeferredRecovery()
+        {
+            return isActiveAndEnabled && gameObject.activeInHierarchy;
+        }
+
+        private void CompleteGameplayCursorRecoveryImmediate()
+        {
             if (laptopSessionOpen || ShouldDeferGameplayCursorLockToUserGesture())
             {
                 gameplayCursorRecoveryRoutine = null;
-                yield break;
+                return;
             }
 
             Cursor.visible = false;
@@ -1041,15 +1071,12 @@ namespace Blocks.Gameplay.Core.Story
             gameplayCursorRecoveryRoutine = null;
         }
 
-        private System.Collections.IEnumerator RestoreGameplayStateRoutine()
+        private void CompleteGameplayStateRecoveryImmediate()
         {
-            yield return null;
-            yield return new WaitForEndOfFrame();
-
             if (laptopSessionOpen)
             {
                 gameplayStateRecoveryRoutine = null;
-                yield break;
+                return;
             }
 
             RestoreGameplayStateImmediate();
@@ -1385,7 +1412,7 @@ namespace Blocks.Gameplay.Core.Story
                 return PrepareInteractable(existing, displayName);
             }
 
-            var gameObject = GameObject.Find(hierarchyPath) ?? GameObject.Find(fallbackName);
+            var gameObject = FindSceneGameObject(hierarchyPath, fallbackName);
             if (gameObject == null)
             {
                 return null;
@@ -1415,9 +1442,74 @@ namespace Blocks.Gameplay.Core.Story
             return interactable;
         }
 
+        // Unity asserts if GameObject.Find(string) runs while the target object is inactive during teardown.
+        private static GameObject FindSceneGameObject(string hierarchyPath, string fallbackName)
+        {
+            var hierarchySegments = string.IsNullOrWhiteSpace(hierarchyPath)
+                ? Array.Empty<string>()
+                : hierarchyPath.Split('/');
+            GameObject activeFallback = null;
+            GameObject anyFallback = null;
+            var transforms = FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var index = 0; index < transforms.Length; index++)
+            {
+                var transform = transforms[index];
+                if (transform == null)
+                {
+                    continue;
+                }
+
+                var candidate = transform.gameObject;
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (MatchesHierarchyPath(transform, hierarchySegments))
+                {
+                    return candidate;
+                }
+
+                if (string.IsNullOrWhiteSpace(fallbackName) ||
+                    !string.Equals(candidate.name, fallbackName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                anyFallback ??= candidate;
+                if (activeFallback == null && candidate.activeInHierarchy)
+                {
+                    activeFallback = candidate;
+                }
+            }
+
+            return activeFallback != null ? activeFallback : anyFallback;
+        }
+
+        private static bool MatchesHierarchyPath(Transform transform, IReadOnlyList<string> hierarchySegments)
+        {
+            if (transform == null || hierarchySegments == null || hierarchySegments.Count == 0)
+            {
+                return false;
+            }
+
+            var current = transform;
+            for (var index = hierarchySegments.Count - 1; index >= 0; index--)
+            {
+                if (current == null || !string.Equals(current.name, hierarchySegments[index], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                current = current.parent;
+            }
+
+            return current == null;
+        }
+
         private static void DisableDistractorInteractable(string hierarchyPath, string fallbackName)
         {
-            var target = GameObject.Find(hierarchyPath) ?? GameObject.Find(fallbackName);
+            var target = FindSceneGameObject(hierarchyPath, fallbackName);
             if (target == null)
             {
                 return;
