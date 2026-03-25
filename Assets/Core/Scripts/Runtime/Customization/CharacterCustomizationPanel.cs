@@ -1181,6 +1181,8 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewFrame.style.height = U(460f);
             m_PreviewFrame.style.minHeight = U(360f);
             m_PreviewFrame.style.flexShrink = 1f;
+            m_PreviewFrame.style.position = Position.Relative;
+            m_PreviewFrame.style.overflow = Overflow.Hidden;
             m_PreviewFrame.style.backgroundColor = new Color(0.085f, 0.09f, 0.12f, 1f);
             m_PreviewFrame.style.borderTopLeftRadius = U(18f);
             m_PreviewFrame.style.borderTopRightRadius = U(18f);
@@ -1204,7 +1206,12 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewHud.style.flexDirection = FlexDirection.Row;
             m_PreviewHud.style.justifyContent = Justify.SpaceBetween;
             m_PreviewHud.style.alignItems = Align.Center;
-            m_PreviewHud.style.marginBottom = U(14f);
+            m_PreviewHud.style.position = Position.Absolute;
+            m_PreviewHud.style.left = U(16f);
+            m_PreviewHud.style.right = U(16f);
+            m_PreviewHud.style.top = U(16f);
+            m_PreviewHud.style.marginBottom = 0f;
+            m_PreviewHud.pickingMode = PickingMode.Ignore;
             m_PreviewFrame.Add(m_PreviewHud);
 
             m_PreviewBadgeLabel = new Label("PREVIEW");
@@ -1273,6 +1280,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_PreviewImage.RegisterCallback<PointerCaptureOutEvent>(HandlePreviewPointerCaptureOut);
             m_PreviewImage.RegisterCallback<WheelEvent>(HandlePreviewWheel);
             m_PreviewFrame.Add(m_PreviewImage);
+            m_PreviewHud.BringToFront();
 
             m_SelectionCard = new VisualElement();
             m_SelectionCard.style.marginTop = U(20f);
@@ -2758,7 +2766,7 @@ namespace Blocks.Gameplay.Core.Customization
             float previewFramePaddingX = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
             float previewFramePaddingY = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(12f) : U(20f);
             float previewHudHeight = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(32f) : U(34f);
-            float previewHudMarginBottom = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(8f) : U(14f);
+            float previewHudInset = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(12f) : U(16f);
             float previewImageMinHeight = m_IsPortraitLayout
                 ? Mathf.Clamp(viewportHeight * 0.2f, U(150f), U(250f))
                 : m_IsCompactLayout
@@ -2769,7 +2777,7 @@ namespace Blocks.Gameplay.Core.Customization
                 : m_IsCompactLayout
                     ? Mathf.Clamp(viewportHeight * 0.38f, U(330f), U(460f))
                     : Mathf.Clamp(viewportHeight * 0.42f, U(420f), U(620f));
-            previewFrameHeight = Mathf.Max(previewFrameHeight, previewFramePaddingY * 2f + previewHudHeight + previewHudMarginBottom + previewImageMinHeight);
+            previewFrameHeight = Mathf.Max(previewFrameHeight, previewFramePaddingY * 2f + previewImageMinHeight);
             m_PreviewFrame.style.flexGrow = m_UseStackedLayout ? 0f : 1f;
             m_PreviewFrame.style.height = previewFrameHeight;
             m_PreviewFrame.style.minHeight = previewFrameHeight;
@@ -2780,8 +2788,11 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_PreviewHud != null)
             {
+                m_PreviewHud.style.left = previewHudInset;
+                m_PreviewHud.style.right = previewHudInset;
+                m_PreviewHud.style.top = previewHudInset;
                 m_PreviewHud.style.minHeight = previewHudHeight;
-                m_PreviewHud.style.marginBottom = previewHudMarginBottom;
+                m_PreviewHud.style.marginBottom = 0f;
             }
 
             if (m_PreviewBadgeLabel != null)
@@ -2803,13 +2814,13 @@ namespace Blocks.Gameplay.Core.Customization
 
             if (m_SelectionCard != null)
             {
-                float selectionPaddingY = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
+                float selectionPaddingY = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(10f) : U(12f);
                 float selectionPaddingX = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
-                float selectionTitleHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(34f) : U(40f);
-                float selectionDetailHeight = m_IsPortraitLayout ? U(18f) : m_IsCompactLayout ? U(18f) : U(22f);
-                float selectionActionGap = m_IsPortraitLayout ? U(8f) : U(6f);
+                float selectionTitleHeight = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(32f) : U(36f);
+                float selectionDetailHeight = m_IsPortraitLayout ? U(16f) : m_IsCompactLayout ? U(16f) : U(18f);
+                float selectionActionGap = m_IsPortraitLayout ? U(6f) : U(4f);
                 float selectionButtonsHeight = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(40f) : U(54f);
-                float selectionCardHeight = selectionPaddingY * 2f + selectionTitleHeight + selectionDetailHeight + selectionActionGap + selectionButtonsHeight + U(10f);
+                float selectionCardHeight = selectionPaddingY * 2f + selectionTitleHeight + selectionDetailHeight + selectionActionGap + selectionButtonsHeight + U(4f);
 
                 m_SelectionCard.style.marginTop = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(8f) : U(16f);
                 m_SelectionCard.style.paddingLeft = selectionPaddingX;
@@ -2822,13 +2833,13 @@ namespace Blocks.Gameplay.Core.Customization
             if (m_ActionsRow != null)
             {
                 m_ActionsRow.style.flexDirection = m_IsPortraitLayout ? FlexDirection.Column : FlexDirection.Row;
-                m_ActionsRow.style.marginTop = m_IsPortraitLayout ? U(8f) : U(6f);
+                m_ActionsRow.style.marginTop = m_IsPortraitLayout ? U(6f) : U(4f);
             }
 
             if (m_DetailLabel != null)
             {
                 m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(11f) : m_IsCompactLayout ? T(13f) : T(15f);
-                m_DetailLabel.style.marginBottom = m_IsPortraitLayout ? U(6f) : U(6f);
+                m_DetailLabel.style.marginBottom = m_IsPortraitLayout ? U(4f) : U(4f);
             }
 
             if (m_RandomizeButton != null)
@@ -2876,7 +2887,7 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             ConfigureListViewScrollArea();
-            SetListItemHeight(m_IsPortraitLayout ? U(72f) : m_IsCompactLayout ? U(74f) : U(92f));
+            SetListItemHeight(m_IsPortraitLayout ? U(70f) : m_IsCompactLayout ? U(68f) : U(78f));
         }
 
         private void SetListItemHeight(float height)
@@ -3130,8 +3141,8 @@ namespace Blocks.Gameplay.Core.Customization
             row.style.flexGrow = 1f;
             row.style.paddingLeft = U(14f);
             row.style.paddingRight = U(14f);
-            row.style.paddingTop = U(10f);
-            row.style.paddingBottom = U(10f);
+            row.style.paddingTop = U(8f);
+            row.style.paddingBottom = U(8f);
             row.style.marginBottom = 0f;
             row.style.borderTopLeftRadius = U(14f);
             row.style.borderTopRightRadius = U(14f);
@@ -3242,11 +3253,11 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             element.userData = preset;
-            element.style.height = Mathf.Max(U(m_IsDenseListLayout ? 58f : 70f), m_CurrentListItemHeight);
+            element.style.height = Mathf.Max(U(m_IsDenseListLayout ? 54f : 64f), m_CurrentListItemHeight);
             element.style.paddingLeft = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(12f) : U(14f);
             element.style.paddingRight = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(12f) : U(14f);
-            element.style.paddingTop = m_IsDenseListLayout ? U(6f) : U(8f);
-            element.style.paddingBottom = m_IsDenseListLayout ? U(6f) : U(8f);
+            element.style.paddingTop = m_IsDenseListLayout ? U(5f) : U(6f);
+            element.style.paddingBottom = m_IsDenseListLayout ? U(5f) : U(6f);
             element.style.marginBottom = 0f;
 
             var selected = m_SelectedPreset != null && string.Equals(m_SelectedPreset.id, preset.id, StringComparison.OrdinalIgnoreCase);
