@@ -1,0 +1,893 @@
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  180118ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  181625ms] [WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  181687ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_BedRoomIntroScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  183905ms] [WARNING] [Netcode] [BB] CorePlayer(Clone) does not contain a public enable property! (Ignoring)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  183943ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  183943ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295498ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295514ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295531ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295547ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295564ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295580ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295597ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295614ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295630ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295647ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295663ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295680ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295696ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295714ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295730ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295747ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295764ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295781ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295796ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295813ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295830ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295847ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295864ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295880ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295897ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295914ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295931ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295947ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295963ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295980ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  295997ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296014ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296030ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296047ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296064ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296080ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296097ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296114ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296131ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296147ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296164ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296180ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296197ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296214ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296231ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296247ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296264ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296282ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296297ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296315ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296331ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296347ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296365ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296381ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296398ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296414ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296432ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296448ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296465ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296481ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296499ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296515ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296533ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296548ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296565ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296581ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296597ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296614ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296631ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296647ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296664ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296680ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296697ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296714ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296731ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296747ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296764ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296782ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296798ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296814ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296831ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296848ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296864ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296880ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296897ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296914ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296930ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296947ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296964ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  296981ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  297247ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298265ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298281ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298298ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298315ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298332ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298349ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298367ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  298381ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299400ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299416ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299432ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299448ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299465ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299481ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299498ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299514ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299531ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299547ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299564ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299581ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299597ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299614ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299631ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299647ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299664ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299680ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299697ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299713ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299730ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299747ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299764ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299780ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299797ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299814ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299831ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299847ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299864ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299881ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299897ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299914ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299930ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299948ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299965ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299982ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  299999ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300016ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300033ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300050ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300068ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300085ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300099ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300115ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300133ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300148ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300165ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300181ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300198ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300215ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300232ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300249ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300265ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300281ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300298ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300315ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300332ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300347ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300364ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300381ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300397ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300415ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300431ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300447ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300465ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300481ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  300497ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323131ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323147ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323163ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323180ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323196ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323213ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323230ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323247ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323264ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323280ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323298ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323314ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323330ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323347ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323364ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323380ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323397ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323413ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323431ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323447ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323464ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323480ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323496ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323513ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323531ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323546ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323564ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323580ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323597ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323613ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323631ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323647ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323663ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323681ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323697ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323714ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323731ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323747ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323764ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323781ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323798ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323815ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323831ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323847ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323864ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323881ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323898ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323915ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323931ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323947ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  323964ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  324113ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325130ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325147ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325164ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325180ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325197ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325214ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325231ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325247ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325263ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325281ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325297ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325314ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325330ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325347ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325363ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325380ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325397ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325414ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325430ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325447ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325464ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325480ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325496ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325513ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325530ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325547ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325564ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325580ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325597ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325614ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325630ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325646ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325664ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325680ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325697ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325714ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325730ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  325748ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328636ms] [ERROR] Coroutine couldn't be started because the the game object 'BedroomStoryFlowPlayer' is inactive!
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328648ms] [WARNING] There can be only one active Event System.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328651ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328651ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328651ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328651ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328651ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328652ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328653ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328654ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "chair|chair_L_chair.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328655ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "clock.001|clock_L_clock.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "clock.001|clock_L_clock.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "clock.001|clock_L_clock.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Collection|board_L_board.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Collection|board_L_board.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Collection|board_L_board.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|Door_L_door.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|Door_L_door.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|Door_L_door.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|handle_L_door.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|handle_L_door.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Door.001|handle_L_door.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere.001_L_etagere.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere.001_L_etagere.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere.001_L_etagere.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328656ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere_L_etagere.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere_L_etagere.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "etagere.001|etagere_L_etagere.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "teacherDesk.001|teacherDesk_L_teacherDesk.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "teacherDesk.001|teacherDesk_L_teacherDesk.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "teacherDesk.001|teacherDesk_L_teacherDesk.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.001"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.001"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.001"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.002"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328657ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.002"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.002"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.004"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.004"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "wall.004"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328658ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Glass_L_Window.blend|Dupli|2"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Plane_L_Window.blend|Dupli|4"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Wall_L_Window.blend|Dupli|"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328659ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328660ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328660ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|Window_L_Window.blend|Dupli|1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328660ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328660ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328660ms] [ERROR] CollisionMeshData couldn't be created because the mesh has been marked as non-accessible. Mesh name "Window.002|WindowWoodPlate_L_Window.blend|Dupli|3"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328686ms] [WARNING] [GameManager] Duplicate GameManager instance detected. Destroying self.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328686ms] [WARNING] Duplicate GameNetworkManager instance detected. Destroying self.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328709ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_ClassroomArrivalScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328829ms] [WARNING] [Netcode] [BB] CorePlayer(Clone) does not contain a public enable property! (Ignoring)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328844ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  328844ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  330870ms] [ERROR] Uncaught exception from main loop: @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  330870ms] [ERROR] RuntimeError: function signature mismatch
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[152861]:0x2b7af50
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[137431]:0x2780d64
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88541]:0x1aa5a5f
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[830]:0x17f77f
+    at invoke_ii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497036)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88821]:0x1abac93
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201556]:0x3e06d61
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497170)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88744]:0x1ab3d66
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201556]:0x3e06d61
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497170)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88740]:0x1ab3928
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66049]:0x13fba5a
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201552]:0x3e06d2e
+    at invoke_iiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496100)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66080]:0x13ff6fe
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[68022]:0x14984d3
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66073]:0x13feae8
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66037]:0x13fb5cb
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201557]:0x3e06d71
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496411)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66115]:0x1403ce5
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67864]:0x148f1a0
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66109]:0x140371e
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66106]:0x1403171
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66110]:0x1403749
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66102]:0x1402dc8
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201557]:0x3e06d71
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496411)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66486]:0x1429928
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67840]:0x148db44
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201560]:0x3e06d93
+    at invoke_viii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496250)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66491]:0x142af64
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67842]:0x148dd21
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66477]:0x1428c7c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201562]:0x3e06dbb
+    at invoke_iiiiiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497649)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66555]:0x1432f76
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[102673]:0x1ea72d6 @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  330872ms] [ERROR] Halting program. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:8
+[  373529ms] RuntimeError: function signature mismatch
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[152861]:0x2b7af50
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[137431]:0x2780d64
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88541]:0x1aa5a5f
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[830]:0x17f77f
+    at invoke_ii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497036)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88821]:0x1abac93
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201556]:0x3e06d61
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497170)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88744]:0x1ab3d66
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201556]:0x3e06d61
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497170)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[88740]:0x1ab3928
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66049]:0x13fba5a
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201552]:0x3e06d2e
+    at invoke_iiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496100)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66080]:0x13ff6fe
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[68022]:0x14984d3
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66073]:0x13feae8
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66037]:0x13fb5cb
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201557]:0x3e06d71
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496411)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66115]:0x1403ce5
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67864]:0x148f1a0
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66109]:0x140371e
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66106]:0x1403171
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66110]:0x1403749
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66102]:0x1402dc8
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201557]:0x3e06d71
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496411)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66486]:0x1429928
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67840]:0x148db44
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201560]:0x3e06d93
+    at invoke_viii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:496250)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66491]:0x142af64
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[67842]:0x148dd21
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66477]:0x1428c7c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201562]:0x3e06dbb
+    at invoke_iiiiiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:497649)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[66555]:0x1432f76
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[201554]:0x3e06d4f
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325005204:9:495947)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325005204:wasm-function[102673]:0x1ea72d6

@@ -1,0 +1,17 @@
+[   25226ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25226ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25227ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25227ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25227ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25227ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25589ms] [WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   25630ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_BedRoomIntroScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   27751ms] [WARNING] [BedroomStoryMorningAmbience] Missing ambience clip. Assign one or provide fallback at 'Assets/Core/Audio/forest-window-light.mp3'.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   27876ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareScreenSpace' is not supported (in 'LensFlareScreenSpacePostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   27876ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareDataDriven' is not supported (in 'LensFlareDataDrivenPostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[   27876ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling' is not supported (in 'Blit FSR Upscaling'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8

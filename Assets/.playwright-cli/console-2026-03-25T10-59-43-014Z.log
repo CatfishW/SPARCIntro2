@@ -1,0 +1,21 @@
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  162821ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  163868ms] [WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  163931ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_BedRoomIntroScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166076ms] [WARNING] [Netcode] [BB] CorePlayer(Clone) does not contain a public enable property! (Ignoring)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166098ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166098ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166750ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareScreenSpace' is not supported (in 'LensFlareScreenSpacePostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166750ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareDataDriven' is not supported (in 'LensFlareDataDrivenPostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166751ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling' is not supported (in 'Blit FSR Upscaling'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8

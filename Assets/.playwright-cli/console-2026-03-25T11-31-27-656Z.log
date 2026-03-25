@@ -1,0 +1,1141 @@
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  166861ms] [WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  167952ms] [WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  168002ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_BedRoomIntroScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170143ms] [WARNING] [Netcode] [BB] CorePlayer(Clone) does not contain a public enable property! (Ignoring)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170166ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170166ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170877ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareScreenSpace' is not supported (in 'LensFlareScreenSpacePostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170878ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareDataDriven' is not supported (in 'LensFlareDataDrivenPostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[  170878ms] [WARNING] Shader 'Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling' is not supported (in 'Blit FSR Upscaling'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27846446ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847461ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847479ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847497ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847514ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847525ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847543ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847559ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847576ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847592ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847610ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847626ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847642ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847659ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847676ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847693ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27847709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848726ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848743ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848759ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848776ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848792ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848809ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848826ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848843ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848859ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848875ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848892ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848908ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848926ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848942ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848975ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27848992ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27849009ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27849026ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27849042ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850059ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850076ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850093ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850113ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850127ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850142ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850176ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850192ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850209ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850226ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850242ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850259ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850276ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850292ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850312ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850326ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850342ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850359ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850376ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850392ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850409ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850426ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850442ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850459ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850480ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850492ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850509ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850526ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850542ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850559ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850576ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850592ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850609ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850626ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850642ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850659ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850676ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850692ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850727ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850744ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850761ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850776ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850792ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850809ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850826ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850843ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850859ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850876ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850892ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850909ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850926ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850942ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27850976ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27852409ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853426ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853443ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853460ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853476ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853493ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853510ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853526ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853543ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853559ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853576ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853593ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853609ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853626ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853642ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853660ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853676ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853693ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853725ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853742ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853759ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853776ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853792ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853809ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853826ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853842ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853858ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853876ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853892ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27853909ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27854725ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855748ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855766ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855783ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855799ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855815ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855831ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855850ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855865ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855880ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855896ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855915ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855927ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855943ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855976ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27855993ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856010ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856026ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856042ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856060ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856077ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856093ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856110ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856127ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856143ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856160ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856177ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856193ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856210ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856227ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27856243ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27858209ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27859109ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860126ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860142ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860160ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860176ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860192ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860209ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860226ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860242ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860259ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860276ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860293ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860310ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860326ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860343ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860359ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860376ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860393ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860410ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860427ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860443ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860460ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860477ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860493ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860510ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860526ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860543ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860559ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860576ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860592ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860610ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860626ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860643ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860659ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860676ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860693ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860727ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860744ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860761ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860778ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860799ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860811ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860828ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860844ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860861ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860877ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860893ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860911ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860927ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860943ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860960ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860977ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27860993ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861010ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861027ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861044ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861060ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861077ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861093ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27861110ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27895975ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27896996ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897012ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897029ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897045ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897061ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897079ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897094ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897112ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897129ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897146ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897162ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897179ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897195ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897212ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897229ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897246ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897262ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897279ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897296ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897312ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897329ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897346ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897362ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897379ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897395ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897412ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897429ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897446ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897461ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27897479ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27899659ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900676ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900692ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900725ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900742ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900759ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900774ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900792ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900809ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900826ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900842ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900859ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900876ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900892ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900909ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900926ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900942ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900974ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27900992ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901009ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901026ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901042ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901059ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901076ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901092ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901108ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901126ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901142ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27901159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27916159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917178ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917194ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917210ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917228ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917244ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917261ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917278ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917294ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917311ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917328ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917344ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917361ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917378ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917394ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917411ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917427ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917444ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917461ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917478ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917494ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917511ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917528ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917544ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917561ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917578ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917594ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917611ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917628ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917644ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917661ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27917678ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27918709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919727ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919744ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919763ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919780ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919796ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919813ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919830ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919847ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919863ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919879ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919898ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919914ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919931ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919948ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919965ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919981ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27919997ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920015ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920031ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920048ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920064ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920081ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920098ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920115ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920131ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920147ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920165ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920181ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920198ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920214ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27920242ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921260ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921276ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921293ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921309ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921327ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921343ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921360ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921377ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921393ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921410ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921427ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921443ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921460ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921476ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921493ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921510ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921527ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921543ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921560ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921577ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921593ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921610ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921627ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921644ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921660ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921677ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921693ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921710ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921727ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921744ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921761ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27921925ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27922942ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27922959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27922976ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27922992ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923009ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923026ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923042ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923058ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923075ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923092ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923108ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923126ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923143ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923177ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923193ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923210ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923225ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923243ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923260ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923277ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923293ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923310ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923327ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923343ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923359ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923376ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923393ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923409ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27923426ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27924025ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925044ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925060ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925078ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925093ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925109ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925126ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925143ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925176ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925193ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925209ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925225ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925242ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925259ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925276ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925292ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925309ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925326ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925343ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925359ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925376ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925392ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925408ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925426ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925442ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925459ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925476ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925492ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925509ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925525ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27925542ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27928712ms] [WARNING] [BedroomStoryInteractionBridge] WebGL fallback unlocked the bedroom door because story progression did not advance after the laptop reminder.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931259ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931275ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931292ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931308ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931325ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931342ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931359ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931375ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931392ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931409ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931425ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931442ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931459ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931476ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931492ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931508ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931525ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931542ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931558ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931575ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27931591ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27932609ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27932626ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27932642ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933659ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933675ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933691ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933709ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933726ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933742ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933758ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933775ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933793ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933809ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933826ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933842ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933859ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933876ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933892ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933909ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933926ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933941ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933959ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933976ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27933992ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934008ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934025ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934042ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934059ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934075ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934092ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934109ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934126ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934142ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934159ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27934176ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27936192ms] [WARNING] [BedroomStoryInteractionBridge] WebGL fallback committed the bedroom transition because the door confirmation signal did not advance story state in time.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27936845ms] [WARNING] There can be only one active Event System.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27936883ms] [WARNING] [GameManager] Duplicate GameManager instance detected. Destroying self.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27936884ms] [WARNING] Duplicate GameNetworkManager instance detected. Destroying self.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27936944ms] [WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_ClassroomArrivalScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27937099ms] [WARNING] [Netcode] [BB] CorePlayer(Clone) does not contain a public enable property! (Ignoring)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27937190ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27937190ms] [WARNING] NetworkVariable is written to, but doesn't know its NetworkBehaviour yet. Are you modifying a NetworkVariable before the NetworkObject is spawned?
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27938558ms] [WARNING] [CorePlayerManager] coreMovement is null in HandleMoveInput
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27938675ms] [WARNING] [CorePlayerManager] coreMovement is null in HandleMoveInput
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27938709ms] [WARNING] [CorePlayerManager] coreMovement is null in HandleMoveInput
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27938959ms] [WARNING] [CorePlayerManager] coreMovement is null in HandleMoveInput
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27939070ms] [ERROR] Uncaught exception from main loop: @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27939071ms] [ERROR] RuntimeError: function signature mismatch
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[149335]:0x2e31168
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[134039]:0x2aa3d85
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110732]:0x24c732e
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[856]:0x177b02
+    at invoke_ii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512544)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110993]:0x24dbf80
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197051]:0x4193268
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512678)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110931]:0x24d551f
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197051]:0x4193268
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512678)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110927]:0x24d50e1
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111441]:0x2504b86
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197047]:0x4193235
+    at invoke_iiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511608)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111472]:0x2508829
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45661]:0x1173bbe
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111465]:0x2507c13
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111426]:0x2504619
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197052]:0x4193278
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511919)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111512]:0x250ce9d
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45551]:0x116d50c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111507]:0x250c9b0
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111505]:0x250c449
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111508]:0x250c9db
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111501]:0x250c146
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197052]:0x4193278
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511919)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44076]:0x10e74ba
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45535]:0x116c61c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197055]:0x419329a
+    at invoke_viii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511758)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44080]:0x10e8a3d
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45537]:0x116c7fa
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44067]:0x10e6811
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197057]:0x41932c2
+    at invoke_iiiiiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:513157)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44143]:0x10f09ab
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[127837]:0x2925aa4 @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27939072ms] [ERROR] Halting program. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8
+[27941168ms] RuntimeError: function signature mismatch
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[149335]:0x2e31168
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[134039]:0x2aa3d85
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110732]:0x24c732e
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[856]:0x177b02
+    at invoke_ii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512544)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110993]:0x24dbf80
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197051]:0x4193268
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512678)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110931]:0x24d551f
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197051]:0x4193268
+    at invoke_vi (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:512678)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[110927]:0x24d50e1
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111441]:0x2504b86
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197047]:0x4193235
+    at invoke_iiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511608)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111472]:0x2508829
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45661]:0x1173bbe
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111465]:0x2507c13
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111426]:0x2504619
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197052]:0x4193278
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511919)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111512]:0x250ce9d
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45551]:0x116d50c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111507]:0x250c9b0
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111505]:0x250c449
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111508]:0x250c9db
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[111501]:0x250c146
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197052]:0x4193278
+    at invoke_iiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511919)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44076]:0x10e74ba
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45535]:0x116c61c
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197055]:0x419329a
+    at invoke_viii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511758)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44080]:0x10e8a3d
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[45537]:0x116c7fa
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44067]:0x10e6811
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197057]:0x41932c2
+    at invoke_iiiiiiii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:513157)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[44143]:0x10f09ab
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[197049]:0x4193256
+    at invoke_vii (https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:9:511455)
+    at https://ai.agaii.org/Intro2/Build/Intro2.wasm?v=20260325104147:wasm-function[127837]:0x2925aa4
+[27941167ms] [WARNING] [CorePlayerManager] coreMovement is null in HandleMoveInput
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js?v=20260325104147:8

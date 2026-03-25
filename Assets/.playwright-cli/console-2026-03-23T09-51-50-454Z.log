@@ -1,6 +1,0 @@
-[     132ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js.br:0
-[     162ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://ai.agaii.org/Intro2/Build/Intro2.data.br:0
-[     162ms] [ERROR] Failed to load resource: net::ERR_CONTENT_DECODING_FAILED @ https://ai.agaii.org/Intro2/Build/Intro2.data.br:0
-[     171ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://ai.agaii.org/Intro2/Build/Intro2.data.br:0
-[     171ms] [ERROR] Failed to load resource: net::ERR_CONTENT_DECODING_FAILED @ https://ai.agaii.org/Intro2/Build/Intro2.data.br:0
-[     171ms] [ERROR] Failed to download file Build/Intro2.data.br @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0

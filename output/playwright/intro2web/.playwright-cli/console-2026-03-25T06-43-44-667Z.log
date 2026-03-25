@@ -1,0 +1,177 @@
+Total messages: 100 (Errors: 0, Warnings: 12)
+
+[LOG] [UnityCache] 'https://ai.agaii.org/Intro2/Build/Intro2.data' successfully downloaded and stored in the browser cache @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[LOG] [UnityMemory] Configuration Parameters - Can be set up in boot.config
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-bucket-allocator-granularity=16"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-bucket-allocator-bucket-count=8"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-bucket-allocator-block-size=4194304"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-bucket-allocator-block-count=1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-main-allocator-block-size=16777216"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-thread-allocator-block-size=16777216"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-gfx-main-allocator-block-size=16777216"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-gfx-thread-allocator-block-size=16777216"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-cache-allocator-block-size=4194304"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-typetree-allocator-block-size=2097152"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-bucket-allocator-granularity=16"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-bucket-allocator-bucket-count=8"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-bucket-allocator-block-size=4194304"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-bucket-allocator-block-count=1"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-allocator-block-size=16777216"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-profiler-editor-allocator-block-size=1048576"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-temp-allocator-size-main=4194304"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-job-temp-allocator-block-size=2097152"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-job-temp-allocator-block-size-background=1048576"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-allocator-temp-initial-block-size-main=262144"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-allocator-temp-initial-block-size-worker=262144"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-temp-allocator-size-audio-worker=65536"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-temp-allocator-size-cloud-worker=32768"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]     "memorysetup-temp-allocator-size-background-worker=32768"
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] CodeReloadManager initialized
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Input System module state changed to: Initialized.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Initialized fallback backend.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Id: 0xdecafbad
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Loading player data from data.unity3d
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Initialize engine version: 6000.4.0f1 (8cf496087c8f)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Subsystems] Discovering subsystems at path UnitySubsystems
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Creating WebGL 2.0 context. @ https://ai.agaii.org/Intro2/Build/Intro2.loader.js:0
+[LOG] Renderer: WebKit WebGL
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Vendor:   WebKit
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Version:  OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] GLES:     3
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG]  EXT_clip_control EXT_color_buffer_float EXT_color_buffer_half_float EXT_conservative_depth EXT_depth_clamp EXT_disjoint_timer_query_webgl2 EXT_float_blend EXT_polygon_offset_clamp EXT_render_snorm EXT_texture_compression_bptc EXT_texture_compression_rgtc EXT_texture_filter_anisotropic EXT_texture_mirror_clamp_to_edge EXT_texture_norm16 KHR_parallel_shader_compile NV_shader_noperspective_interpolation OES_draw_buffers_indexed OES_sample_variables OES_shader_multisample_interpolation OES_texture_float_linear WEBGL_blend_func_extended WEBGL_clip_cull_distance WEBGL_compressed_texture_astc WEBGL_compressed_texture_etc WEBGL_compressed_texture_etc1 WEBGL_compressed_texture_pvrtc WEBGL_compressed_texture_s3tc WEBGL_compressed_texture_s3tc_srgb WEBGL_debug_renderer_info WEBGL_debug_shaders WEBGL_lose_context WEBGL_multi_draw WEBGL_polygon_mode WEBGL_provoking_vertex WEBGL_render_shared_exponent WEBGL_stencil_texturing GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_conservative_
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] depth GL_EXT_depth_clamp GL_EXT_disjoint_timer_query_webgl2 GL_EXT_float_blend GL_EXT_polygon_offset_clamp GL_EXT_render_snorm GL_EXT_texture_compression_bptc GL_EXT_texture_compression_rgtc GL_EXT_texture_filter_anisotropic GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_norm16 GL_KHR_parallel_shader_compile GL_NV_shader_noperspective_interpolation GL_OES_draw_buffers_indexed GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_texture_float_linear GL_WEBGL_blend_func_extended GL_WEBGL_clip_cull_distance GL_WEBGL_compressed_texture_astc GL_WEBGL_compressed_texture_etc GL_WEBGL_compressed_texture_etc1 GL_WEBGL_compressed_texture_pvrtc GL_WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc_srgb GL_WEBGL_debug_renderer_info GL_WEBGL_debug_shaders GL_WEBGL_lose_context GL_WEBGL_multi_draw GL_WEBGL_polygon_mode GL_WEBGL_provoking_vertex GL_WEBGL_render_shared_exponent GL_WEBGL_stencil_texturing
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] WebGL: INVALID_ENUM: getInternalformatParameter: invalid internalformat @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] OPENGL LOG: Creating OpenGL ES 3.0 graphics device ; Context level  <OpenGL ES 3.0> ; Context handle 1
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Selected backend.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Name: PhysX
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Id: 0xf2b8ea05
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] SDK Version: 4.1.2
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Integration Version: 1.0.0
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [Physics::Module] Threading Mode: Single-Threaded
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/CoreSRP/CoreCopy shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VoxelizeShader shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/Universal Render Pipeline/StencilDitherMaskSeed shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/Universal/HDRDebugView shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Input Manager initialize...
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Input System initialize...
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/LaserHitGraph/Debris/Debris shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/DeathSparksGraph/Hit Circle/Hit Circle shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/RocketHitGraph/Sparks/sparks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/RocketHitGraph/Streaks/Streaks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/LaserHitGraph/Streaks/Streaks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/LaserHitGraph/Sparks/Sparks shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/RocketHitGraph/Decals/Decals shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/LaserHitGraph/Electric Arcs/Electric Arc shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/RocketHitGraph/Debris/Debris shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/LaserHitGraph/Decals/Decals shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] ERROR: Shader  @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Hidden/VFX/DeathSparksGraph/Cube Dissolve/Cube Dissolve shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] UnloadTime: 1.100000 ms
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] Manual synchronization of Unity Application.persistentDataPath via JS_FileSystem_Sync() is deprecated and will be later removed in a future Unity version. The persistent data directory will be automatically synchronized instead on file modification. Pass config.autoSyncPersistentDataPath = true; to configuration in createUnityInstance() to opt in to the new behavior. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] No Theme Style Sheet set to PanelSettings CharacterCustomizationRuntimePanelSettings_BedRoomIntroScene, UI will not render properly
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] Audio context resumed after 0.418 seconds. @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [BedroomWebDiag t+0] Applied WebGL lit fallback materials: 2 using 'Universal Render Pipeline/Unlit'
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [GameNetworkManager] WebGL runtime detected. Host startup is disabled.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] [BedroomStoryMorningAmbience] Missing ambience clip. Assign one or provide fallback at 'Assets/Core/Audio/forest-window-light.mp3'.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareScreenSpace' is not supported (in 'LensFlareScreenSpacePostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] Shader 'Hidden/Universal Render Pipeline/LensFlareDataDriven' is not supported (in 'LensFlareDataDrivenPostProcessPass'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[WARNING] Shader 'Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling' is not supported (in 'Blit FSR Upscaling'). PostProcessing render passes will not execute.
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [BedroomWebDiag t+1.5] Applied WebGL lit fallback materials: 0 using 'Universal Render Pipeline/Unlit'
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [BedroomWebDiag t+3] scene=BedRoomIntroScene hasPlayer=False player=null bed=null laptop=null meshRenderers=3 activeMeshRenderers=3 skinnedRenderers=0 cameras=PreviewCamera@BedRoomIntroScene pos=(10000.00, 10001.04, 9997.64) rot=(0.00, 0.00, 0.00) depth=0 enabled=False mask=-1; Main Camera@DontDestroyOnLoad pos=(4.83, 0.87, -13.72) rot=(17.40, 220.19, 0.00) depth=-1 enabled=True mask=-1; 
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
+[LOG] [BedroomWebDiag t+15] scene=BedRoomIntroScene hasPlayer=False player=null bed=null laptop=null meshRenderers=3 activeMeshRenderers=3 skinnedRenderers=0 cameras=PreviewCamera@BedRoomIntroScene pos=(-13.23, 1.69, -15.63) rot=(0.00, 263.40, 0.00) depth=0 enabled=False mask=-1; Main Camera@DontDestroyOnLoad pos=(4.83, 0.87, -13.72) rot=(17.40, 220.19, 0.00) depth=-1 enabled=True mask=-1; 
+ @ https://ai.agaii.org/Intro2/Build/Intro2.framework.js:8
