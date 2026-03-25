@@ -159,7 +159,7 @@ namespace Blocks.Gameplay.Core.Customization
         private const float PreviewPitchDragSpeed = 0.16f;
         private const float PreviewZoomWheelSpeed = 0.04f;
         private const float PreviewManualControlHoldSeconds = 8f;
-        private const float DefaultPreviewTextureAspect = 1.72f;
+        private const float DefaultPreviewTextureAspect = 1.2f;
 
         public bool IsOpen => m_IsOpen;
         public static bool IsAnyOpen => s_OpenPanelCount > 0;
@@ -181,10 +181,35 @@ namespace Blocks.Gameplay.Core.Customization
             return Mathf.Round(value * m_FontScale * 10f) / 10f;
         }
 
+        private void GetUiLayoutDimensions(out float width, out float height)
+        {
+            width = 0f;
+            height = 0f;
+
+            if (m_Overlay != null)
+            {
+                width = m_Overlay.resolvedStyle.width;
+                height = m_Overlay.resolvedStyle.height;
+            }
+
+            if ((width < 1f || height < 1f) && m_Root != null)
+            {
+                width = m_Root.resolvedStyle.width;
+                height = m_Root.resolvedStyle.height;
+            }
+
+            if (width < 1f || height < 1f)
+            {
+                width = Screen.width;
+                height = Screen.height;
+            }
+        }
+
         private void RefreshUiScale()
         {
-            var height = Mathf.Max(720f, Screen.height);
-            var width = Mathf.Max(480f, Screen.width);
+            GetUiLayoutDimensions(out var layoutWidth, out var layoutHeight);
+            var height = Mathf.Max(720f, layoutHeight);
+            var width = Mathf.Max(480f, layoutWidth);
             m_UiScale = Mathf.Clamp(height / UiReferenceHeight, UiMinScale, UiMaxScale);
             var fontDriver = Mathf.Lerp(Mathf.Min(width, height), height, 0.18f);
             if (height > width * 1.12f)
@@ -1017,7 +1042,10 @@ namespace Blocks.Gameplay.Core.Customization
         {
             m_Content = new VisualElement();
             m_Content.style.flexGrow = 1f;
+            m_Content.style.flexShrink = 1f;
+            m_Content.style.minHeight = 0f;
             m_Content.style.flexDirection = FlexDirection.Row;
+            m_Content.style.alignItems = Align.Stretch;
             m_Content.style.marginTop = U(20f);
             m_Window.Add(m_Content);
 
@@ -1139,6 +1167,7 @@ namespace Blocks.Gameplay.Core.Customization
         {
             m_RightPane = new VisualElement();
             m_RightPane.style.flexGrow = 1f;
+            m_RightPane.style.flexShrink = 1f;
             m_RightPane.style.flexDirection = FlexDirection.Column;
             m_RightPane.style.justifyContent = Justify.FlexStart;
             m_RightPane.style.minWidth = 0f;
@@ -1491,7 +1520,7 @@ namespace Blocks.Gameplay.Core.Customization
                 return DefaultPreviewTextureAspect;
             }
 
-            return Mathf.Clamp(width / height, 1.35f, 2.25f);
+            return Mathf.Clamp(width / height, 1.08f, 1.3f);
         }
 
         private void RefreshCatalog()
@@ -1914,14 +1943,15 @@ namespace Blocks.Gameplay.Core.Customization
                     -localMin.y + 0.02f,
                     -localCenter.z);
 
-                var radius = Mathf.Max(bounds.extents.x, modelHeight * 0.42f, 0.38f);
+                var framingRadius = Mathf.Max(bounds.extents.x * 1.18f, modelHeight * 0.5f, 0.46f);
                 var fieldOfViewRadians = previewFieldOfView * Mathf.Deg2Rad * 0.5f;
-                var distance = radius / Mathf.Tan(fieldOfViewRadians);
+                var distance = framingRadius / Mathf.Tan(fieldOfViewRadians);
                 m_PreviewCamera.fieldOfView = previewFieldOfView;
-                var cameraY = Mathf.Clamp(modelHeight * 0.54f, 0.88f, 1.32f);
-                m_PreviewLookLocalPoint = new Vector3(0f, Mathf.Clamp(modelHeight * 0.56f, 0.9f, 1.38f), 0f);
+                var lookY = Mathf.Clamp(modelHeight * 0.5f, 0.8f, 1.2f);
+                var cameraY = Mathf.Clamp(modelHeight * 0.56f, 0.88f, 1.34f);
+                m_PreviewLookLocalPoint = new Vector3(0f, lookY, 0f);
                 m_PreviewCameraVerticalOffset = cameraY - m_PreviewLookLocalPoint.y;
-                m_PreviewCameraDistance = distance * 0.88f;
+                m_PreviewCameraDistance = distance * 1.02f;
                 ApplyPreviewCameraView();
             }
 
@@ -2637,7 +2667,7 @@ namespace Blocks.Gameplay.Core.Customization
             m_Overlay.style.paddingRight = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(16f) : U(28f);
 
             m_Window.style.width = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 94f : 86f, LengthUnit.Percent);
-            m_Window.style.height = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 92f : 88f, LengthUnit.Percent);
+            m_Window.style.height = new Length(m_IsPortraitLayout ? 100f : m_IsCompactLayout ? 94f : 88f, LengthUnit.Percent);
             m_Window.style.minWidth = m_IsCompactLayout ? 0f : 1180f;
             m_Window.style.minHeight = m_IsCompactLayout ? 0f : 760f;
             m_Window.style.maxWidth = m_IsPortraitLayout
@@ -2648,8 +2678,8 @@ namespace Blocks.Gameplay.Core.Customization
                 : Mathf.Min(viewportHeight - U(20f), 1180f);
             m_Window.style.paddingLeft = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(16f) : U(28f);
             m_Window.style.paddingRight = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(16f) : U(28f);
-            m_Window.style.paddingTop = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(14f) : U(24f);
-            m_Window.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(14f) : U(24f);
+            m_Window.style.paddingTop = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(24f);
+            m_Window.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(24f);
             m_Window.style.borderTopLeftRadius = m_IsPortraitLayout ? U(14f) : U(22f);
             m_Window.style.borderTopRightRadius = m_IsPortraitLayout ? U(14f) : U(22f);
             m_Window.style.borderBottomLeftRadius = m_IsPortraitLayout ? U(14f) : U(22f);
@@ -2657,15 +2687,15 @@ namespace Blocks.Gameplay.Core.Customization
 
             m_Header.style.flexDirection = m_UseStackedLayout ? FlexDirection.Column : FlexDirection.Row;
             m_Header.style.alignItems = m_UseStackedLayout ? Align.Stretch : Align.FlexStart;
-            m_Header.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(22f);
+            m_Header.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(8f) : U(22f);
 
             m_TitleLabel.style.fontSize = m_IsPortraitLayout ? T(22f) : m_IsCompactLayout ? T(24f) : T(44f);
-            m_TitleLabel.style.minHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(42f) : U(68f);
+            m_TitleLabel.style.minHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(36f) : U(68f);
             m_StatusLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(14f) : T(19f);
-            m_StatusLabel.style.minHeight = m_IsPortraitLayout ? U(22f) : m_IsCompactLayout ? U(22f) : U(42f);
+            m_StatusLabel.style.minHeight = m_IsPortraitLayout ? U(22f) : m_IsCompactLayout ? U(18f) : U(42f);
             m_SelectionLabel.style.fontSize = m_IsPortraitLayout ? T(20f) : m_IsCompactLayout ? T(24f) : T(30f);
-            m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(14f) : T(16f);
-            m_DetailLabel.style.minHeight = m_IsPortraitLayout ? StyleKeyword.Auto : m_IsCompactLayout ? U(36f) : U(48f);
+            m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(13f) : T(16f);
+            m_DetailLabel.style.minHeight = m_IsPortraitLayout ? StyleKeyword.Auto : m_IsCompactLayout ? U(18f) : U(48f);
             m_CloseButton.style.minWidth = m_IsPortraitLayout ? U(90f) : m_IsCompactLayout ? U(104f) : U(156f);
             m_CloseButton.style.height = m_IsPortraitLayout ? U(40f) : m_IsCompactLayout ? U(44f) : U(64f);
             m_CloseButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(17f) : T(22f);
@@ -2694,14 +2724,18 @@ namespace Blocks.Gameplay.Core.Customization
             }
 
             m_Content.style.flexDirection = m_UseStackedLayout ? FlexDirection.Column : FlexDirection.Row;
-            m_Content.style.marginTop = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(10f) : U(18f);
+            m_Content.style.alignItems = Align.Stretch;
+            m_Content.style.flexShrink = 1f;
+            m_Content.style.minHeight = 0f;
+            m_Content.style.marginTop = m_IsPortraitLayout ? U(10f) : m_IsCompactLayout ? U(8f) : U(18f);
 
             m_RightPane.style.marginRight = m_UseStackedLayout ? 0f : U(8f);
             m_RightPane.style.minHeight = 0f;
+            m_RightPane.style.flexShrink = 1f;
             m_RightPane.style.flexGrow = m_IsPortraitLayout ? 0f : 1f;
             m_RightPane.style.flexBasis = 0f;
 
-                m_LeftPane.style.width = m_UseStackedLayout
+            m_LeftPane.style.width = m_UseStackedLayout
                 ? new Length(100f, LengthUnit.Percent)
                 : Mathf.Clamp(viewportWidth * 0.31f, U(356f), U(500f));
             m_LeftPane.style.marginLeft = m_UseStackedLayout ? 0f : U(18f);
@@ -2716,53 +2750,67 @@ namespace Blocks.Gameplay.Core.Customization
                 : 0f;
             m_LeftPane.style.height = StyleKeyword.Auto;
 
-            var previewFrameHeight = m_IsPortraitLayout
+            float previewFramePaddingX = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
+            float previewFramePaddingY = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(12f) : U(20f);
+            float previewHudHeight = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(32f) : U(34f);
+            float previewHudMarginBottom = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(8f) : U(14f);
+            float previewImageMinHeight = m_IsPortraitLayout
+                ? Mathf.Clamp(viewportHeight * 0.2f, U(150f), U(250f))
+                : m_IsCompactLayout
+                    ? Mathf.Clamp(viewportHeight * 0.25f, U(210f), U(280f))
+                    : Mathf.Clamp(viewportHeight * 0.24f, U(230f), U(360f));
+            float previewFrameHeight = m_IsPortraitLayout
                 ? Mathf.Clamp(viewportHeight * 0.28f, U(200f), U(330f))
                 : m_IsCompactLayout
-                    ? Mathf.Clamp(viewportHeight * 0.28f, U(208f), U(276f))
+                    ? Mathf.Clamp(viewportHeight * 0.34f, U(290f), U(360f))
                     : Mathf.Clamp(viewportHeight * 0.36f, U(300f), U(460f));
+            previewFrameHeight = Mathf.Max(previewFrameHeight, previewFramePaddingY * 2f + previewHudHeight + previewHudMarginBottom + previewImageMinHeight);
             m_PreviewFrame.style.height = previewFrameHeight;
             m_PreviewFrame.style.minHeight = previewFrameHeight;
-            m_PreviewFrame.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
-            m_PreviewFrame.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(16f) : U(20f);
-            m_PreviewFrame.style.paddingTop = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
-            m_PreviewFrame.style.paddingBottom = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+            m_PreviewFrame.style.paddingLeft = previewFramePaddingX;
+            m_PreviewFrame.style.paddingRight = previewFramePaddingX;
+            m_PreviewFrame.style.paddingTop = previewFramePaddingY;
+            m_PreviewFrame.style.paddingBottom = previewFramePaddingY;
 
             if (m_PreviewHud != null)
             {
-                m_PreviewHud.style.minHeight = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(34f) : U(38f);
-                m_PreviewHud.style.marginBottom = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(10f) : U(14f);
+                m_PreviewHud.style.minHeight = previewHudHeight;
+                m_PreviewHud.style.marginBottom = previewHudMarginBottom;
             }
 
             if (m_PreviewBadgeLabel != null)
             {
-                m_PreviewBadgeLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(30f) : U(34f);
+                m_PreviewBadgeLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(32f) : U(34f);
                 m_PreviewBadgeLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(13f) : T(15f);
             }
 
             if (m_AnimationStatusLabel != null)
             {
-                m_AnimationStatusLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(30f) : U(34f);
+                m_AnimationStatusLabel.style.height = m_IsPortraitLayout ? U(28f) : m_IsCompactLayout ? U(32f) : U(34f);
                 m_AnimationStatusLabel.style.fontSize = m_IsPortraitLayout ? T(12f) : m_IsCompactLayout ? T(13f) : T(15f);
             }
 
             if (m_PreviewImage != null)
             {
-                m_PreviewImage.style.minHeight = m_IsPortraitLayout
-                    ? Mathf.Clamp(viewportHeight * 0.2f, U(150f), U(250f))
-                    : m_IsCompactLayout
-                        ? Mathf.Clamp(viewportHeight * 0.2f, U(164f), U(236f))
-                        : Mathf.Clamp(viewportHeight * 0.24f, U(230f), U(360f));
+                m_PreviewImage.style.minHeight = previewImageMinHeight;
             }
 
             if (m_SelectionCard != null)
             {
+                float selectionPaddingY = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
+                float selectionPaddingX = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
+                float selectionTitleHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(34f) : U(40f);
+                float selectionDetailHeight = m_IsPortraitLayout ? U(18f) : m_IsCompactLayout ? U(18f) : U(22f);
+                float selectionActionGap = m_IsPortraitLayout ? U(8f) : U(6f);
+                float selectionButtonsHeight = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(40f) : U(54f);
+                float selectionCardHeight = selectionPaddingY * 2f + selectionTitleHeight + selectionDetailHeight + selectionActionGap + selectionButtonsHeight + U(10f);
+
                 m_SelectionCard.style.marginTop = m_IsPortraitLayout ? U(8f) : m_IsCompactLayout ? U(8f) : U(16f);
-                m_SelectionCard.style.paddingLeft = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
-                m_SelectionCard.style.paddingRight = m_IsPortraitLayout ? U(14f) : m_IsCompactLayout ? U(14f) : U(20f);
-                m_SelectionCard.style.paddingTop = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
-                m_SelectionCard.style.paddingBottom = m_IsPortraitLayout ? U(12f) : m_IsCompactLayout ? U(12f) : U(16f);
-                m_SelectionCard.style.minHeight = m_IsPortraitLayout ? U(104f) : m_IsCompactLayout ? U(96f) : U(118f);
+                m_SelectionCard.style.paddingLeft = selectionPaddingX;
+                m_SelectionCard.style.paddingRight = selectionPaddingX;
+                m_SelectionCard.style.paddingTop = selectionPaddingY;
+                m_SelectionCard.style.paddingBottom = selectionPaddingY;
+                m_SelectionCard.style.minHeight = selectionCardHeight;
             }
 
             if (m_ActionsRow != null)
@@ -2774,21 +2822,21 @@ namespace Blocks.Gameplay.Core.Customization
             if (m_DetailLabel != null)
             {
                 m_DetailLabel.style.fontSize = m_IsPortraitLayout ? T(11f) : m_IsCompactLayout ? T(13f) : T(15f);
-                m_DetailLabel.style.marginBottom = m_IsPortraitLayout ? U(6f) : U(8f);
+                m_DetailLabel.style.marginBottom = m_IsPortraitLayout ? U(6f) : U(6f);
             }
 
             if (m_RandomizeButton != null)
             {
                 m_RandomizeButton.style.marginRight = m_IsPortraitLayout ? 0f : U(12f);
                 m_RandomizeButton.style.marginBottom = m_IsPortraitLayout ? U(10f) : 0f;
-                m_RandomizeButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(48f) : U(54f);
-                m_RandomizeButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+                m_RandomizeButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(40f) : U(54f);
+                m_RandomizeButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(15f) : T(18f);
             }
 
             if (m_ApplyButton != null)
             {
-                m_ApplyButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(48f) : U(54f);
-                m_ApplyButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(16f) : T(18f);
+                m_ApplyButton.style.height = m_IsPortraitLayout ? U(44f) : m_IsCompactLayout ? U(40f) : U(54f);
+                m_ApplyButton.style.fontSize = m_IsPortraitLayout ? T(15f) : m_IsCompactLayout ? T(15f) : T(18f);
             }
 
             if (m_SidebarTitleLabel != null)
@@ -2815,8 +2863,14 @@ namespace Blocks.Gameplay.Core.Customization
                 }
             }
 
+            if (m_SelectionLabel != null)
+            {
+                m_SelectionLabel.style.minHeight = m_IsPortraitLayout ? U(30f) : m_IsCompactLayout ? U(34f) : U(40f);
+                m_SelectionLabel.style.marginBottom = m_IsPortraitLayout ? U(4f) : U(4f);
+            }
+
             ConfigureListViewScrollArea();
-            SetListItemHeight(m_IsPortraitLayout ? U(72f) : m_IsCompactLayout ? U(72f) : U(92f));
+            SetListItemHeight(m_IsPortraitLayout ? U(72f) : m_IsCompactLayout ? U(74f) : U(92f));
         }
 
         private void SetListItemHeight(float height)
