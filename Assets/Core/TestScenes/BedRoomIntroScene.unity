@@ -247,19 +247,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1715803682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &184377675
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: ' (Instance) (Instance) (Instance)'
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &184697632
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,6 +421,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7547073589359406463, guid: e7d42944e4eb9477a8d3c108b154900a, type: 3}
+--- !u!134 &245161855
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ' (Instance) (Instance) (Instance) (Instance)'
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!64 &274733748
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1503,6 +1503,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Room
       objectReference: {fileID: 0}
+    - target: {fileID: 5921130631735992494, guid: e7d42944e4eb9477a8d3c108b154900a, type: 3}
+      propertyPath: 'm_Materials.Array.data[5]'
+      value: 
+      objectReference: {fileID: 2100000, guid: af13bff20e0114025ab15b87761befbd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2675,6 +2679,7 @@ MonoBehaviour:
   previewClearColor: {r: 0.05, g: 0.06, b: 0.08, a: 1}
   lockPlayerMovementWhileOpen: 1
   documentSortingOrder: 1200
+  panelSettingsOverride: {fileID: 0}
 --- !u!114 &1107713200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3273,7 +3278,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814480177}
-  m_Material: {fileID: 184377675}
+  m_Material: {fileID: 245161855}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4511,13 +4516,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Blocks.Gameplay.Core::Blocks.Gameplay.Core.Customization.CharacterCustomizationWardrobeHook
   interactableItem: {fileID: 1715803686}
-  customizationPanel: {fileID: 1107713199}
+  customizationPanel: {fileID: 0}
   optionId: change_character
   optionLabel: Change Character
   slot: 0
   visible: 1
   optionEnabled: 1
   installOnAwake: 1
+  deferredInstallDelaySeconds: 0.45
+  interactionDirector: {fileID: 0}
 --- !u!1 &1750765630
 GameObject:
   m_ObjectHideFlags: 0
@@ -4582,6 +4589,7 @@ MonoBehaviour:
   queryTriggerInteraction: 1
   lockInteractions: 0
   promptResumeDelaySeconds: 0.45
+  externalBusyResumeDelaySeconds: 0.95
 --- !u!4 &1750765633
 Transform:
   m_ObjectHideFlags: 0
@@ -5127,6 +5135,8 @@ MonoBehaviour:
   doorReady: 0
   transitionCommitted: 0
   currentSessionId: 
+  webGlDoorReadyFallbackDelaySeconds: 1.1
+  webGlTransitionFallbackDelaySeconds: 0.9
 --- !u!114 &1990826439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5221,6 +5231,9 @@ MonoBehaviour:
   savedGraphPath: Assets/StoryFlowBedroomGenerated/Graphs/BedroomIntroStory.asset
   embeddedProjectConfig: {fileID: 11400000, guid: d1602ec52160e4b12b810af80bd332a1, type: 2}
   embeddedGraph: {fileID: 11400000, guid: b35cbd30e8a794963acd468cc68b29a8, type: 2}
+  enableWebGlLitFallback: 1
+  maxWakeUpAnchorDistanceFromBedroomReference: 6.5
+  maxAllowedSpawnDistanceFromBedroomReference: 8.5
 --- !u!114 &1990826445
 MonoBehaviour:
   m_ObjectHideFlags: 0
